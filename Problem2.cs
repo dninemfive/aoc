@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static aoc_solns_2023.Problem1;
-
-namespace aoc_solns_2023;
+﻿namespace aoc_solns_2023;
 public static class Problem2
 {
     [SolutionToProblem(2)]

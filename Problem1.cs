@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace aoc_solns_2023;
+﻿namespace aoc_solns_2023;
 public static class Problem1
 {
-    #region constants
     public static readonly string[] DIGIT_STRINGS =
     [
         "zero",
@@ -21,7 +14,6 @@ public static class Problem1
         "eight",
         "nine"
     ];
-    #endregion constants
     [SolutionToProblem(1)]
     public static IEnumerable<object> Solve(string inputFile)
     {

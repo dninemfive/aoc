@@ -1,6 +1,5 @@
 ﻿using aoc_solns_2023;
 using System.Reflection;
-using System.Xml.Schema;
 static class Program
 {
     public const string INPUT_FOLDER = @"C:\Users\dninemfive\Documents\workspaces\misc\_aoc\2023\";
