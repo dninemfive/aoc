@@ -2,16 +2,24 @@
 
 static class Program
 {
-    public static List<Action> Solutions = [
-            Problem1.Solve
+    public const string INPUT_FOLDER = @"C:\Users\dninemfive\Documents\workspaces\misc\_aoc\2023\";
+    public delegate IEnumerable<object> Solution(string inputFile);
+    public static List<Solution> Solutions = [
+            Problem1.Solve,
+            Problem2.Solve
         ];
     private static void Main()
     {
-        int index = 1;
-        foreach(Action solution in Solutions)
+        int solutionNumber = 1;
+        foreach(Solution solution in Solutions)
         {
-            Console.WriteLine($"Solution for {index++}:");
-            solution();
+            string inputFile = Path.Join(INPUT_FOLDER, $"{solutionNumber}_input.txt");
+            Console.WriteLine($"Solution for {solutionNumber++}:");
+            int partNumber = 1;
+            foreach (object part in solution(inputFile))
+            {
+                Console.WriteLine($"\tPart {partNumber++}: {part}");
+            }
         }
     }
 }
