@@ -22,6 +22,7 @@ public static class Problem1
         "nine"
     ];
     #endregion constants
+    [SolutionToProblem(1)]
     public static IEnumerable<object> Solve(string inputFile)
     {
         IEnumerable<string> lines = File.ReadAllLines(inputFile);

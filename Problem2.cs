@@ -8,6 +8,7 @@ using static aoc_solns_2023.Problem1;
 namespace aoc_solns_2023;
 public static class Problem2
 {
+    [SolutionToProblem(2)]
     public static IEnumerable<object> Solve(string inputFile)
     {
         IEnumerable<string> lines = File.ReadAllLines(inputFile);

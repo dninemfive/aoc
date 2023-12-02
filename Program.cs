@@ -1,25 +1,26 @@
 ﻿using aoc_solns_2023;
-
+using System.Reflection;
 static class Program
 {
     public const string INPUT_FOLDER = @"C:\Users\dninemfive\Documents\workspaces\misc\_aoc\2023\";
-    public delegate IEnumerable<object> Solution(string inputFile);
-    public static List<Solution> Solutions = [
-            Problem1.Solve,
-            Problem2.Solve
-        ];
     private static void Main()
     {
-        int solutionNumber = 1;
-        foreach(Solution solution in Solutions)
+        foreach((MethodInfo method, SolutionToProblemAttribute? attr) in Assembly.GetExecutingAssembly()
+                                             .GetTypes()
+                                             .SelectMany(type => type.GetMethods())
+                                             .Select(method => (method, attr: method.GetCustomAttribute<SolutionToProblemAttribute>()))
+                                             .OrderBy(x => x.attr?.Index))
         {
-            string inputFile = Path.Join(INPUT_FOLDER, $"{solutionNumber}_input.txt");
-            Console.WriteLine($"Solution for Problem {solutionNumber++}:");
+            if (attr is null 
+                || !method.IsStatic 
+                || method.ReturnType != typeof(IEnumerable<object>)
+                || method.GetParameters().Select(x => x.ParameterType).First() != typeof(string))
+                continue;
+            Console.WriteLine($"Solution for Problem {attr.Index}:");
+            string inputFile = Path.Join(INPUT_FOLDER, $"{attr.Index}_input.txt");
             int partNumber = 1;
-            foreach (object part in solution(inputFile))
-            {
+            foreach (object part in (IEnumerable<object>)method.Invoke(null, [inputFile])!)
                 Console.WriteLine($"\tPart {partNumber++}: {part}");
-            }
         }
     }
 }
