@@ -23,24 +23,17 @@ public static class Problem2
         public List<Handful> Handfuls = line.Split(": ")[1].Split("; ")
                                             .Select(x => new Handful(x))
                                             .ToList();
-        public class Handful
+        public class Handful(string desc)
         {
-            public Dictionary<string, int> Colors = new();
-            public Handful(string desc)
-            {
-                foreach(string s in desc.Split(", "))
-                {
-                    string[] info = s.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    Colors[info[1]] = int.Parse(info[0]);
-                }
-            }
+            public Dictionary<string, int> Colors = new(desc.Split(", ")
+                                                            .Select(x => x.Split(" "))
+                                                            .Select(x => new KeyValuePair<string, int>(x[1], int.Parse(x[0]))));
             public int this[string key] => Colors.TryGetValue(key, out int result) ? result : 0;
         }
         public bool PossibleWith(params (string color, int quantity)[] colors)
             => !Handfuls.Any(handful => colors.Any(tuple => handful[tuple.color] > tuple.quantity));
         public IEnumerable<string> UniqueColors => Handfuls.SelectMany(x => x.Colors.Keys)
-                                                           .Distinct()
-                                                           .Order();
+                                                           .Distinct();
         public int MinimumRequired(string color)
             => Handfuls.Select(x => x[color]).Max();
         public Dictionary<string, int> MinimumRequiredColors

@@ -14,7 +14,7 @@ static class Program
         foreach(Solution solution in Solutions)
         {
             string inputFile = Path.Join(INPUT_FOLDER, $"{solutionNumber}_input.txt");
-            Console.WriteLine($"Solution for {solutionNumber++}:");
+            Console.WriteLine($"Solution for Problem {solutionNumber++}:");
             int partNumber = 1;
             foreach (object part in solution(inputFile))
             {
