@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~F:aoc_solns_2023.Problem2.Game.Handful.Colors")]
+[assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "i dislike it")]
