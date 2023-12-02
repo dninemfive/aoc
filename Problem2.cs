@@ -1,4 +1,4 @@
-﻿namespace aoc_solns_2023;
+﻿namespace d9.aoc._23;
 public static class Problem2
 {
     [SolutionToProblem(2)]

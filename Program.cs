@@ -1,4 +1,4 @@
-﻿using aoc_solns_2023;
+﻿using d9.aoc._23;
 using System.Reflection;
 static class Program
 {
