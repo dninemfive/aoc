@@ -13,34 +13,8 @@ public static class Problem3
         int height = inputLines.Length, width = inputLines.Select(x => x.Length).Max();
         char[,] grid = new char[width, height];
         for(int y = 0; y < height; y++)
-        {
             for(int x = 0; x < width; x++)
-            {
                 grid[x, y] = inputLines[y][x];
-            }
-        }
-        string debugOutput = "";
-        for(int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                char c = grid[x, y];
-                if((x, y).IsAdjacentToSymbolIn(grid))
-                {
-                    debugOutput += c;
-                } else
-                {
-                    debugOutput += c switch
-                    {
-                        '.' => ' ',
-                        >= '0' and <= '9' => c,
-                        _ => 'S'
-                    };
-                }
-            }
-            debugOutput += '\n';
-        }
-        File.WriteAllText("3_debugOutput.txt", debugOutput);
         yield return grid.PartNumbers().Sum();
     }
     public static IEnumerable<int> PartNumbers(this char[,] plan)
@@ -50,7 +24,7 @@ public static class Problem3
         foreach((int x, int y) in plan.AllPoints())
         {
             char cur = plan[x, y];
-            Console.WriteLine($"({x,3}, {y,3}): {cur} {(isPartNumber ? 'T' : ' ')} {currentNumber}");
+            // Console.WriteLine($"({x,3}, {y,3}): {cur} {(isPartNumber ? 'T' : ' ')} {currentNumber}");
             if (!cur.IsDigit())
             {
                 if (currentNumber.Length > 0 && isPartNumber)
