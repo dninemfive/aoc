@@ -50,7 +50,8 @@ public static class Problem3
         foreach((int x, int y) in plan.AllPoints())
         {
             char cur = plan[x, y];
-            if(!cur.IsDigit())
+            Console.WriteLine($"({x,3}, {y,3}): {cur} {(isPartNumber ? 'T' : ' ')} {currentNumber}");
+            if (!cur.IsDigit())
             {
                 if (currentNumber.Length > 0 && isPartNumber)
                     yield return int.Parse(currentNumber);
@@ -58,7 +59,6 @@ public static class Problem3
                 continue;
             }
             currentNumber += cur;
-            // Console.WriteLine(plan.ValuesAdjacentTo((x, y)).Select(x => $"{x}").Aggregate((x, y) => $"{x}, {y}"));
             if ((x, y).IsAdjacentToSymbolIn(plan))
                 isPartNumber = true;
         } 
@@ -114,8 +114,8 @@ public static class ArrayUtils
         => array.PointsAdjacentTo(point, includeSelf).Select(p => array[p.X, p.Y]);
     public static IEnumerable<Point> AllPoints<T>(this T[,] array)
     {
-        for (int x = 0; x < array.GetLength(0); x++)
-            for (int y = 0; y < array.GetLength(1); y++)
+        for (int y = 0; y < array.GetLength(1); y++)
+            for (int x = 0; x < array.GetLength(0); x++)
                 yield return (x, y);
     }
 }
