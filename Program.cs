@@ -13,12 +13,12 @@ static class Program
         {
             if (attribute is null 
                 || !solution.IsStatic 
-                || !solution.ParametersMatch(typeof(IEnumerable<object>), typeof(string)))
+                || !solution.ParametersMatch(typeof(IEnumerable<object>), typeof(string[])))
                 continue;
             Console.WriteLine($"Solution for Problem {attribute.Index}:");
             string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}_input.txt");
             int partNumber = 1;
-            foreach (object part in (IEnumerable<object>)solution.Invoke(null, [inputFile])!)
+            foreach (object part in (IEnumerable<object>)solution.Invoke(null, [File.ReadAllText(inputFile)])!)
                 Console.WriteLine($"\tPart {partNumber++}: {part}");
         }
     }

@@ -15,9 +15,8 @@ public static class Problem1
         "nine"
     ];
     [SolutionToProblem(1)]
-    public static IEnumerable<object> Solve(string inputFile)
+    public static IEnumerable<object> Solve(string[] lines)
     {
-        IEnumerable<string> lines = File.ReadAllLines(inputFile);
         static int calibrationValue(string line, params DigitFinder[] digitFinders)
             => FirstDigit(line, digitFinders) * 10 + LastDigit(line, digitFinders);
         yield return lines.Sum(x => calibrationValue(x, FindNumericDigit));

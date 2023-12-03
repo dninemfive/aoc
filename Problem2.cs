@@ -2,9 +2,8 @@
 public static class Problem2
 {
     [SolutionToProblem(2)]
-    public static IEnumerable<object> Solve(string inputFile)
+    public static IEnumerable<object> Solve(string[] lines)
     {
-        IEnumerable<string> lines = File.ReadAllLines(inputFile);
         IEnumerable<Game> games = lines.Select(x => new Game(x));
         yield return games.Where(x => x.PossibleWith(("red", 12), ("green", 13), ("blue", 14)))
                           .Sum(x => x.Id);
