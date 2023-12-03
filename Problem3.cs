@@ -56,6 +56,9 @@ public static class Problem3
     public static bool IsAdjacentToSymbolIn(this (int x, int y) p, char[,] array)
         => new Point(p).IsAdjacentToSymbolIn(array);
     public static IEnumerable<int> NumbersAdjacentTo(this char[,] array, Point p)
+        // find adjacent points with digits
+        // for each digit, go left until there stops being digits then go all the way right as normal
+        // if two digits adjacent horizontally take the leftmost one (make sure to account for three adjacent)
         => throw new NotImplementedException();
     public static IEnumerable<Point> GearLocations(this char[,] array)
         => array.AllPointsAndValues()
