@@ -18,7 +18,7 @@ static class Program
             Console.WriteLine($"Solution for Problem {attribute.Index}:");
             string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}_input.txt");
             int partNumber = 1;
-            foreach (object part in (IEnumerable<object>)solution.Invoke(null, [File.ReadAllText(inputFile)])!)
+            foreach (object part in (IEnumerable<object>)solution.Invoke(null, [File.ReadAllLines(inputFile)])!)
                 Console.WriteLine($"\tPart {partNumber++}: {part}");
         }
     }

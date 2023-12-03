@@ -19,6 +19,28 @@ public static class Problem3
                 grid[x, y] = inputLines[y][x];
             }
         }
+        string debugOutput = "";
+        bool bold = false;
+        for(int y = 0; y < height; y++)
+        {
+            for(int x = 0; x < width; x++)
+            {
+                char c = grid[x, y];
+                if (c == '*')
+                    c = '@';
+                if(bold != (x, y).IsAdjacentToSymbolIn(grid))
+                {
+                    debugOutput += "**";
+                    bold = !bold;
+                }
+                debugOutput += c;
+            }
+            if (bold)
+                debugOutput += "**";
+            bold = false;
+            debugOutput += "\n";
+        }
+        File.WriteAllText("3_debugOutput.md", debugOutput);
         yield return grid.PartNumbers().Sum();
     }
     public static IEnumerable<int> PartNumbers(this char[,] plan)
@@ -36,6 +58,7 @@ public static class Problem3
                 continue;
             }
             currentNumber += cur;
+            // Console.WriteLine(plan.ValuesAdjacentTo((x, y)).Select(x => $"{x}").Aggregate((x, y) => $"{x}, {y}"));
             if ((x, y).IsAdjacentToSymbolIn(plan))
                 isPartNumber = true;
         } 
@@ -44,13 +67,16 @@ public static class Problem3
         => !c.IsDigit() && c != '.';
     public static bool IsDigit(this char c)
         => c is >= '0' and <= '9';
-    public static bool IsAdjacentToSymbolIn(this (int x, int y) p, char[,] array)
+    public static bool IsAdjacentToSymbolIn(this Point p, char[,] array)
         => array.ValuesAdjacentTo(p).Any(IsSymbol);
+    public static bool IsAdjacentToSymbolIn(this (int x, int y) p, char[,] array)
+        => new Point(p).IsAdjacentToSymbolIn(array);
 }
 public readonly struct Point(int x, int y)
 {
     public readonly int X = x;
     public readonly int Y = y;
+    public Point((int x, int y) tuple) : this(tuple.x, tuple.y) { }
     public static implicit operator Point((int x, int y) tuple)
         => new(tuple.x, tuple.y);
     public static implicit operator (int x, int y)(Point p)
@@ -85,7 +111,7 @@ public static class ArrayUtils
         }
     }
     public static IEnumerable<T> ValuesAdjacentTo<T>(this T[,] array, Point point)
-        => array.PointsAdjacentTo(point).Select(x => array[point.X, point.Y]);
+        => array.PointsAdjacentTo(point).Select(p => array[p.X, p.Y]);
     public static IEnumerable<Point> AllPoints<T>(this T[,] array)
     {
         for (int x = 0; x < array.GetLength(0); x++)
