@@ -20,27 +20,27 @@ public static class Problem3
             }
         }
         string debugOutput = "";
-        bool bold = false;
         for(int y = 0; y < height; y++)
         {
-            for(int x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
                 char c = grid[x, y];
-                if (c == '*')
-                    c = '@';
-                if(bold != (x, y).IsAdjacentToSymbolIn(grid))
+                if((x, y).IsAdjacentToSymbolIn(grid))
                 {
-                    debugOutput += "**";
-                    bold = !bold;
+                    debugOutput += c;
+                } else
+                {
+                    debugOutput += c switch
+                    {
+                        '.' => ' ',
+                        >= '0' and <= '9' => c,
+                        _ => 'S'
+                    };
                 }
-                debugOutput += c;
             }
-            if (bold)
-                debugOutput += "**";
-            bold = false;
-            debugOutput += "\n";
+            debugOutput += '\n';
         }
-        File.WriteAllText("3_debugOutput.md", debugOutput);
+        File.WriteAllText("3_debugOutput.txt", debugOutput);
         yield return grid.PartNumbers().Sum();
     }
     public static IEnumerable<int> PartNumbers(this char[,] plan)
@@ -68,7 +68,7 @@ public static class Problem3
     public static bool IsDigit(this char c)
         => c is >= '0' and <= '9';
     public static bool IsAdjacentToSymbolIn(this Point p, char[,] array)
-        => array.ValuesAdjacentTo(p).Any(IsSymbol);
+        => array.ValuesAdjacentTo(p, includeSelf: true).Any(IsSymbol);
     public static bool IsAdjacentToSymbolIn(this (int x, int y) p, char[,] array)
         => new Point(p).IsAdjacentToSymbolIn(array);
 }
@@ -96,13 +96,13 @@ public static class ArrayUtils
         (int x, int y) = point;
         return x >= 0 && x < array.GetLength(0) && y >= 0 && y < array.GetLength(1);
     }
-    public static IEnumerable<Point> PointsAdjacentTo<T>(this T[,] array, Point point)
+    public static IEnumerable<Point> PointsAdjacentTo<T>(this T[,] array, Point point, bool includeSelf = false)
     {
         for(int xo = -1; xo <= 1; xo++)
         {
             for(int yo = -1; yo <= 1; yo++)
             {
-                if (xo is 0 && yo is 0)
+                if (!includeSelf && xo is 0 && yo is 0)
                     continue;
                 Point cur = point + (xo, yo);
                 if (cur.IsInBoundsOf(array))
@@ -110,8 +110,8 @@ public static class ArrayUtils
             }
         }
     }
-    public static IEnumerable<T> ValuesAdjacentTo<T>(this T[,] array, Point point)
-        => array.PointsAdjacentTo(point).Select(p => array[p.X, p.Y]);
+    public static IEnumerable<T> ValuesAdjacentTo<T>(this T[,] array, Point point, bool includeSelf = false)
+        => array.PointsAdjacentTo(point, includeSelf).Select(p => array[p.X, p.Y]);
     public static IEnumerable<Point> AllPoints<T>(this T[,] array)
     {
         for (int x = 0; x < array.GetLength(0); x++)
