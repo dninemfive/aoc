@@ -13,12 +13,14 @@ public static class Problem4
         List<ScratchCard> scratchCards = inputLines.Select(x => new ScratchCard(x)).ToList();
         yield return scratchCards.Select(x => x.Value).Sum();
         int index = 0;
+        double average = 0, alpha = 0.05;
         while(index < scratchCards.Count)
         {
-            Console.WriteLine($"{index,5}\t{scratchCards.Count,10}");
             ScratchCard sc = scratchCards[index];
             int won = sc.WinningNumberCount;
-            for(int i = index + 1; i <= index + won; i++)
+            average = alpha * won + (1 - alpha) * average;
+            Console.WriteLine($"{index,5}\t{scratchCards.Count,10}\t{average:F2}");
+            for (int i = index + 1; i <= index + won; i++)
             {
                 scratchCards.Add(scratchCards[i]);
             }
