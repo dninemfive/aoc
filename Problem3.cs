@@ -42,9 +42,7 @@ public static class Problem3
     {
         foreach((int x, int y) in plan.GearLocations())
         {
-            Console.WriteLine((x, y));
             IEnumerable<int> adjacentNumbers = plan.NumbersAdjacentTo((x, y));
-            Console.WriteLine(adjacentNumbers.ListNotation());
             if (adjacentNumbers.Count() != 2)
                 continue;
             yield return adjacentNumbers.Aggregate((x, y) => x * y);
@@ -63,9 +61,7 @@ public static class Problem3
     // for each digit, go left until there stops being digits then go all the way right as normal
     // if two digits adjacent horizontally take the leftmost one (make sure to account for three adjacent)
     {
-        Console.WriteLine($"\tNumbersAdjacentTo({p})");
         List<Point> digitLocations = array.PointsAdjacentTo(p).Where(p2 => array[p2.X, p2.Y].IsDigit()).ToList();
-        Console.WriteLine($"\t\t{digitLocations.ListNotation()}");
         void removePointsBetween(int left, int right, int y)
             => digitLocations.RemoveAll(p2 => p2.Y == y && p2.X >= left && p2.X <= right);
         while(digitLocations.Any())
