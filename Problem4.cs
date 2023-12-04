@@ -14,19 +14,23 @@ public static class Problem4
         yield return scratchCards.Select(x => x.Value).Sum();
         int index = 0;
         double average = 0, alpha = 0.05;
-        while(index < scratchCards.Count)
+        Dictionary<int, int> copiesWon = new();
+        void increment(int index)
         {
-            ScratchCard sc = scratchCards[index];
-            int won = sc.WinningNumberCount;
-            average = alpha * won + (1 - alpha) * average;
-            Console.WriteLine($"{index,5}\t{scratchCards.Count,10}\t{average:F2}");
-            for (int i = index + 1; i <= index + won; i++)
-            {
-                scratchCards.Add(scratchCards[i]);
-            }
-            index++;
+            if (copiesWon.TryGetValue(index, out int copies))
+                copiesWon[index] = copies + 1;
+            else
+                copiesWon[index] = 0;
         }
-        yield return scratchCards.Count;
+        foreach(ScratchCard sc in scratchCards)
+        {
+            int won = sc.WinningNumberCount;
+            for (int i = sc.CardNumber + 1; i <= sc.CardNumber + won; i++)
+            {
+                increment(i);
+            }
+        }
+        yield return copiesWon.Values.Sum();
     }
 }
 public class ScratchCard
