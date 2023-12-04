@@ -27,4 +27,10 @@ public static class Utils
     public static Dictionary<K, V> ToDictWithKey<K, V>(this IEnumerable<V> enumerable, Func<V, K> keySelector)
         where K : notnull
         => new(enumerable.Select(x => new KeyValuePair<K, V>(keySelector(x), x)));
+    public static string Tabs(this int n, string tab = "  ")
+    {
+        string result = "";
+        for(int i = 0; i < n; i++) result += tab;
+        return result;
+    }
 }

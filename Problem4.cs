@@ -13,30 +13,52 @@ public static class Problem4
     {
         ScratchCardCollection scratchCards = new(inputLines.Select(x => new ScratchCard(x)));
         yield return scratchCards.Select(x => x.Value).Sum();
-        yield return scratchCards.WonCardCountFor(1);
+        // yield return scratchCards.WonCardCountFor(1);
+        yield return scratchCards.TotalWonCards;
     }
 }
 public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
 {
     private readonly Dictionary<int, ScratchCard> _cards = scratchCards.ToDictWithKey(x => x.CardNumber);
-    public IEnumerable<int> WonCards(int index)
+    public void PrintWonCards(int index, int tabs = 0)
     {
-        Console.WriteLine($"");
+        Console.WriteLine($"{tabs.Tabs()}{index}");
+        foreach (int index2 in _cards[index].WonCardIndices)
+            PrintWonCards(index2, tabs + 1);
     }
     public int WonCardCountFor(int index, int tabs = 0)
     {
-        string tabstr = "";
-        for (int i = 0; i < tabs; i++)
-            tabstr += "  ";
         int result = 1;
         foreach(int i in _cards[index].WonCardIndices)
         {
             result += WonCardCountFor(i, tabs + 1);
         }
-        Console.WriteLine($"{tabstr}WonCardCountFor({index}, {tabs}) = {result}");
+        Console.WriteLine($"{tabs.Tabs()}WonCardCountFor({index}, {tabs}) = {result}");
         return result;
     }
-    public int TotalWonCards => _cards.Keys.Select(WonCardCountFor).Sum();
+    public int TotalWonCards
+    {
+        get
+        {
+            Dictionary<int, int> cardCountCache = new();
+            int getOrCalculateCount(int index)
+            {
+                if (cardCountCache.TryGetValue(index, out int result))
+                    return result;
+                int sum = 1;
+                foreach (int i in _cards[index].WonCardIndices)
+                    sum += getOrCalculateCount(i);
+                cardCountCache[index] = sum;
+                return sum;
+            } 
+            int total = 0;
+            foreach(int index in _cards.OrderBy(x => x.Value.WinningNumberCount).Select(x => x.Key))
+            {
+                total += getOrCalculateCount(index);
+            }
+            return total;
+        }
+    }
     public IEnumerator<ScratchCard> GetEnumerator()
         => _cards.Values.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator()
