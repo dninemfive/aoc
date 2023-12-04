@@ -13,19 +13,27 @@ public static class Problem4
     {
         ScratchCardCollection scratchCards = new(inputLines.Select(x => new ScratchCard(x)));
         yield return scratchCards.Select(x => x.Value).Sum();
-        yield return scratchCards.TotalWonCards;
+        yield return scratchCards.WonCardCountFor(1);
     }
 }
 public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
 {
     private readonly Dictionary<int, ScratchCard> _cards = scratchCards.ToDictWithKey(x => x.CardNumber);
-    public int WonCardCountFor(int index)
+    public IEnumerable<int> WonCards(int index)
     {
+        Console.WriteLine($"");
+    }
+    public int WonCardCountFor(int index, int tabs = 0)
+    {
+        string tabstr = "";
+        for (int i = 0; i < tabs; i++)
+            tabstr += "  ";
         int result = 1;
         foreach(int i in _cards[index].WonCardIndices)
         {
-            result += WonCardCountFor(i);
+            result += WonCardCountFor(i, tabs + 1);
         }
+        Console.WriteLine($"{tabstr}WonCardCountFor({index}, {tabs}) = {result}");
         return result;
     }
     public int TotalWonCards => _cards.Keys.Select(WonCardCountFor).Sum();

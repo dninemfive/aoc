@@ -31,7 +31,7 @@ static class Program
             foreach (object part in solution.UsingFile(inputFile))
             {
                 stopwatch.Stop();
-                Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{stopwatch.Elapsed.TotalNanoseconds,16}");
+                Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{$"{stopwatch.Elapsed:c}",16}");
                 stopwatch.Restart();
             }
         }
