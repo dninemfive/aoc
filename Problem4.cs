@@ -10,8 +10,21 @@ public static class Problem4
     [SolutionToProblem(4)]
     public static IEnumerable<object> Solve(string[] inputLines)
     {
-        IEnumerable<ScratchCard> scratchCards = inputLines.Select(x => new ScratchCard(x));
+        List<ScratchCard> scratchCards = inputLines.Select(x => new ScratchCard(x)).ToList();
         yield return scratchCards.Select(x => x.Value).Sum();
+        int index = 0;
+        while(index < scratchCards.Count)
+        {
+            Console.WriteLine($"{index,5}\t{scratchCards.Count,10}");
+            ScratchCard sc = scratchCards[index];
+            int won = sc.WinningNumberCount;
+            for(int i = index + 1; i <= index + won; i++)
+            {
+                scratchCards.Add(scratchCards[i]);
+            }
+            index++;
+        }
+        yield return scratchCards.Count;
     }
 }
 public class ScratchCard
