@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "i dislike it")]
+[assembly: SuppressMessage("Style", "CA1860:Use Count over Any", Justification = "i like .Any() :groeL;")]

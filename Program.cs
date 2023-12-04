@@ -55,7 +55,7 @@ static class Program
     /// <param name="method"></param>
     /// <returns></returns>
     public static bool HasAppropriateSignature(this MethodInfo method)
-        => method.IsStatic && method.ParametersMatch(typeof(IEnumerable<object>), typeof(string));
+        => method.IsStatic && method.ParametersMatch(typeof(IEnumerable<object>), typeof(string[]));
     public static (MethodInfo method, SolutionToProblemAttribute? attr) MethodAndAttribute(this MethodInfo method)
         => (method, method.GetCustomAttribute<SolutionToProblemAttribute>());
     public static IEnumerable<object> UsingFile(this MethodInfo method, string filePath)

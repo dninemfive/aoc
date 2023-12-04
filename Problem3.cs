@@ -16,6 +16,7 @@ public static class Problem3
             for(int x = 0; x < width; x++)
                 grid[x, y] = inputLines[y][x];
         yield return grid.PartNumbers().Sum();
+        yield return grid.GearRatios().Sum();
     }
     public static IEnumerable<int> PartNumbers(this char[,] plan)
     {
@@ -56,10 +57,40 @@ public static class Problem3
     public static bool IsAdjacentToSymbolIn(this (int x, int y) p, char[,] array)
         => new Point(p).IsAdjacentToSymbolIn(array);
     public static IEnumerable<int> NumbersAdjacentTo(this char[,] array, Point p)
-        // find adjacent points with digits
-        // for each digit, go left until there stops being digits then go all the way right as normal
-        // if two digits adjacent horizontally take the leftmost one (make sure to account for three adjacent)
-        => throw new NotImplementedException();
+    // find adjacent points with digits
+    // for each digit, go left until there stops being digits then go all the way right as normal
+    // if two digits adjacent horizontally take the leftmost one (make sure to account for three adjacent)
+    {
+        List<Point> digitLocations = array.PointsAdjacentTo(p).Where(x => array[p.X, p.Y].IsDigit()).ToList();
+        void removePointsBetween(int left, int right, int y)
+            => digitLocations.RemoveAll(p2 => p2.Y == y && p2.X >= left && p2.X <= right);
+        while(digitLocations.Any())
+        {
+            Point p2 = digitLocations.First();
+            (int value, int left, int right) = array.EntireNumberIncluding(p2);
+            yield return value;
+            removePointsBetween(left, right, p2.Y);
+        }        
+    }
+    public static (int value, int left, int right) EntireNumberIncluding(this char[,] array, Point p)
+    {
+        (int x, int y) = p;
+        char c = array[x, y];
+        if (!c.IsDigit())
+            throw new Exception($"The character {c} at point {p} is not a digit!");
+        int left = x;
+        while (new Point(left - 1, y).IsInBoundsOf(array) && array[left - 1, y].IsDigit())
+            left--;
+        int right = x;
+        while (new Point(right + 1, y).IsInBoundsOf(array) && array[right + 1, y].IsDigit())
+            right++;
+        string number = "";
+        for(int xi = left; xi <= right; xi++)
+        {
+            number += array[xi, y];
+        }
+        return (int.Parse(number), left, right);
+    }
     public static IEnumerable<Point> GearLocations(this char[,] array)
         => array.AllPointsAndValues()
                 .Where(x => x.value == '*')
@@ -105,6 +136,8 @@ public static class ArrayUtils
     }
     public static IEnumerable<T> ValuesAdjacentTo<T>(this T[,] array, Point point, bool includeSelf = false)
         => array.PointsAdjacentTo(point, includeSelf).Select(p => array[p.X, p.Y]);
+    public static IEnumerable<(Point point, T value)> PointsAndValuesAdjacentTo<T>(this T[,] array, Point point, bool includeSelf = false)
+        => array.PointsAdjacentTo(point, includeSelf).Select(p => (p, array[p.X, p.Y]));
     public static IEnumerable<Point> AllPoints<T>(this T[,] array)
     {
         for (int y = 0; y < array.GetLength(1); y++)
