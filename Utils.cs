@@ -24,4 +24,7 @@ public static class Utils
         }
         return result;
     }
+    public static Dictionary<K, V> ToDictWithKey<K, V>(this IEnumerable<V> enumerable, Func<V, K> keySelector)
+        where K : notnull
+        => new(enumerable.Select(x => new KeyValuePair<K, V>(keySelector(x), x)));
 }

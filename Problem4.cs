@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,29 +11,28 @@ public static class Problem4
     [SolutionToProblem(4)]
     public static IEnumerable<object> Solve(string[] inputLines)
     {
-        List<ScratchCard> scratchCards = inputLines.Select(x => new ScratchCard(x)).ToList();
+        ScratchCardCollection scratchCards = new(inputLines.Select(x => new ScratchCard(x)));
         yield return scratchCards.Select(x => x.Value).Sum();
-        Dictionary<int, int> copiesWon = new();
-        void increment(int index)
-        {
-            if (copiesWon.TryGetValue(index, out int copies))
-                copiesWon[index] = copies + 1;
-            else
-                copiesWon[index] = 0;
-        }
-        foreach(ScratchCard sc in scratchCards)
-        {
-            int won = sc.WinningNumberCount;
-            Console.WriteLine($"{sc.CardNumber,3}\t{won,2}\t{scratchCards.Select(x => x.CardNumber)
-                                                                         .Where(x => x > sc.CardNumber && x <= sc.CardNumber + won)
-                                                                         .ListNotation()}");
-            for (int i = sc.CardNumber + 1; i <= sc.CardNumber + won; i++)
-            {
-                increment(i);
-            }
-        }
-        yield return copiesWon.Values.Sum();
+        yield return scratchCards.TotalWonCards;
     }
+}
+public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
+{
+    private readonly Dictionary<int, ScratchCard> _cards = scratchCards.ToDictWithKey(x => x.CardNumber);
+    public int WonCardCountFor(int index)
+    {
+        int result = 1;
+        foreach(int i in _cards[index].WonCardIndices)
+        {
+            result += WonCardCountFor(i);
+        }
+        return result;
+    }
+    public int TotalWonCards => _cards.Keys.Select(WonCardCountFor).Sum();
+    public IEnumerator<ScratchCard> GetEnumerator()
+        => _cards.Values.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+        => ((IEnumerable)_cards.Values).GetEnumerator();
 }
 public class ScratchCard
 {
@@ -52,4 +52,12 @@ public class ScratchCard
                      .Count();
     public int Value
         => WinningNumberCount > 0 ? (int)Math.Pow(2, WinningNumberCount - 1) : 0;
+    public IEnumerable<int> WonCardIndices
+    {
+        get
+        {
+            for (int i = 1; i <= WinningNumberCount; i++)
+                yield return CardNumber + i;
+        }
+    }
 }
