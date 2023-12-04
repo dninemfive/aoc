@@ -1,4 +1,5 @@
 ﻿using d9.aoc._23;
+using System.Diagnostics;
 using System.Reflection;
 static class Program
 {
@@ -25,8 +26,14 @@ static class Program
             Console.WriteLine($"Solution for Problem {attribute.Index}:");
             string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}_input.txt");
             int partNumber = 1;
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
             foreach (object part in solution.UsingFile(inputFile))
-                Console.WriteLine($"\tPart {partNumber++}: {part}");
+            {
+                stopwatch.Stop();
+                Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{stopwatch.Elapsed.TotalNanoseconds,16}");
+                stopwatch.Restart();
+            }
         }
     }
     /// <summary>
