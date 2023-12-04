@@ -12,8 +12,6 @@ public static class Problem4
     {
         List<ScratchCard> scratchCards = inputLines.Select(x => new ScratchCard(x)).ToList();
         yield return scratchCards.Select(x => x.Value).Sum();
-        int index = 0;
-        double average = 0, alpha = 0.05;
         Dictionary<int, int> copiesWon = new();
         void increment(int index)
         {
@@ -25,6 +23,9 @@ public static class Problem4
         foreach(ScratchCard sc in scratchCards)
         {
             int won = sc.WinningNumberCount;
+            Console.WriteLine($"{sc.CardNumber,3}\t{won,2}\t{scratchCards.Select(x => x.CardNumber)
+                                                                         .Where(x => x > sc.CardNumber && x <= sc.CardNumber + won)
+                                                                         .ListNotation()}");
             for (int i = sc.CardNumber + 1; i <= sc.CardNumber + won; i++)
             {
                 increment(i);
