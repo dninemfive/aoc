@@ -5,69 +5,92 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace d9.aoc._23;
-public class Problem5
+public static class Problem5
 {
+    private static Dictionary<string, XToYMap> _mapMap = new();
     [SolutionToProblem(5)]
-    public IEnumerable<object> Solve(int[] lines)
+    public static IEnumerable<object> Solve(string[] lines)
     {
-        
-        yield break;
-    }    
+        IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
+        _mapMap = ParseLines(lines[2..]);
+        yield return seeds.Select(LocationFor).Min();
+    }   
+    public static Dictionary<string, XToYMap> ParseLines(string[] lines)
+    {
+        string title = "";
+        List<string> nonTitleLines = new();
+        Dictionary<string, XToYMap> result = new();
+        foreach(string line in lines)
+        {
+            if (line.Contains("-to-"))
+            {
+                title = line;
+            } 
+            else if(string.IsNullOrWhiteSpace(line))
+            {
+                XToYMap map = new(title, nonTitleLines);
+                result[map.InputType] = map;
+                nonTitleLines.Clear();
+            }
+            else
+            {
+                nonTitleLines.Add(line);
+            }
+        }
+        return result;
+    }
     // possible paths:
     // seed -> soil -> fertilizer -> water -> light -> temperature -> humidity -> location
     // ...oh. that's the only one.
-    public int LocationFor(int seed, Dictionary<string, XToYMap> mapMap)
+    public static long LocationFor(long seed)
     {
-        (string type, int val) cur = ("seed", seed);
-        while(curType != "location")
-        {
-            XToYMap map = mapMap[cur.type];
-            cur = (map.To, map[cur.val]);
-        }
+        (string type, long val) cur = ("seed", seed);
+        while(cur.type != "location")
+            cur = _mapMap[cur.type][cur];
+        return cur.val;
     }
 }
 public class XToYMap(string title, IEnumerable<string> nonTitleLines)
 {
-    public string From => title.Split("-")[0];
-    public string To => title.Split("-")[2];
-    public string Name => $"{From}-to-{To} map";
+    public string InputType => title.Split("-")[0];
+    public string ResultType => title.Split("-")[2];
+    public string Name => $"{InputType}-to-{ResultType} map";
     private readonly List<MapRange> _ranges = [ .. nonTitleLines.Select(x => new MapRange(x))
                                                                 .OrderBy(x => x.Source.Start) ];
-    public int this[string sourceType, string destType, int n]
+    public (string type, long val) this[(string type, long val) input]
     {
         get
         {
-            if (sourceType != From || destType != To)
-                throw new ArgumentException($"A {Name} can't convert from {sourceType} to {destType}!");
+            if (input.type != InputType)
+                throw new ArgumentException($"A {Name} can't convert a value of type {input.type}!");
             foreach (MapRange range in _ranges)
             {
-                int? result = range[n];
+                long? result = range[input.val];
                 if (result is not null)
-                    return result.Value;
+                    return (ResultType, result.Value);
             }
-            return n;
+            return (ResultType, input.val);
         }
     }
 }
-public readonly struct Range(int start, int length)
+public readonly struct Range(long start, long length)
 {
-    public readonly int Start = start;
-    public readonly int End = start + length;
-    public bool Contains(int n) => n >= Start && n <= End;
+    public readonly long Start = start;
+    public readonly long End = start + length;
+    public bool Contains(long l) => l >= Start && l <= End;
 }
 public class MapRange
 {
     public Range Source { get; private set; }
     public Range Destination { get; private set; }
-    public int Diff => Source.Start - Destination.Start;
-    public int Length { get; private set; }
+    public long Diff => Source.Start - Destination.Start;
     public MapRange(string line)
     {
-        List<int> values = line.ToMany<int>().ToList();
-        (int sourceStart, int destStart, int length) = (values[1], values[0], values[2]);
+        List<long> values = line.ToMany<long>().ToList();
+        (long sourceStart, long destStart, long length) = (values[1], values[0], values[2]);
         Source = new(sourceStart, length);
         Destination = new(destStart, length);
     }
-    public int? this[int n]
-        => Source.Contains(n) ? n + Diff : null;
+    public long? this[long l]
+        => Source.Contains(l) ? l + Diff : null;
 }
