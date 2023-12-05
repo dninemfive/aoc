@@ -31,7 +31,6 @@ public static class Problem3
         foreach(Point p in plan.AllPoints)
         {
             char cur = plan[p];
-            // Console.WriteLine($"({x,3}, {y,3}): {cur} {(isPartNumber ? 'T' : ' ')} {currentNumber}");
             if (!cur.IsDigit())
             {
                 if (currentNumber.Length > 0 && isPartNumber)
@@ -56,8 +55,6 @@ public static class Problem3
     }
     public static bool IsSymbol(this char c) 
         => !c.IsDigit() && c != '.';
-    public static bool IsDigit(this char c)
-        => c is >= '0' and <= '9';
     public static IEnumerable<Point> GearLocations(this Grid<char> grid)
         => grid.AllPoints.Where(p => grid[p] == '*');
     public static bool IsAdjacentToSymbolIn(this Point p, Grid<char> grid)
@@ -76,8 +73,11 @@ public static class Problem3
             (int value, int left, int right) = grid.EntireNumberIncluding(p2);
             yield return value;
             removePointsBetween(left, right, p2.Y);
-        }        
+        }
     }
+#pragma warning disable IDE1006 // Naming Styles: consts should be all-caps (should switch to a better style enforcer tbh)
+    private const int LEFT = -1, RIGHT = 1;
+#pragma warning restore IDE1006 // Naming Styles
     public static (int value, int left, int right) EntireNumberIncluding(this Grid<char> grid, Point p)
     {
         (int x, int y) = p;
@@ -91,7 +91,7 @@ public static class Problem3
                 end += step;
             return end;
         }
-        int left = findEnd(-1), right = findEnd(1);
+        int left = findEnd(LEFT), right = findEnd(RIGHT);
         string number = "";
         for(int xi = left; xi <= right; xi++)
         {
@@ -130,7 +130,6 @@ public readonly struct Grid<T>(T[,] grid)
     public int Height => _grid.GetLength(1);
     public bool HasInBounds(Point point)
     {
-
         (int x, int y) = point;
         return x >= 0 && x < Width && y >= 0 && y < Height;
     }

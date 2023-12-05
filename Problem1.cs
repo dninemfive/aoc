@@ -30,8 +30,8 @@ public static class Problem1
         {
             int index = first ? i : line.Length - i - 1;
             char c = line[index];
-            if (c is >= '0' and <= '9')
-                return (c - '0', index);
+            if (c.IsDigit())
+                return (c.Value(), index);
         }
         return null;
     }
@@ -43,12 +43,9 @@ public static class Problem1
         {
             if (!line.Contains(DIGIT_STRINGS[digit]))
                 continue;
-            // Console.WriteLine($"{line} contains {DIGIT_STRINGS[digit]}. Tuple: {result?.ToString() ?? "(null)"}");
             int index = indexOf(DIGIT_STRINGS[digit]);
             if(result is null || index < result.Value.index == first)
-            {
                 result = (digit, index);
-            }
         }
         return result;
     }
@@ -56,11 +53,9 @@ public static class Problem1
     public static int GetDigit(string line, bool first, params DigitFinder[] digitFinders)
     {
         (int digit, int index)? result = null;
-        //Console.WriteLine($"{first}\t{line}");
-        foreach(DigitFinder df in digitFinders)
+        foreach(DigitFinder digitFinder in digitFinders)
         {
-            (int digit, int index)? cur = df(line, first);
-            //Console.WriteLine($"\t{df.Method.Name,-32}\t`{cur}`\t`{result}`");
+            (int digit, int index)? cur = digitFinder(line, first);
             if (cur is null)
                 continue;
             if(result is null || cur.Value.index < result.Value.index == first)

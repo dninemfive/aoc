@@ -18,9 +18,9 @@ public static class Problem2
                                             .ToList();
         public class Handful(string desc)
         {
-            public Dictionary<string, int> Colors = new(desc.Split(", ")
-                                                            .Select(x => x.Split(" "))
-                                                            .Select(x => new KeyValuePair<string, int>(x[1], int.Parse(x[0]))));
+            public Dictionary<string, int> Colors = desc.Split(", ")
+                                                         .Select(x => x.Split(" "))
+                                                         .ToDict(x => x[1], x => int.Parse(x[0]));
             public int this[string key] => Colors.TryGetValue(key, out int result) ? result : 0;
         }
         public bool PossibleWith(params (string color, int quantity)[] colors)
@@ -30,7 +30,7 @@ public static class Problem2
         public int MinimumRequired(string color)
             => Handfuls.Select(x => x[color]).Max();
         public Dictionary<string, int> MinimumRequiredColors
-            => new(UniqueColors.Select(x => new KeyValuePair<string, int>(x, MinimumRequired(x))));
+            => UniqueColors.ToDictWithValue(MinimumRequired);
     }
     public static int Power(this Dictionary<string, int> cubeSet)
         => cubeSet.Values.Aggregate((x, y) => x * y);

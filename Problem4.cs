@@ -19,26 +19,24 @@ public static class Problem4
 public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
 {
     private readonly Dictionary<int, ScratchCard> _cards = scratchCards.ToDictWithKey(x => x.CardNumber);
+    private readonly Dictionary<int, int> _cardCountCache = new();
+    private int GetOrCalculateCount(int index)
+    {
+        if (_cardCountCache.TryGetValue(index, out int result))
+            return result;
+        int sum = 1;
+        foreach (int i in _cards[index].WonCardIndices)
+            sum += GetOrCalculateCount(i);
+        _cardCountCache[index] = sum;
+        return sum;
+    }
     public int TotalWonCards
     {
         get
         {
-            Dictionary<int, int> cardCountCache = new();
-            int getOrCalculateCount(int index)
-            {
-                if (cardCountCache.TryGetValue(index, out int result))
-                    return result;
-                int sum = 1;
-                foreach (int i in _cards[index].WonCardIndices)
-                    sum += getOrCalculateCount(i);
-                cardCountCache[index] = sum;
-                return sum;
-            } 
             int total = 0;
             foreach(int index in _cards.OrderBy(x => x.Value.WinningNumberCount).Select(x => x.Key))
-            {
-                total += getOrCalculateCount(index);
-            }
+                total += GetOrCalculateCount(index);
             return total;
         }
     }
@@ -56,8 +54,8 @@ public class ScratchCard
     {
         List<string> split = line.SplitAndTrim(": ", " | ");
         CardNumber = int.Parse(split[0].SplitAndTrim(" ")[1]);
-        WinningNumbers = split[1].ToInts();
-        HasNumbers = split[2].ToInts();
+        WinningNumbers = split[1].ToMany<int>();
+        HasNumbers = split[2].ToMany<int>();
     }
     public int WinningNumberCount 
         => HasNumbers.Distinct()
