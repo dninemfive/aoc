@@ -13,6 +13,7 @@ public static class Problem5
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);
+        Console.WriteLine(_mapMap.Select(x => $"{x.Key}: {x.Value}").Aggregate((x, y) => $"{x}\n{y}"));
         yield return seeds.Select(LocationFor).Min();
     }   
     public static Dictionary<string, XToYMap> ParseLines(string[] lines)
@@ -20,12 +21,12 @@ public static class Problem5
         string title = "";
         List<string> nonTitleLines = new();
         Dictionary<string, XToYMap> result = new();
-        foreach(string line in lines)
+        foreach(string line in lines.Append(""))
         {
             if (line.Contains("-to-"))
             {
                 title = line;
-            } 
+            }
             else if(string.IsNullOrWhiteSpace(line))
             {
                 XToYMap map = new(title, nonTitleLines);
@@ -53,7 +54,7 @@ public static class Problem5
 public class XToYMap(string title, IEnumerable<string> nonTitleLines)
 {
     public string InputType => title.Split("-")[0];
-    public string ResultType => title.Split("-")[2];
+    public string ResultType => title.SplitAndTrim("-", " ")[2];
     public string Name => $"{InputType}-to-{ResultType} map";
     private readonly List<MapRange> _ranges = [ .. nonTitleLines.Select(x => new MapRange(x))
                                                                 .OrderBy(x => x.Source.Start) ];
@@ -72,6 +73,7 @@ public class XToYMap(string title, IEnumerable<string> nonTitleLines)
             return (ResultType, input.val);
         }
     }
+    public override string ToString() => Name;
 }
 public readonly struct Range(long start, long length)
 {
