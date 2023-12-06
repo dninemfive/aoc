@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -75,48 +76,56 @@ public static class Problem5
     }
 
 }
-public class XToYMap(string title, IEnumerable<string> nonTitleLines)
+public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
+    where T : INumber<T>
 {
     public string InputType => title.Split("-")[0];
     public string ResultType => title.SplitAndTrim("-", " ")[2];
     public string Name => $"{InputType}-to-{ResultType} map";
-    private readonly List<MapRange> _ranges = [ .. nonTitleLines.Select(x => new MapRange(x))
+    private readonly List<MapRange<T>> _ranges = [ .. nonTitleLines.Select(x => new MapRange<T>(x))
                                                                 .OrderBy(x => x.Source.Start) ];
-    public (string type, long val) this[(string type, long val) input]
+    public (string type, T val) this[(string type, T val) input]
     {
         get
         {
             if (input.type != InputType)
                 throw new ArgumentException($"A {Name} can't convert a value of type {input.type}!");
-            foreach (MapRange range in _ranges)
+            foreach (MapRange<T> range in _ranges)
             {
-                long? result = range[input.val];
+                T? result = range[input.val];
                 if (result is not null)
-                    return (ResultType, result.Value);
+                    return (ResultType, result);
             }
             return (ResultType, input.val);
         }
     }
+    public IEnumerable<T> BreakPointsFor(Range<T> range)
+    {
+        T cur = range.Start;
+        
+    }
     public override string ToString() => Name;
 }
-public readonly struct Range(long start, long length)
+public readonly struct Range<T>(T start, T length)
+    where T : INumber<T>
 {
-    public readonly long Start = start;
-    public readonly long End = start + length;
-    public bool Contains(long l) => l >= Start && l <= End;
+    public readonly T Start = start;
+    public readonly T End = start + length;
+    public bool Contains(T t) => t >= Start && t <= End;
 }
-public class MapRange
+public class MapRange<T>
+    where T : INumber<T>
 {
-    public Range Source { get; private set; }
-    public Range Destination { get; private set; }
-    public long Diff => Destination.Start - Source.Start;
+    public Range<T> Source { get; private set; }
+    public Range<T> Destination { get; private set; }
+    public T Diff => Destination.Start - Source.Start;
     public MapRange(string line)
     {
-        List<long> values = line.ToMany<long>().ToList();
-        (long sourceStart, long destStart, long length) = (values[1], values[0], values[2]);
+        List<T> values = line.ToMany<T>().ToList();
+        (T sourceStart, T destStart, T length) = (values[1], values[0], values[2]);
         Source = new(sourceStart, length);
         Destination = new(destStart, length);
     }
-    public long? this[long l]
-        => Source.Contains(l) ? l + Diff : null;
+    public T? this[T t]
+        => Source.Contains(t) ? t + Diff : default;
 }
