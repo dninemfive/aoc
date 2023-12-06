@@ -52,13 +52,14 @@ public static class Problem5
     }
     public static long LocationFor(long seed)
     {
-        Console.WriteLine($"LocationFor({seed})");
+        Console.Write($"LocationFor({seed})");
         (string type, long val) cur = ("seed", seed);
         while(cur.type != "location")
         {
             cur = _mapMap[cur.type][cur];
-            Console.WriteLine($"\t{cur.type,-12} {cur.val,12}");
+            Console.Write($" -> {cur.val,11}");
         }
+        Console.WriteLine();
         return cur.val;
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
@@ -109,6 +110,8 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     public IEnumerable<T> BreakPointsFor(Range<T> range)
     {
         IEnumerable<Range<T>> matchingRanges = _ranges.Select(x => x.Source).Where(range.OverlapsWith);
+        yield return range.Start;
+        yield return range.End;
         foreach (Range<T> range2 in matchingRanges)
         {
             foreach (T t in new List<T>() { range2.Start - T.One, range2.Start, range2.End, range2.End + T.One })
