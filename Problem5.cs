@@ -64,25 +64,19 @@ public static class Problem5
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
-        IEnumerable<long> allCalculations = seedRanges.SelectMany(_mapMap["seed"].BreakPointsFor).Distinct().Order();
-        Console.WriteLine($"Breakpoints: {allCalculations.Select(x => $"{x,10}").ListNotation()}");
-        long totalCalls = allCalculations.Count();
-        long itemsPerPeriod = Math.Max(totalCalls / 100, 1);
-        // Console.WriteLine($"LowestLocationFor([{totalCalls} items]), one period per {itemsPerPeriod} items:");
-        // Console.WriteLine($"{".".Repeated(totalCalls / itemsPerPeriod)}");
-        //long ct = 0;
-        long result = long.MaxValue;
-        static long min(long a, long b) => a < b ? a : b;
-        foreach(long l in allCalculations)
+        // work backward from destination ranges
+        string[] keys = [ "seed", "soil", "fertilizer", "water", "light", "temperature", "humidity" ];
+        keys = keys.Reverse().ToArray();
+        IEnumerable<MapRange<long>> overlapping(string destKey, string sourceKey)
+            => _mapMap[sourceKey].Ranges.Where(x => _mapMap[destKey].Ranges.Any(y => x.Destination.OverlapsWith(y.Source)));
+        foreach(MapRange<long> range in _mapMap["humidity"].Ranges)
         {
-            result = min(result, LocationFor(l));
-            //if (++ct % itemsPerPeriod == 0)
-                //Console.Write($".");
-        }
-        //Console.WriteLine("\n");
-        return result;
-    }
+            foreach(MapRange<long> range2 in _mapMap["temperature"].Ranges.Where(x => x.Destination.OverlapsWith(range.Source)))
+            {
 
+            }
+        }
+    }
 }
 public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     where T : struct, INumber<T>
@@ -92,6 +86,7 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     public string Name => $"{InputType}-to-{ResultType} map";
     private readonly List<MapRange<T>> _ranges = [ .. nonTitleLines.Select(x => new MapRange<T>(x))
                                                                 .OrderBy(x => x.Source.Start) ];
+    public IEnumerable<MapRange<T>> Ranges => _ranges;
     public (string type, T val) this[(string type, T val) input]
     {
         get
