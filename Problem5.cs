@@ -54,7 +54,7 @@ public static class Problem5
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
-        IEnumerable<long> allCalculations = seedRanges.SelectMany(x => x.AllValues);
+        IEnumerable<long> allCalculations = seedRanges.SelectMany(_mapMap["seed"].BreakPointsFor);
         long totalCalculations = (long)Math.Pow(allCalculations.Count(), _mapMap.Count);
         long itemsPerPeriod = totalCalculations / 100;
         Console.WriteLine($"LowestLocationFor([{totalCalculations} items]), one period per {itemsPerPeriod} items:");
@@ -66,7 +66,7 @@ public static class Problem5
         {
             result = min(result, LocationFor(l));
             if (++ct % itemsPerPeriod == 0)
-                Console.WriteLine($".");
+                Console.Write($".");
         }
         Console.WriteLine("\n");
         return result;
