@@ -15,7 +15,6 @@ public static class Problem5
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);
-        Console.WriteLine(seeds.ListNotation());
         foreach(XToYMap<long> map in _mapMap.Values)
         {
             Console.WriteLine(map.FullString);
@@ -24,6 +23,7 @@ public static class Problem5
         Range<long>[] pairs = new Range<long>[seeds.Count() / 2];     
         for(int i = 0; i < pairs.Length; i++)
             pairs[i] = new(seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
+        Console.WriteLine($"Seeds:       {seeds.Order().Select(x => $"{x,10}").ListNotation()}");
         yield return LowestLocationFor(pairs);
     }   
     public static Dictionary<string, XToYMap<long>> ParseLines(string[] lines)
@@ -57,14 +57,14 @@ public static class Problem5
         while(cur.type != "location")
         {
             cur = _mapMap[cur.type][cur];
-            Console.WriteLine($"\t{cur.type,-8} {cur.val}");
+            Console.WriteLine($"\t{cur.type,-12} {cur.val,12}");
         }
         return cur.val;
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
         IEnumerable<long> allCalculations = seedRanges.SelectMany(_mapMap["seed"].BreakPointsFor).Distinct().Order();
-        Console.WriteLine($"Breakpoints: {allCalculations.ListNotation()}");
+        Console.WriteLine($"Breakpoints: {allCalculations.Select(x => $"{x,10}").ListNotation()}");
         long totalCalls = allCalculations.Count();
         long itemsPerPeriod = Math.Max(totalCalls / 100, 1);
         // Console.WriteLine($"LowestLocationFor([{totalCalls} items]), one period per {itemsPerPeriod} items:");
@@ -109,10 +109,11 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     public IEnumerable<T> BreakPointsFor(Range<T> range)
     {
         IEnumerable<Range<T>> matchingRanges = _ranges.Select(x => x.Source).Where(range.OverlapsWith);
-        foreach (T t in matchingRanges.SelectMany(x => new List<T>() { x.Start, x.End }).Order())
+        foreach (Range<T> range2 in matchingRanges)
         {
-            if (range.Contains(t))
-                yield return t;
+            foreach (T t in new List<T>() { range2.Start - T.One, range2.Start, range2.End, range2.End + T.One })
+                if (range.Contains(t))
+                    yield return t;
         }
     }
     public override string ToString() => Name;
