@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -8,23 +9,23 @@ using System.Threading.Tasks;
 namespace d9.aoc._23;
 public static class Problem5
 {
-    private static Dictionary<string, XToYMap> _mapMap = new();
+    private static Dictionary<string, XToYMap<long>> _mapMap = new();
     [SolutionToProblem(5)]
     public static IEnumerable<object> Solve(string[] lines)
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);
         yield return seeds.Select(LocationFor).Min();
-        (long, long)[] pairs = new (long, long)[seeds.Count() / 2];     
+        Range<long>[] pairs = new Range<long>[seeds.Count() / 2];     
         for(int i = 0; i < pairs.Length; i++)
-            pairs[i] = (seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
+            pairs[i] = new(seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
         yield return LowestLocationFor(pairs);
     }   
-    public static Dictionary<string, XToYMap> ParseLines(string[] lines)
+    public static Dictionary<string, XToYMap<long>> ParseLines(string[] lines)
     {
         string title = "";
         List<string> nonTitleLines = new();
-        Dictionary<string, XToYMap> result = new();
+        Dictionary<string, XToYMap<long>> result = new();
         foreach(string line in lines.Append(""))
         {
             if (line.Contains("-to-"))
@@ -33,7 +34,7 @@ public static class Problem5
             }
             else if(string.IsNullOrWhiteSpace(line))
             {
-                XToYMap map = new(title, nonTitleLines);
+                XToYMap<long> map = new(title, nonTitleLines);
                 result[map.InputType] = map;
                 nonTitleLines.Clear();
             }
@@ -44,9 +45,6 @@ public static class Problem5
         }
         return result;
     }
-    // possible paths:
-    // seed -> soil -> fertilizer -> water -> light -> temperature -> humidity -> location
-    // ...oh. that's the only one.
     public static long LocationFor(long seed)
     {
         (string type, long val) cur = ("seed", seed);
@@ -54,22 +52,21 @@ public static class Problem5
             cur = _mapMap[cur.type][cur];
         return cur.val;
     }
-    public static long LowestLocationFor(params (long start, long length)[] seedRanges)
+    public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
-        long itemsPerPeriod = (long)1e7;
-        Console.WriteLine($"LowestLocationFor()");
-        Console.WriteLine($"{".".Repeated(seedRanges.Select(x => x.length).Sum() / itemsPerPeriod)}");
+        IEnumerable<long> allCalculations = seedRanges.SelectMany(x => x.AllValues);
+        long totalCalculations = (long)Math.Pow(allCalculations.Count(), _mapMap.Count);
+        long itemsPerPeriod = totalCalculations / 100;
+        Console.WriteLine($"LowestLocationFor([{totalCalculations} items]), one period per {itemsPerPeriod} items:");
+        Console.WriteLine($"{".".Repeated(totalCalculations / itemsPerPeriod)}");
         long ct = 0;
         long result = long.MaxValue;
         static long min(long a, long b) => a < b ? a : b;
-        foreach((long start, long length) in seedRanges)
+        foreach(long l in allCalculations)
         {
-            for(long l = 0; l < length; l++)
-            {
-                result = min(result, LocationFor(start + l));
-                if (++ct % itemsPerPeriod == 0)
-                    Console.WriteLine($".");
-            }
+            result = min(result, LocationFor(l));
+            if (++ct % itemsPerPeriod == 0)
+                Console.WriteLine($".");
         }
         Console.WriteLine("\n");
         return result;
@@ -101,8 +98,12 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     }
     public IEnumerable<T> BreakPointsFor(Range<T> range)
     {
-        T cur = range.Start;
-        
+        IEnumerable<Range<T>> matchingRanges = _ranges.Select(x => x.Source).Where(range.OverlapsWith);
+        foreach (T t in matchingRanges.SelectMany(x => new List<T>() { x.Start, x.End }).Order())
+        {
+            if (range.Contains(t))
+                yield return t;
+        }
     }
     public override string ToString() => Name;
 }
@@ -111,7 +112,19 @@ public readonly struct Range<T>(T start, T length)
 {
     public readonly T Start = start;
     public readonly T End = start + length;
+    public readonly T Length = length;
     public bool Contains(T t) => t >= Start && t <= End;
+    // https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-if-two-ranges-overlap
+    public bool OverlapsWith(Range<T> other)
+        => Start <= other.End && End >= other.Start;
+    public IEnumerable<T> AllValues
+    {
+        get
+        {
+            for (T t = Start; t <= End; t++)
+                yield return t;
+        }
+    }
 }
 public class MapRange<T>
     where T : INumber<T>
