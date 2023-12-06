@@ -64,11 +64,20 @@ public static class Problem5
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
-        // work backward from destination ranges
+        // for each location range in order of smallest to largest,
+        //      for each humidity range which maps to that location range,
+        //          for each temperature range which maps to that humidity range,
+        //              ...
+        //                  for each seed range,
+        //                      if the range maps to any of the soil ranges,
+        //                          find the first seed which maps to that range
         string[] keys = [ "seed", "soil", "fertilizer", "water", "light", "temperature", "humidity" ];
         keys = keys.Reverse().ToArray();
         IEnumerable<MapRange<long>> overlapping(string destKey, string sourceKey)
             => _mapMap[sourceKey].Ranges.Where(x => _mapMap[destKey].Ranges.Any(y => x.Destination.OverlapsWith(y.Source)));
+        // location range 1
+        //  humidity range 1
+        //   
         foreach(MapRange<long> range in _mapMap["humidity"].Ranges)
         {
             foreach(MapRange<long> range2 in _mapMap["temperature"].Ranges.Where(x => x.Destination.OverlapsWith(range.Source)))
