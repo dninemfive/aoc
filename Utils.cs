@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,10 +36,11 @@ public static class Utils
     public static Dictionary<K, V> ToDictWithValue<K, V>(this IEnumerable<K> enumerable, Func<K, V> valueSelector)
         where K : notnull
         => new(enumerable.Select(x => new KeyValuePair<K, V>(x, valueSelector(x))));
-    public static string Tabs(this int n, string tab = "  ")
+    public static string Repeated<T>(this string s, T ct)
+        where T : INumber<T>
     {
         string result = "";
-        for(int i = 0; i < n; i++) result += tab;
+        for(T i = T.Zero; i < ct; i++) result += s;
         return result;
     }
     /// <summary>

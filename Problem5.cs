@@ -13,8 +13,11 @@ public static class Problem5
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);
-        Console.WriteLine(_mapMap.Select(x => $"{x.Key}: {x.Value}").Aggregate((x, y) => $"{x}\n{y}"));
         yield return seeds.Select(LocationFor).Min();
+        (long, long)[] pairs = new (long, long)[seeds.Count() / 2];     
+        for(int i = 0; i < pairs.Length; i++)
+            pairs[i] = (seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
+        yield return LowestLocationFor(pairs);
     }   
     public static Dictionary<string, XToYMap> ParseLines(string[] lines)
     {
@@ -50,6 +53,27 @@ public static class Problem5
             cur = _mapMap[cur.type][cur];
         return cur.val;
     }
+    public static long LowestLocationFor(params (long start, long length)[] seedRanges)
+    {
+        long itemsPerPeriod = (long)1e7;
+        Console.WriteLine($"LowestLocationFor()");
+        Console.WriteLine($"{".".Repeated(seedRanges.Select(x => x.length).Sum() / itemsPerPeriod)}");
+        long ct = 0;
+        long result = long.MaxValue;
+        static long min(long a, long b) => a < b ? a : b;
+        foreach((long start, long length) in seedRanges)
+        {
+            for(long l = 0; l < length; l++)
+            {
+                result = min(result, LocationFor(start + l));
+                if (++ct % itemsPerPeriod == 0)
+                    Console.WriteLine($".");
+            }
+        }
+        Console.WriteLine("\n");
+        return result;
+    }
+
 }
 public class XToYMap(string title, IEnumerable<string> nonTitleLines)
 {
@@ -85,7 +109,7 @@ public class MapRange
 {
     public Range Source { get; private set; }
     public Range Destination { get; private set; }
-    public long Diff => Source.Start - Destination.Start;
+    public long Diff => Destination.Start - Source.Start;
     public MapRange(string line)
     {
         List<long> values = line.ToMany<long>().ToList();
