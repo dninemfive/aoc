@@ -15,6 +15,11 @@ public static class Problem5
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);
+        Console.WriteLine(seeds.ListNotation());
+        foreach(XToYMap<long> map in _mapMap.Values)
+        {
+            Console.WriteLine(map.FullString);
+        }
         yield return seeds.Select(LocationFor).Min();
         Range<long>[] pairs = new Range<long>[seeds.Count() / 2];     
         for(int i = 0; i < pairs.Length; i++)
@@ -47,34 +52,39 @@ public static class Problem5
     }
     public static long LocationFor(long seed)
     {
+        Console.WriteLine($"LocationFor({seed})");
         (string type, long val) cur = ("seed", seed);
         while(cur.type != "location")
+        {
             cur = _mapMap[cur.type][cur];
+            Console.WriteLine($"\t{cur.type,-8} {cur.val}");
+        }
         return cur.val;
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)
     {
-        IEnumerable<long> allCalculations = seedRanges.SelectMany(_mapMap["seed"].BreakPointsFor);
-        long totalCalculations = (long)Math.Pow(allCalculations.Count(), _mapMap.Count);
-        long itemsPerPeriod = totalCalculations / 100;
-        Console.WriteLine($"LowestLocationFor([{totalCalculations} items]), one period per {itemsPerPeriod} items:");
-        Console.WriteLine($"{".".Repeated(totalCalculations / itemsPerPeriod)}");
-        long ct = 0;
+        IEnumerable<long> allCalculations = seedRanges.SelectMany(_mapMap["seed"].BreakPointsFor).Distinct().Order();
+        Console.WriteLine($"Breakpoints: {allCalculations.ListNotation()}");
+        long totalCalls = allCalculations.Count();
+        long itemsPerPeriod = Math.Max(totalCalls / 100, 1);
+        // Console.WriteLine($"LowestLocationFor([{totalCalls} items]), one period per {itemsPerPeriod} items:");
+        // Console.WriteLine($"{".".Repeated(totalCalls / itemsPerPeriod)}");
+        //long ct = 0;
         long result = long.MaxValue;
         static long min(long a, long b) => a < b ? a : b;
         foreach(long l in allCalculations)
         {
             result = min(result, LocationFor(l));
-            if (++ct % itemsPerPeriod == 0)
-                Console.Write($".");
+            //if (++ct % itemsPerPeriod == 0)
+                //Console.Write($".");
         }
-        Console.WriteLine("\n");
+        //Console.WriteLine("\n");
         return result;
     }
 
 }
 public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
-    where T : INumber<T>
+    where T : struct, INumber<T>
 {
     public string InputType => title.Split("-")[0];
     public string ResultType => title.SplitAndTrim("-", " ")[2];
@@ -91,7 +101,7 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
             {
                 T? result = range[input.val];
                 if (result is not null)
-                    return (ResultType, result);
+                    return (ResultType, result.Value);
             }
             return (ResultType, input.val);
         }
@@ -106,6 +116,8 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
         }
     }
     public override string ToString() => Name;
+    public string FullString
+        => $"{Name} {{\n\t{_ranges.Select(x => $"{x}").Aggregate((x, y) => $"{x}\n\t{y}")}\n}}";
 }
 public readonly struct Range<T>(T start, T length)
     where T : INumber<T>
@@ -125,9 +137,11 @@ public readonly struct Range<T>(T start, T length)
                 yield return t;
         }
     }
+    public override string ToString()
+        => $"[{Start}, {End}]";
 }
 public class MapRange<T>
-    where T : INumber<T>
+    where T : struct, INumber<T>
 {
     public Range<T> Source { get; private set; }
     public Range<T> Destination { get; private set; }
@@ -140,5 +154,6 @@ public class MapRange<T>
         Destination = new(destStart, length);
     }
     public T? this[T t]
-        => Source.Contains(t) ? t + Diff : default;
+        => Source.Contains(t) ? t + Diff : null;
+    public override string ToString() => $"{{{Source} -> {Destination} ({Diff})}}";
 }
