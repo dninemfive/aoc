@@ -72,4 +72,7 @@ public static class Utils
     };
     public static string Merge(this IEnumerable<string> strings)
         => strings.Aggregate((x, y) => $"{x}{y}");
+    public static T Parse<T>(this string s, IFormatProvider? formatProvider = null)
+        where T : IParsable<T>
+    => T.Parse(s, formatProvider ?? CultureInfo.InvariantCulture);
 }

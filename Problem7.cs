@@ -10,37 +10,40 @@ public static class Problem7
     [SolutionToProblem(7)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        IEnumerable<(Hand hand, int bet)> input = lines.Select(x => x.Split(" "))
-                                                       .Select(x => (new Hand(x[0]), int.Parse(x[1])));
-        yield return input.Select(x => x.hand)
-                          .Rank()
-                          .Zip(input.Select(x => x.bet))
-                          .Select(x => x.First * x.Second)
-                          .Sum();
+        IEnumerable<Hand> hands = lines.Select(x => new Hand(x)).OrderDescending();
+        IEnumerable<int> ranks = hands.Rank();
+        yield return hands.Zip(ranks).Select(x => x.First.Bet * x.Second).Sum();
     }
     public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
     {
         int rank = hands.Count();
-        foreach (Hand hand in hands.Order())
+        foreach (Hand hand in hands.OrderDescending())
         {
-            Console.WriteLine($"{hand}\t{rank}");
+            // Console.WriteLine($"{hand}\t{rank}");
             yield return rank--;
         }
     }
 }
-public readonly struct Hand(params CamelCard[] cards)
+public readonly struct Hand
     : IComparable<Hand>
 {
-    public readonly CamelCard[] Cards = cards;
-    public Hand(string line) : this(line.Select(x => new CamelCard(x)).ToArray()) { }
+    public readonly IEnumerable<CamelCard> Cards;
+    public readonly int Bet;
+    public Hand(string line)
+    {
+        string[] split = line.Split(" ");
+        Cards = split.First().Select(x => new CamelCard(x));
+        Bet = split.Second().Parse<int>();
+    }
     public override string ToString() => $"{Type,-12}\t{Cards.Select(x => x.Name).Merge()}";
     public int CompareTo(Hand other)
     {
         if(other.Type != Type)
         {
-            return Type.CompareTo(other.Type);
+            // i accidentally ordered the enum backward lol
+            return other.Type.CompareTo(Type);
         }
-        for(int i = 0; i < Cards.Length; i++)
+        for(int i = 0; i < Cards.Count(); i++)
         {
             if (this[i] == other[i])
                 continue;
@@ -83,7 +86,7 @@ public readonly struct Hand(params CamelCard[] cards)
         (2, 1) => HandType.OnePair,
         _ => HandType.HighCard
     };
-    public int this[int index] => Cards[index];
+    public int this[int index] => Cards.ElementAt(index);
 }
 public enum HandType
 {
