@@ -70,4 +70,6 @@ public static class Utils
         >= '0' and <= '9' => c - '0',
         _ => throw new ArgumentOutOfRangeException(nameof(c), "Only digit characters have integer values!")
     };
+    public static string Merge(this IEnumerable<string> strings)
+        => strings.Aggregate((x, y) => $"{x}{y}");
 }
