@@ -31,7 +31,7 @@ public static class Problem1
             int index = first ? i : line.Length - i - 1;
             char c = line[index];
             if (c.IsDigit())
-                return (c.Value(), index);
+                return (c.IntValue(), index);
         }
         return null;
     }

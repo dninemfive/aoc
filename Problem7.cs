@@ -7,28 +7,30 @@ using System.Threading.Tasks;
 namespace d9.aoc._23;
 public static class Problem7
 {
-    public static string CamelCardName(this int n) => n switch
+    [SolutionToProblem(7)]
+    public static IEnumerable<object> Solve(string[] lines)
     {
-        14 => "A",
-        13 => "K",
-        12 => "Q",
-        11 => "J",
-        10 => "T",
-        >= 2 and <= 9 => $"{n}",
-        _ => throw new ArgumentOutOfRangeException(nameof(n))
-    };
-    public static IEnumerable<(Hand hand, int rank)> Rank(IEnumerable<Hand> hands)
+        IEnumerable<(Hand hand, int bet)> input = lines.Select(x => x.Split(" "))
+                                                       .Select(x => (new Hand(x[0]), int.Parse(x[1])));
+        yield return input.Select(x => x.hand)
+                          .Rank()
+                          .Zip(input.Select(x => x.bet))
+                          .Select(x => x.First * x.Second)
+                          .Sum();
+    }
+    public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
     {
         int rank = hands.Count();
-        foreach(Hand hand in hands)
-            yield return (hand, rank--);
+        foreach (Hand hand in hands)
+            yield return rank--;
     }
 }
 public readonly struct Hand(params int[] cards)
     : IComparable<Hand>
 {
     public readonly int[] Cards = cards;
-    public override string ToString() => Cards.Select(Problem7.CamelCardName).Merge();
+    public Hand(string line) : this(line.Select(CamelCard.Value).ToArray()) { }
+    public override string ToString() => Cards.Select(CamelCard.Name).Merge();
     public int CompareTo(Hand other)
     {
         if(other.Type != Type)
@@ -87,4 +89,27 @@ public enum HandType
     TwoPair,
     OnePair,
     HighCard
+}
+public static class CamelCard
+{
+    public static string Name(this int n) => n switch
+    {
+        14 => "A",
+        13 => "K",
+        12 => "Q",
+        11 => "J",
+        10 => "T",
+        >= 2 and <= 9 => $"{n}",
+        _ => throw new ArgumentOutOfRangeException(nameof(n))
+    };
+    public static int Value(char c) => c switch
+    {
+        'A' => 14,
+        'K' => 13,
+        'Q' => 12,
+        'J' => 11,
+        'T' => 10,
+        >= '0' and <= '9' => c - '0',
+        _ => throw new ArgumentOutOfRangeException(nameof(c))
+    };
 }

@@ -65,7 +65,7 @@ public static class Utils
     /// <c>(<see langword="int"/>)0</c> for <c>(<see langword="char"/>)'0'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="c"/> is not a digit.</exception>
-    public static int Value(this char c) => c switch
+    public static int IntValue(this char c) => c switch
     {
         >= '0' and <= '9' => c - '0',
         _ => throw new ArgumentOutOfRangeException(nameof(c), "Only digit characters have integer values!")
