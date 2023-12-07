@@ -24,7 +24,7 @@ static class Program
             if (attribute is null)
                 continue;
             Console.WriteLine($"Solution for Problem {attribute.Index}:");
-            string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}_input.txt");
+            string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}.index");
             int partNumber = 1;
             Stopwatch stopwatch = new();
             stopwatch.Start();
