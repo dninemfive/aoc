@@ -17,7 +17,7 @@ public static class Problem5
         _mapMap = ParseLines(lines[2..]);
         foreach(XToYMap<long> map in _mapMap.Values)
         {
-            Console.WriteLine(map.FullString);
+            // Console.WriteLine(map.FullString);
         }
         yield return seeds.Select(LocationFor).Min();
         yield break;
@@ -53,14 +53,14 @@ public static class Problem5
     }
     public static long LocationFor(long seed)
     {
-        Console.Write($"LocationFor({seed})");
+        // Console.Write($"LocationFor({seed})");
         (string type, long val) cur = ("seed", seed);
         while(cur.type != "location")
         {
             cur = _mapMap[cur.type][cur];
-            Console.Write($" -> {cur.val,11}");
+            // Console.Write($" -> {cur.val,11}");
         }
-        Console.WriteLine();
+        // Console.WriteLine();
         return cur.val;
     }
     public static long LowestLocationFor(params Range<long>[] seedRanges)

@@ -19,19 +19,22 @@ public static class Problem6
         => buttonHeldTime * (totalTime - buttonHeldTime);
     public static (int left, int right) Intersections(int totalTime, int targetDistance)
     {
-        void stepWhile(ref int result, int step, Func<int, bool> predicate)
+        Console.WriteLine($"Intersections({totalTime}, {targetDistance})");
+        static void stepWhile(ref int result, int step, Func<int, bool> predicate)
         {
+            Console.WriteLine($"\tstepWhile(ref {result}, {step})");
             while(predicate(result))
                 result += step;
         }
         int left = 0, right = totalTime;
         stepWhile(ref left, 1, x => Distance(x, totalTime) <= targetDistance);
         stepWhile(ref right, -1, x => Distance(x, totalTime) <= targetDistance);
+        Console.WriteLine($"  => {(left, right)}");
         return (left, right);
     }
     public static int NumSolutions(int totalTime, int targetDistance)
     {
         (int left, int right) = Intersections(totalTime, targetDistance);
-        return right - left;
+        return right - left + 1;
     }
 }
