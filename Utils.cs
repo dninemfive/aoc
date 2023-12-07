@@ -12,9 +12,9 @@ public static class Utils
 {
     public static string ListNotation<T>(this IEnumerable<T> enumerable)
         => enumerable.Any() ? enumerable.Select(x => $"{x}").Aggregate((x, y) => $"{x}, {y}") : "(no elements)";
-    public static IEnumerable<T> ToMany<T>(this string s, string delimiter = " ", IFormatProvider? formatProvider = null)
+    public static IEnumerable<T> ToMany<T>(this string s, string delimiter = " ", IFormatProvider? formatProvider = null, int skip = 0)
         where T : IParsable<T>
-        => s.SplitAndTrim(delimiter).Select(x => T.Parse(x.Trim(), formatProvider ?? CultureInfo.InvariantCulture));
+        => s.SplitAndTrim(delimiter).Skip(skip).Select(x => T.Parse(x.Trim(), formatProvider ?? CultureInfo.InvariantCulture));
     public static List<string> SplitAndTrim(this string s, params string[] delimiters)
     {
         List<string> result = [s];

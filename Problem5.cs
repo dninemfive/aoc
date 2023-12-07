@@ -20,6 +20,7 @@ public static class Problem5
             Console.WriteLine(map.FullString);
         }
         yield return seeds.Select(LocationFor).Min();
+        yield break;
         Range<long>[] pairs = new Range<long>[seeds.Count() / 2];     
         for(int i = 0; i < pairs.Length; i++)
             pairs[i] = new(seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
