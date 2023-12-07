@@ -21,16 +21,19 @@ public static class Problem7
     public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
     {
         int rank = hands.Count();
-        foreach (Hand hand in hands)
+        foreach (Hand hand in hands.Order())
+        {
+            Console.WriteLine($"{hand}\t{rank}");
             yield return rank--;
+        }
     }
 }
-public readonly struct Hand(params int[] cards)
+public readonly struct Hand(params CamelCard[] cards)
     : IComparable<Hand>
 {
-    public readonly int[] Cards = cards;
-    public Hand(string line) : this(line.Select(CamelCard.Value).ToArray()) { }
-    public override string ToString() => Cards.Select(CamelCard.Name).Merge();
+    public readonly CamelCard[] Cards = cards;
+    public Hand(string line) : this(line.Select(x => new CamelCard(x)).ToArray()) { }
+    public override string ToString() => $"{Type,-12}\t{Cards.Select(x => x.Name).Merge()}";
     public int CompareTo(Hand other)
     {
         if(other.Type != Type)
@@ -45,13 +48,15 @@ public readonly struct Hand(params int[] cards)
         }
         return 0;
     }
-    public IEnumerable<int> UniqueValues => Cards.Distinct().Order();
+    public IEnumerable<int> UniqueValues => Cards.Distinct()
+                                                 .Select(x => x.Value)
+                                                 .Order();
     public int LargestRunCount
     {
         get
         {
             // having to do this because you can't use `this` in lambda expressions is so annoying lol
-            IEnumerable<int> cards = Cards;
+            IEnumerable<CamelCard> cards = Cards;
             return cards.Select(x => cards.Count(y => y == x)).Max();
         }
     }
@@ -90,19 +95,10 @@ public enum HandType
     OnePair,
     HighCard
 }
-public static class CamelCard
+public readonly struct CamelCard(char c) : IEquatable<CamelCard>, IComparable<CamelCard>
 {
-    public static string Name(this int n) => n switch
-    {
-        14 => "A",
-        13 => "K",
-        12 => "Q",
-        11 => "J",
-        10 => "T",
-        >= 2 and <= 9 => $"{n}",
-        _ => throw new ArgumentOutOfRangeException(nameof(n))
-    };
-    public static int Value(char c) => c switch
+    public string Name => $"{c}";
+    public int Value => c switch
     {
         'A' => 14,
         'K' => 13,
@@ -112,4 +108,19 @@ public static class CamelCard
         >= '0' and <= '9' => c - '0',
         _ => throw new ArgumentOutOfRangeException(nameof(c))
     };
+    public static implicit operator int(CamelCard cc) => cc.Value;
+    public static implicit operator string(CamelCard cc) => cc.Name;
+    public override string ToString() => this;
+    public override bool Equals(object? obj) 
+        => obj is CamelCard card && Equals(card);
+    public bool Equals(CamelCard other)
+        => this == other;
+    public override int GetHashCode()
+        => Value.GetHashCode();
+    public int CompareTo(CamelCard other)
+        => Value.CompareTo(other.Value);
+    public static bool operator ==(CamelCard a, CamelCard b) 
+        => a.Value == b.Value;
+    public static bool operator !=(CamelCard a, CamelCard b) 
+        => !(a == b);
 }
