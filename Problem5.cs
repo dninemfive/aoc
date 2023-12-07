@@ -71,20 +71,16 @@ public static class Problem5
         //                  for each seed range,
         //                      if the range maps to any of the soil ranges,
         //                          find the first seed which maps to that range
+        // alternatively, make a sieve of seed ranges?
+        // like we can eliminate any value which maps to a higher location than is encountered or whatever
+        // in that case we'd iterate from largest to smallest tho
+        // alternatively alternatively, we could make "traces" which track the unique paths through them
+        // but i think this doesn't actually eliminate nearly as aggressively as necessary
         string[] keys = [ "seed", "soil", "fertilizer", "water", "light", "temperature", "humidity" ];
-        keys = keys.Reverse().ToArray();
         IEnumerable<MapRange<long>> overlapping(string destKey, string sourceKey)
             => _mapMap[sourceKey].Ranges.Where(x => _mapMap[destKey].Ranges.Any(y => x.Destination.OverlapsWith(y.Source)));
-        // location range 1
-        //  humidity range 1
-        //   
-        foreach(MapRange<long> range in _mapMap["humidity"].Ranges)
-        {
-            foreach(MapRange<long> range2 in _mapMap["temperature"].Ranges.Where(x => x.Destination.OverlapsWith(range.Source)))
-            {
-
-            }
-        }
+        List<Tree<MapRange<long>>> trees = new();
+        throw new NotImplementedException();
     }
 }
 public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
@@ -164,4 +160,21 @@ public class MapRange<T>
     public T? this[T t]
         => Source.Contains(t) ? t + Diff : null;
     public override string ToString() => $"{{{Source} -> {Destination} ({Diff})}}";
+}
+public class Tree<T>(T value, IEnumerable<Tree<T>>? children = null)
+{
+    public IEnumerable<Tree<T>> Children = children ?? Enumerable.Empty<Tree<T>>();
+    public T Value = value;
+    public IEnumerable<T> DepthFirstEnumeration
+    {
+        get
+        {
+            foreach (Tree<T> child in Children)
+            {
+                foreach (T item in child.DepthFirstEnumeration)
+                    yield return item;
+            }
+            yield return Value;
+        }
+    }
 }
