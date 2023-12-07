@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,29 +13,36 @@ public static class Problem6
     {
         IEnumerable<(int time, int distance)> races = lines.First()
                                                            .ToMany<int>(skip: 1)
-                                                           .Zip(lines[1].ToMany<int>(skip: 1));
+                                                           .Zip(lines.Second()
+                                                                     .ToMany<int>(skip: 1));
         yield return races.Select(x => NumSolutions(x.time, x.distance)).Aggregate((x, y) => x * y);
+        long correctTime = long.Parse(lines.First().SplitAndTrim(" ")[1..].Aggregate((x, y) => $"{x}{y}"));
+        long correctDistance = long.Parse(lines.Second().SplitAndTrim(" ")[1..].Aggregate((x, y) => $"{x}{y}"));
+        yield return NumSolutions(correctTime, correctDistance);
     }
-    public static int Distance(int buttonHeldTime, int totalTime)
+    public static T Distance<T>(T buttonHeldTime, T totalTime)
+        where T : INumber<T>
         => buttonHeldTime * (totalTime - buttonHeldTime);
-    public static (int left, int right) Intersections(int totalTime, int targetDistance)
+    public static (T left, T right) Intersections<T>(T totalTime, T targetDistance)
+        where T : INumber<T>
     {
-        Console.WriteLine($"Intersections({totalTime}, {targetDistance})");
-        static void stepWhile(ref int result, int step, Func<int, bool> predicate)
+        // Console.WriteLine($"Intersections({totalTime}, {targetDistance})");
+        static void stepWhile(ref T result, bool subtract, Func<T, bool> predicate)
         {
-            Console.WriteLine($"\tstepWhile(ref {result}, {step})");
-            while(predicate(result))
-                result += step;
+            // Console.WriteLine($"\tstepWhile(ref {result}, {step})");
+            while (predicate(result))
+                result = subtract ? result - T.One : result + T.One;
         }
-        int left = 0, right = totalTime;
-        stepWhile(ref left, 1, x => Distance(x, totalTime) <= targetDistance);
-        stepWhile(ref right, -1, x => Distance(x, totalTime) <= targetDistance);
-        Console.WriteLine($"  => {(left, right)}");
+        T left = T.Zero, right = totalTime;
+        stepWhile(ref left, subtract: false, x => Distance(x, totalTime) <= targetDistance);
+        stepWhile(ref right, subtract: true, x => Distance(x, totalTime) <= targetDistance);
+        // Console.WriteLine($"  => {(left, right)}");
         return (left, right);
     }
-    public static int NumSolutions(int totalTime, int targetDistance)
+    public static T NumSolutions<T>(T totalTime, T targetDistance)
+        where T : INumber<T>
     {
-        (int left, int right) = Intersections(totalTime, targetDistance);
-        return right - left + 1;
+        (T left, T right) = Intersections(totalTime, targetDistance);
+        return right - left + T.One;
     }
 }

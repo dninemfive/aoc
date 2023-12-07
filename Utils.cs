@@ -27,6 +27,7 @@ public static class Utils
         }
         return result;
     }
+    public static T Second<T>(this IEnumerable<T> enumerable) => enumerable.ElementAt(1);
     public static Dictionary<K, V> ToDict<T, K, V>(this IEnumerable<T> enumerable, Func<T, K> keySelector, Func<T, V> valueSelector)
         where K : notnull
         => new(enumerable.Select(x => new KeyValuePair<K, V>(keySelector(x), valueSelector(x))));
