@@ -52,15 +52,24 @@ public static class Problem8
     }
     public static IEnumerable<long> ZPositions(this string tape, string start)
     {
-        HashSet<(string cur, long index)> visitedStates = new();
+        Console.WriteLine($"{nameof(ZPositions)}({start})");
+        Dictionary<(string, long), int> visitedStates = new();
         // once we see a (position, ct) pair twice, the sequence will repeat, so we don't need to continue
         // (it turns out for my input there's always exactly one point where the item ends with Z,
         //  but this code is more general and pretty cool i think)
-        foreach((string s, long l) in NavigateUntil(start, visitedStates.Contains, tape))
+        foreach((string position, long ct) in NavigateUntil(start, x => visitedStates.TryGetValue(x, out int value) && value > 1, tape))
         {
-            if (s.EndsWith('Z'))
-                yield return l;
-            visitedStates.Add((s, l));
+            if (position.EndsWith('Z'))
+                yield return ct;
+            (string, long) tuple = (position, ct);
+            if(visitedStates.TryGetValue(tuple, out int value))
+            {
+                visitedStates[tuple] = value + 1;
+            } 
+            else
+            {
+                visitedStates[tuple] = 1;
+            }
         }
     }
 }

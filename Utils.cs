@@ -92,7 +92,7 @@ public static class Utils
         where T : INumber<T>
     {
         if (enumerable.Count() < 2)
-            throw new ArgumentException($"Cannot find the least common multiple of fewer than two numbers!", nameof(enumerable));
+            throw new ArgumentException($"Cannot find the least common multiple of {enumerable.Count()} numbers!", nameof(enumerable));
         T result = LeastCommonMultiple(enumerable.First(), enumerable.Second());
         foreach (T item in enumerable.Skip(2))
             result = LeastCommonMultiple(result, item);
