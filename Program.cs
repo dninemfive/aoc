@@ -1,7 +1,7 @@
-﻿using d9.aoc._23;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
-static class Program
+namespace d9.aoc._23;
+public static class Program
 {
     public const string INPUT_FOLDER = @"C:\Users\dninemfive\Documents\workspaces\misc\_aoc\2023\";
     /// <summary>
