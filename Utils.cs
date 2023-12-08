@@ -87,14 +87,12 @@ public static class Utils
     }
     public static T LeastCommonMultiple<T>(T a, T b)
         where T : INumber<T>
-    {
-        Console.WriteLine($"LeastCommonMultiple({a}, {b})");
-        return T.Abs(a) * (T.Abs(b) / GreatestCommonDivisor(a, b));
-    }
+        => T.Abs(a) * (T.Abs(b) / GreatestCommonDivisor(a, b));
     public static T LeastCommonMultiple<T>(this IEnumerable<T> enumerable)
         where T : INumber<T>
     {
-        Console.WriteLine($"LeastCommonMultiple({enumerable.ListNotation()})");
+        if (enumerable.Count() < 2)
+            throw new ArgumentException($"Cannot find the least common multiple of fewer than two numbers!", nameof(enumerable));
         T result = LeastCommonMultiple(enumerable.First(), enumerable.Second());
         foreach (T item in enumerable.Skip(2))
             result = LeastCommonMultiple(result, item);

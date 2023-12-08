@@ -18,64 +18,49 @@ public static class Problem8
             List<string> vals = s.SplitAndTrim(" = (", ", ", ")");
             _nodes[vals.First()] = (vals[1], vals[2]);
         }
-        yield return NavigateBetween("AAA", "ZZZ", tape);
-        yield return GhostNavigate(tape);
+        yield return NavigateBetween("AAA", "ZZZ", tape).Count();
+        yield return GhostPathLength(tape);
     }
-    public static int NavigateBetween(string start, string end, string tape)
-        => start.NavigateUntil(x => x == end, tape);
-    public static int NavigateUntil(this string start, Func<string, bool> end, string input) {
+    public static IEnumerable<(string position, long ct)> NavigateBetween(string start, string end, string tape)
+        => start.NavigateUntil(x => x.position == end, tape);
+    public static IEnumerable<(string position, long ct)> NavigateUntil(this string start, Func<(string position, long ct), bool> end, string input) {
         Tape tape = new(input);
         string cur = start;
-        int ct = 0;
-        while (!end(cur))
+        long ct = 0;
+        while (!end((cur, ct)))
         {
             cur = tape.Step(cur);
-            ct++;
+            yield return (cur, ++ct);
         }
-        return ct;
     }
     public static string Step(this Tape tape, string cur)
     {
-        // Console.WriteLine($"{nameof(Step)}({cur})");
         (string left, string right) = _nodes[cur];
         char c = tape.Advance();
         return c == 'L' ? left : right;
     }
-    public static long GhostNavigate(string tape)
+    public static long GhostPathLength(string tape)
     {
         IEnumerable<string> starts = _nodes.Keys.Where(x => x.EndsWith('A'));
-        Console.WriteLine($"{nameof(GhostNavigate)}({starts.ListNotation()})");
         List<long> allZs = new();
         foreach(string start in starts)
         {
-            IEnumerable<long> zPositions = tape.ZPositions(start).Select(x => (long)x).ToList();
-            Console.WriteLine($"  {start}: {zPositions.ListNotation()}");
+            IEnumerable<long> zPositions = tape.ZPositions(start).ToList();
             allZs.AddRange(zPositions);
         }
         return allZs.LeastCommonMultiple();
     }
-    public static bool DivisibleBy(this int a, int b)
+    public static IEnumerable<long> ZPositions(this string tape, string start)
     {
-        float div = a / (float)b;
-        return div == (int)div;
-    }
-    public static IEnumerable<int> ZPositions(this string input, string cur)
-    {
-        Console.WriteLine($"{nameof(ZPositions)}({cur})");
-        Tape tape = new(input);
-        HashSet<(string cur, int index)> visitedStates = new();
-        int ct = 0;
-        // continue until the sequence starts repeating and repeating and leaving you with the theory that they're trying to get inside
-        while(!visitedStates.Contains((cur, tape.Index)))
+        HashSet<(string cur, long index)> visitedStates = new();
+        // once we see a (position, ct) pair twice, the sequence will repeat, so we don't need to continue
+        // (it turns out for my input there's always exactly one point where the item ends with Z,
+        //  but this code is more general and pretty cool i think)
+        foreach((string s, long l) in NavigateUntil(start, visitedStates.Contains, tape))
         {
-            if (cur.EndsWith('Z'))
-            {
-                Console.WriteLine($"\t{cur} {ct}");
-                yield return ct;
-            }
-            visitedStates.Add((cur, tape.Index));
-            cur = tape.Step(cur);
-            ct++;
+            if (s.EndsWith('Z'))
+                yield return l;
+            visitedStates.Add((s, l));
         }
     }
 }
