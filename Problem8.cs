@@ -28,10 +28,7 @@ public static class Problem8
         string cur = start;
         long ct = 0;
         while (!end((cur, ct)))
-        {
-            cur = tape.Step(cur);
-            yield return (cur, ++ct);
-        }
+            yield return (cur = tape.Step(cur), ++ct);
     }
     public static string Step(this Tape tape, string cur)
     {
@@ -40,16 +37,9 @@ public static class Problem8
         return c == 'L' ? left : right;
     }
     public static long GhostPathLength(string tape)
-    {
-        IEnumerable<string> starts = _nodes.Keys.Where(x => x.EndsWith('A'));
-        List<long> allZs = new();
-        foreach(string start in starts)
-        {
-            IEnumerable<long> zPositions = tape.ZPositions(start).ToList();
-            allZs.AddRange(zPositions);
-        }
-        return allZs.LeastCommonMultiple();
-    }
+        => _nodes.Keys.Where(x => x.EndsWith('A'))
+                      .SelectMany(tape.ZPositions)
+                      .LeastCommonMultiple();
     public static IEnumerable<long> ZPositions(this string input, string cur)
     {
         Tape tape = new(input);
@@ -86,10 +76,7 @@ public class Tape(string s)
             };
         }
     }
-    public char Advance()
-        => Items[Index++];
-    public char Current
-        => Items[Index];
-    public void Reset() 
-        => Index = 0;
+    public char Advance() => Items[Index++];
+    public char Current => Items[Index];
+    public void Reset() => Index = 0;
 }
