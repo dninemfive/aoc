@@ -23,15 +23,15 @@ public static class Problem8
     public static int NavigateBetween(string start, string end, Tape tape)
     {
         string cur = start;
-        tape.Index = -1;
         int ct = 0;
-        while(cur != end)
+        while (cur != end)
         {
             (string left, string right) = _nodes[cur];
             Console.WriteLine($"{ct,4} {cur} {tape.Index,3} {tape.Current} {left} {right}");
             cur = tape.Advance() == 'L' ? left : right;
             ct++;
         }
+        Console.WriteLine($"{ct,4} {cur}");
         return ct;
     }
 }
