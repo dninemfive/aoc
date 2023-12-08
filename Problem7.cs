@@ -13,13 +13,19 @@ public static class Problem7
         IEnumerable<Hand> hands = lines.Select(x => new Hand(x)).OrderDescending();
         IEnumerable<int> ranks = hands.Rank();
         yield return hands.Zip(ranks).Select(x => x.First.Bet * x.Second).Sum();
+        hands = lines.Select(x => new Hand(x, jokerMode: true)).OrderDescending();
+        ranks = hands.Rank();
+        foreach((int rank, Hand hand) in ranks.Zip(hands))
+        {
+            Console.WriteLine($"{rank,4} {hand}");
+        }
+        yield return hands.Zip(ranks).Select(x => x.First.Bet * x.Second).Sum();
     }
     public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
     {
         int rank = hands.Count();
         foreach (Hand hand in hands.OrderDescending())
         {
-            // Console.WriteLine($"{hand}\t{rank}");
             yield return rank--;
         }
     }
@@ -29,11 +35,13 @@ public readonly struct Hand
 {
     public readonly IEnumerable<CamelCard> Cards;
     public readonly int Bet;
-    public Hand(string line)
+    public readonly bool JokerMode;
+    public Hand(string line, bool jokerMode = false)
     {
         string[] split = line.Split(" ");
-        Cards = split.First().Select(x => new CamelCard(x));
+        Cards = split.First().Select(x => new CamelCard(x, jokerMode));
         Bet = split.Second().Parse<int>();
+        JokerMode = jokerMode;
     }
     public override string ToString() => $"{Type,-12}\t{Cards.Select(x => x.Name).Merge()}";
     public int CompareTo(Hand other)
@@ -56,15 +64,13 @@ public readonly struct Hand
                                                  .Order();
     // 7.2 variation: figure out what the largest *possible* run is here instead
     // (by enumerating all the non-excluded combinations when you ignore Js)
-    public int LargestRunCount
+    public int LargestRunCount => JokerMode switch
     {
-        get
-        {
-            // having to do this because you can't use `this` in lambda expressions is so annoying lol
-            IEnumerable<CamelCard> cards = Cards;
-            return cards.Select(x => cards.Count(y => y == x)).Max();
-        }
-    }
+        true => Cards.Where(x => x != 'J').Select(Count).Max() + Cards.Where(x => x == 'J').Count(),
+        false => Cards.Select(Count).Max()
+    };
+    public int Count(CamelCard cardType)
+        => Cards.Count(x => x == cardType);
     public int NumRuns
     {
         get
@@ -100,15 +106,16 @@ public enum HandType
     OnePair,
     HighCard
 }
-public readonly struct CamelCard(char c) : IEquatable<CamelCard>, IComparable<CamelCard>
+public readonly struct CamelCard(char c, bool jokerMode = false) : IEquatable<CamelCard>, IComparable<CamelCard>
 {
     public string Name => $"{c}";
+    public readonly bool JokerMode = jokerMode;
     public int Value => c switch
     {
         'A' => 14,
         'K' => 13,
         'Q' => 12,
-        'J' => 11,
+        'J' => JokerMode ? 1 : 11,
         'T' => 10,
         >= '0' and <= '9' => c - '0',
         _ => throw new ArgumentOutOfRangeException(nameof(c))
