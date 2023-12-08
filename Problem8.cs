@@ -45,18 +45,11 @@ public static class Problem8
     }
     public static int GhostNavigate()
     {
+        // todo: find where the sequence repeats (i.e. encounters a (node, direction, index) threeple twice)
+        // but recently the sequence has repeated and repeated and it leaves me with the theory that they're trying to get inside
         _tape.Reset();
         List<string> starts = _nodes.Keys.Where(x => x.EndsWith('A')).ToList();
-        int ct = 0;
-        while(starts.Any(x => !x.EndsWith('Z')))
-        {
-            for (int i = 0; i < starts.Count; i++)
-                starts[i] = Step(starts[i]);
-            _ = _tape.Advance();
-            Console.WriteLine($"{ct,6} {starts.Select(x => x.EndsWith('Z') ? "Z" : " ").Merge()}");
-            ct++;
-        }
-        return ct;
+        return starts.Select(x => x.NavigateUntil(x => x.EndsWith('Z'))).LeastCommonFactor();
     }
     public static IEnumerable<int> Factors(this int n)
     {
@@ -70,7 +63,7 @@ public static class Problem8
                 yield return intFactor;
         }
     }
-    public static int LeastCommonFactor(params int[] ints)
+    public static int LeastCommonFactor(this IEnumerable<int> ints)
     {
         // todo: we can eliminate low factors once any item doesn't include them,
         // so add an argument "min" to factors
