@@ -57,7 +57,13 @@ public static class Problem8
     public static int LeastCommonMultiple(this IEnumerable<int> ints)
     {
         Console.WriteLine($"{nameof(LeastCommonMultiple)}({ints.ListNotation()})");
-        int result = ints.Distinct().Aggregate((x, y) => x * y);
+        int result = 1;
+        // todo: why tf does this return a result so low??
+        // also, factorize -> eliminate factors
+        // value is definitely higher than 518415797 (result from this function)
+        // and definitely lower than 23450862596828310511445429 (what this function should return)
+        foreach (int n in ints)
+            result *= n;
         return result;
     }
     public static bool DivisibleBy(this int a, int b)
