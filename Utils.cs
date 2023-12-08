@@ -75,4 +75,12 @@ public static class Utils
     public static T Parse<T>(this string s, IFormatProvider? formatProvider = null)
         where T : IParsable<T>
     => T.Parse(s, formatProvider ?? CultureInfo.InvariantCulture);
+    public static T GreatestCommonDivisor<T>(T a, T b)
+        where T : INumber<T>
+    {
+        (T large, T small) = a > b ? (a, b) : (b, a);
+        if (small <= T.Zero)
+            return large;
+        return GreatestCommonDivisor(small, large % small);
+    }
 }
