@@ -59,14 +59,13 @@ public readonly struct Hand
         }
         return 0;
     }
-    public IEnumerable<int> UniqueValues => Cards.Distinct()
-                                                 .Select(x => x.Value)
-                                                 .Order();
+    public IEnumerable<CamelCard> UniqueCards => Cards.Distinct()
+                                                      .Order();
     // 7.2 variation: figure out what the largest *possible* run is here instead
     // (by enumerating all the non-excluded combinations when you ignore Js)
     public int LargestRunCount => JokerMode switch
     {
-        true => Cards.Where(x => x != 'J').Select(Count).Max() + Cards.Where(x => x == 'J').Count(),
+        true => Cards.Where(x => x != 'J').Select(Count).MaxOrZero() + Cards.Count(x => x == 'J'),
         false => Cards.Select(Count).Max()
     };
     public int Count(CamelCard cardType)
@@ -76,9 +75,11 @@ public readonly struct Hand
         get
         {
             int ct = 0;
-            foreach(int i in UniqueValues)
+            foreach(CamelCard cc in UniqueCards)
             {
-                if (Cards.Count(x => x == i) > 1)
+                if (cc == 'J' && JokerMode)
+                    continue;
+                if (Count(cc) > 1)
                     ct++;
             }
             return ct;
@@ -108,20 +109,21 @@ public enum HandType
 }
 public readonly struct CamelCard(char c, bool jokerMode = false) : IEquatable<CamelCard>, IComparable<CamelCard>
 {
-    public string Name => $"{c}";
+    private readonly char _c = c;
+    public string Name => $"{_c}";
     public readonly bool JokerMode = jokerMode;
-    public int Value => c switch
+    public int Value => _c switch
     {
         'A' => 14,
         'K' => 13,
         'Q' => 12,
         'J' => JokerMode ? 1 : 11,
         'T' => 10,
-        >= '0' and <= '9' => c - '0',
-        _ => throw new ArgumentOutOfRangeException(nameof(c))
+        >= '0' and <= '9' => _c - '0',
+        _ => throw new ArgumentOutOfRangeException(nameof(_c))
     };
-    public static implicit operator int(CamelCard cc) => cc.Value;
     public static implicit operator string(CamelCard cc) => cc.Name;
+    public static implicit operator char(CamelCard cc) => cc._c;
     public override string ToString() => this;
     public override bool Equals(object? obj) 
         => obj is CamelCard card && Equals(card);

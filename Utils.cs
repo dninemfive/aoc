@@ -98,4 +98,11 @@ public static class Utils
             result = LeastCommonMultiple(result, item);
         return result;
     }
+    public static T MaxOrZero<T>(this IEnumerable<T> enumerable)
+        where T : INumber<T>
+    {
+        if (!enumerable.Any())
+            return T.Zero;
+        return enumerable.Max() ?? T.Zero;
+    }
 }
