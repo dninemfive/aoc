@@ -25,9 +25,7 @@ public static class Problem7
     {
         int rank = hands.Count();
         foreach (Hand hand in hands.OrderDescending())
-        {
             yield return rank--;
-        }
     }
 }
 public readonly struct Hand
@@ -39,11 +37,12 @@ public readonly struct Hand
     public Hand(string line, bool jokerMode = false)
     {
         string[] split = line.Split(" ");
-        Cards = split.First().Select(x => new CamelCard(x, jokerMode));
+        Cards = split.First().Select(x => new CamelCard(x, jokerMode)).ToList();
         Bet = split.Second().Parse<int>();
         JokerMode = jokerMode;
     }
-    public override string ToString() => $"{Type,-12}\t{Cards.Select(x => x.Name).Merge()}";
+    public string Name => Cards.Select(x => x.Name).Merge();
+    public override string ToString() => $"{Type,-12} {Name} {Runs.ListNotation()}";
     public int CompareTo(Hand other)
     {
         if(other.Type != Type)
@@ -71,52 +70,32 @@ public readonly struct Hand
             {
                 List<Run> result = [.. UniqueCards.Where(x => x != 'J')
                                                   .Select(Run)
-                                                  .OrderBy(x => x.Count)];
+                                                  .OrderByDescending(x => x.Count)];
                 (_, int jokerCount) = Run(new('J', true));
-                result[0] = result[0] + jokerCount;
+                if (!result.Any())
+                    return [Run(new('J', true))];
+                result[0] = result.First() + jokerCount;
                 return result;
             } 
             else
             {
-                return UniqueCards.Select(Run).OrderBy(x => x.Count);
+                return UniqueCards.Select(Run).OrderByDescending(x => x.Count);
             }
         }
     }
-    // 7.2 variation: figure out what the largest *possible* run is here instead
-    // (by enumerating all the non-excluded combinations when you ignore Js)
-    public int LargestRunCount => JokerMode switch
-    {
-        true => Cards.Where(x => x != 'J').Select(Count).MaxOrZero() + Cards.Count(x => x == 'J'),
-        false => Cards.Select(Count).Max()
-    };
     public int Count(CamelCard cardType)
         => Cards.Count(x => x == cardType);
-    public int NumRuns
+    public HandType Type => Runs.Select(x => x.Count).ToList() switch
     {
-        get
-        {
-            int ct = 0;
-            foreach(CamelCard cc in UniqueCards)
-            {
-                if (cc == 'J' && JokerMode)
-                    continue;
-                if (Count(cc) > 1)
-                    ct++;
-            }
-            return ct;
-        }
-    }
-    public HandType Type => (LargestRunCount, NumRuns) switch
-    {
-        (5, _) => HandType.FiveOfAKind,
-        (4, _) => HandType.FourOfAKind,
-        (3, 2) => HandType.FullHouse,
-        (3, 1) => HandType.ThreeOfAKind,
-        (2, 2) => HandType.TwoPair,
-        (2, 1) => HandType.OnePair,
+        [5] => HandType.FiveOfAKind,
+        [4, 1] => HandType.FourOfAKind,
+        [3, 2] => HandType.FullHouse,
+        [3, 1, 1] => HandType.ThreeOfAKind,
+        [2, 2, 1] => HandType.TwoPair,
+        [2, 1, 1, 1] => HandType.OnePair,
         _ => HandType.HighCard
     };
-    public int this[int index] => Cards.ElementAt(index);
+    public CamelCard this[int index] => Cards.ElementAt(index);
 }
 public enum HandType
 {
@@ -145,7 +124,7 @@ public readonly struct CamelCard(char c, bool jokerMode = false) : IEquatable<Ca
     };
     public static implicit operator string(CamelCard cc) => cc.Name;
     public static implicit operator char(CamelCard cc) => cc._c;
-    public override string ToString() => this;
+    public override string ToString() => $"{Name}{(JokerMode ? "'" : "")}";
     public override bool Equals(object? obj) 
         => obj is CamelCard card && Equals(card);
     public bool Equals(CamelCard other)
@@ -172,4 +151,6 @@ public readonly struct Run(CamelCard card, int ct)
         => new(tuple.card, tuple.ct);
     public static Run operator +(Run run, int amt) 
         => (run.Card, run.Count + amt);
+    public override string ToString()
+        => $"({Card}, {Count})";
 }
