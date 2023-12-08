@@ -50,26 +50,21 @@ public static class Problem8
         }
         return allZs.LeastCommonMultiple();
     }
-    public static IEnumerable<long> ZPositions(this string tape, string start)
+    public static IEnumerable<long> ZPositions(this string input, string cur)
     {
-        Console.WriteLine($"{nameof(ZPositions)}({start})");
-        Dictionary<(string, long), int> visitedStates = new();
+        Tape tape = new(input);
+        HashSet<(string cur, long index)> visitedStates = new();
+        long ct = 0;
         // once we see a (position, ct) pair twice, the sequence will repeat, so we don't need to continue
         // (it turns out for my input there's always exactly one point where the item ends with Z,
         //  but this code is more general and pretty cool i think)
-        foreach((string position, long ct) in NavigateUntil(start, x => visitedStates.TryGetValue(x, out int value) && value > 1, tape))
+        while (!visitedStates.Contains((cur, tape.Index)))
         {
-            if (position.EndsWith('Z'))
+            if (cur.EndsWith('Z'))
                 yield return ct;
-            (string, long) tuple = (position, ct);
-            if(visitedStates.TryGetValue(tuple, out int value))
-            {
-                visitedStates[tuple] = value + 1;
-            } 
-            else
-            {
-                visitedStates[tuple] = 1;
-            }
+            visitedStates.Add((cur, tape.Index));
+            cur = tape.Step(cur);
+            ct++;
         }
     }
 }
