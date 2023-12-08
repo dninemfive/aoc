@@ -87,10 +87,14 @@ public static class Utils
     }
     public static T LeastCommonMultiple<T>(T a, T b)
         where T : INumber<T>
-        => T.Abs(a) * (T.Abs(b) / GreatestCommonDivisor(a, b));
+    {
+        Console.WriteLine($"LeastCommonMultiple({a}, {b})");
+        return T.Abs(a) * (T.Abs(b) / GreatestCommonDivisor(a, b));
+    }
     public static T LeastCommonMultiple<T>(this IEnumerable<T> enumerable)
         where T : INumber<T>
     {
+        Console.WriteLine($"LeastCommonMultiple({enumerable.ListNotation()})");
         T result = LeastCommonMultiple(enumerable.First(), enumerable.Second());
         foreach (T item in enumerable.Skip(2))
             result = LeastCommonMultiple(result, item);

@@ -41,14 +41,14 @@ public static class Problem8
         char c = tape.Advance();
         return c == 'L' ? left : right;
     }
-    public static int GhostNavigate(string tape)
+    public static long GhostNavigate(string tape)
     {
         IEnumerable<string> starts = _nodes.Keys.Where(x => x.EndsWith('A'));
         Console.WriteLine($"{nameof(GhostNavigate)}({starts.ListNotation()})");
-        List<int> allZs = new();
+        List<long> allZs = new();
         foreach(string start in starts)
         {
-            IEnumerable<int> zPositions = tape.ZPositions(start).ToList();
+            IEnumerable<long> zPositions = tape.ZPositions(start).Select(x => (long)x).ToList();
             Console.WriteLine($"  {start}: {zPositions.ListNotation()}");
             allZs.AddRange(zPositions);
         }
