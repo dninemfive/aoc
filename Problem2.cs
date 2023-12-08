@@ -20,7 +20,7 @@ public static class Problem2
         {
             public Dictionary<string, int> Colors = desc.Split(", ")
                                                          .Select(x => x.Split(" "))
-                                                         .ToDict(x => x[1], x => int.Parse(x[0]));
+                                                         .ToDict(keys: x => x[1], values: x => int.Parse(x[0]));
             public int this[string key] => Colors.TryGetValue(key, out int result) ? result : 0;
         }
         public bool PossibleWith(params (string color, int quantity)[] colors)

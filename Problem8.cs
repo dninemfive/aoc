@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 namespace d9.aoc._23;
 public static class Problem8
 {
-    private static readonly Dictionary<string, (string left, string right)> _nodes = new();
+    private static Dictionary<string, (string left, string right)> _nodes = new();
     [SolutionToProblem(8)]
     public static IEnumerable<object> Solve(string[] lines)
     {
         string tape = lines.First();
-        foreach(string s in lines[2..])
-        {
-            List<string> vals = s.SplitAndTrim(" = (", ", ", ")");
-            _nodes[vals.First()] = (vals[1], vals[2]);
-        }
+        _nodes = lines.Skip(2)
+                      .Select(x => x.SplitAndTrim(" = (", ", ", ")"))
+                      .ToDict(keys: x => x[0], values: x => (x[1], x[2]));
         yield return NavigateBetween("AAA", "ZZZ", tape).Count();
         yield return GhostPathLength(tape);
     }

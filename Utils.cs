@@ -28,15 +28,15 @@ public static class Utils
         return result;
     }
     public static T Second<T>(this IEnumerable<T> enumerable) => enumerable.ElementAt(1);
-    public static Dictionary<K, V> ToDict<T, K, V>(this IEnumerable<T> enumerable, Func<T, K> keySelector, Func<T, V> valueSelector)
+    public static Dictionary<K, V> ToDict<T, K, V>(this IEnumerable<T> enumerable, Func<T, K> keys, Func<T, V> values)
         where K : notnull
-        => new(enumerable.Select(x => new KeyValuePair<K, V>(keySelector(x), valueSelector(x))));
-    public static Dictionary<K, V> ToDictWithKey<K, V>(this IEnumerable<V> enumerable, Func<V, K> keySelector)
+        => new(enumerable.Select(x => new KeyValuePair<K, V>(keys(x), values(x))));
+    public static Dictionary<K, V> ToDictWithKey<K, V>(this IEnumerable<V> enumerable, Func<V, K> keys)
         where K : notnull
-        => new(enumerable.Select(x => new KeyValuePair<K, V>(keySelector(x), x)));
-    public static Dictionary<K, V> ToDictWithValue<K, V>(this IEnumerable<K> enumerable, Func<K, V> valueSelector)
+        => new(enumerable.Select(x => new KeyValuePair<K, V>(keys(x), x)));
+    public static Dictionary<K, V> ToDictWithValue<K, V>(this IEnumerable<K> enumerable, Func<K, V> values)
         where K : notnull
-        => new(enumerable.Select(x => new KeyValuePair<K, V>(x, valueSelector(x))));
+        => new(enumerable.Select(x => new KeyValuePair<K, V>(x, values(x))));
     public static string Repeated<T>(this string s, T ct)
         where T : INumber<T>
     {
