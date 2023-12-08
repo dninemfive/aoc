@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace d9.aoc._23;
-public static class Problem8
+﻿namespace d9.aoc._23.day8;
+public static class Solution
 {
     private static Dictionary<string, (string left, string right)> _nodes = new();
     [SolutionToProblem(8)]
@@ -21,7 +14,8 @@ public static class Problem8
     }
     public static IEnumerable<(string position, long ct)> NavigateBetween(string start, string end, string tape)
         => start.NavigateUntil(x => x.position == end, tape);
-    public static IEnumerable<(string position, long ct)> NavigateUntil(this string start, Func<(string position, long ct), bool> end, string input) {
+    public static IEnumerable<(string position, long ct)> NavigateUntil(this string start, Func<(string position, long ct), bool> end, string input)
+    {
         Tape tape = new(input);
         string cur = start;
         long ct = 0;
@@ -55,26 +49,4 @@ public static class Problem8
             ct++;
         }
     }
-}
-public class Tape(string s)
-{
-    public readonly string Items = s.All(x => x is 'L' or 'R') ? s 
-        : throw new ArgumentException("String for a Tape must consist only of characters L and R!");
-    private int _index = 0;
-    public int Index
-    {
-        get => _index;
-        set
-        {
-            _index = (value < 0, value >= Items.Length) switch
-            {
-                (true, _) => Items.Length - 1,
-                (_, true) => 0,
-                _ => value
-            };
-        }
-    }
-    public char Advance() => Items[Index++];
-    public char Current => Items[Index];
-    public void Reset() => Index = 0;
 }
