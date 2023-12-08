@@ -36,42 +36,34 @@ public static class Problem8
     }
     public static string Step(this Tape tape, string cur)
     {
+        // Console.WriteLine($"{nameof(Step)}({cur})");
         (string left, string right) = _nodes[cur];
         char c = tape.Advance();
         return c == 'L' ? left : right;
     }
     public static int GhostNavigate(string tape)
     {
-        return _nodes.Keys.Where(x => x.EndsWith('A'))
-                          .SelectMany(tape.ZPositions)
-                          .LeastCommonFactor();
-    }
-    public static IEnumerable<int> Factors(this int n)
-    {
-        Console.WriteLine($"Factors({n})");
-        // making sure to perform each calculation once in a thickheaded way to improve performance
-        int halfN = n / 2;
-        for(float f = 1; f < halfN; f++)
+        IEnumerable<string> starts = _nodes.Keys.Where(x => x.EndsWith('A'));
+        Console.WriteLine($"{nameof(GhostNavigate)}({starts.ListNotation()})");
+        List<int> allZs = new();
+        foreach(string start in starts)
         {
-            float factor = n / f;
-            int intFactor = (int)factor;
-            if (factor == intFactor)
-            {
-                Console.WriteLine($"\t{factor}");
-                yield return intFactor;
-            }
+            IEnumerable<int> zPositions = tape.ZPositions(start).ToList();
+            Console.WriteLine($"  {start}: {zPositions.ListNotation()}");
+            allZs.AddRange(zPositions);
         }
+        return allZs.LeastCommonMultiple();
     }
-    public static int LeastCommonFactor(this IEnumerable<int> ints)
+    public static int LeastCommonMultiple(this IEnumerable<int> ints)
     {
-        Console.WriteLine($"{nameof(LeastCommonFactor)}({ints.ListNotation()})");
-        // todo: we can eliminate low factors once any item doesn't include them,
-        // so add an argument "min" to factors
-        IEnumerable<IEnumerable<int>> factorLists = ints.Select(Factors);
-        foreach (int factor in factorLists.SelectMany(x => x).Order())
-            if (factorLists.All(x => x.Contains(factor)))
-                return factor;
-        return ints.Distinct().Aggregate((x, y) => x * y);
+        Console.WriteLine($"{nameof(LeastCommonMultiple)}({ints.ListNotation()})");
+        int result = ints.Distinct().Aggregate((x, y) => x * y);
+        return result;
+    }
+    public static bool DivisibleBy(this int a, int b)
+    {
+        float div = a / (float)b;
+        return div == (int)div;
     }
     public static IEnumerable<int> ZPositions(this string input, string cur)
     {
