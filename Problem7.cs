@@ -54,6 +54,8 @@ public readonly struct Hand
     public IEnumerable<int> UniqueValues => Cards.Distinct()
                                                  .Select(x => x.Value)
                                                  .Order();
+    // 7.2 variation: figure out what the largest *possible* run is here instead
+    // (by enumerating all the non-excluded combinations when you ignore Js)
     public int LargestRunCount
     {
         get
