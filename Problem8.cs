@@ -11,11 +11,12 @@ public static class Problem8
     [SolutionToProblem(8)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        Tape tape = new(lines.First());        
+        Tape tape = new(lines.First());
         foreach(string s in lines[2..])
         {
             List<string> vals = s.SplitAndTrim(" = (", ", ", ")");
             _nodes[vals.First()] = (vals[1], vals[2]);
+            Console.WriteLine($"{vals.First()} = ({vals[1]}, {vals[2]})");
         }
         yield return NavigateBetween("AAA", "ZZZ", tape);
     }
@@ -27,6 +28,7 @@ public static class Problem8
         while(cur != end)
         {
             (string left, string right) = _nodes[cur];
+            Console.WriteLine($"{ct,4} {cur} {tape.Index,3} {tape.Current} {left} {right}");
             cur = tape.Advance() == 'L' ? left : right;
             ct++;
         }
@@ -52,4 +54,6 @@ public class Tape(string s)
     }
     public char Advance()
         => Items[Index++];
+    public char Current
+        => Items[Index];
 }
