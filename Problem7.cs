@@ -15,10 +15,6 @@ public static class Problem7
         yield return hands.Zip(ranks).Select(x => x.First.Bet * x.Second).Sum();
         hands = lines.Select(x => new Hand(x, jokerMode: true)).OrderDescending();
         ranks = hands.Rank();
-        foreach((int rank, Hand hand) in ranks.Zip(hands))
-        {
-            Console.WriteLine($"{rank,4} {hand}");
-        }
         yield return hands.Zip(ranks).Select(x => x.First.Bet * x.Second).Sum();
     }
     public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
@@ -58,8 +54,7 @@ public readonly struct Hand
         }
         return 0;
     }
-    public IEnumerable<CamelCard> UniqueCards => Cards.Distinct()
-                                                      .Order();
+    public IEnumerable<CamelCard> UniqueCards => Cards.Distinct();
     public Run Run(CamelCard cc)
         => (cc, Count(cc));
     public IEnumerable<Run> Runs
