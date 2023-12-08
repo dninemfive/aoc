@@ -78,9 +78,22 @@ public static class Utils
     public static T GreatestCommonDivisor<T>(T a, T b)
         where T : INumber<T>
     {
-        (T large, T small) = a > b ? (a, b) : (b, a);
-        if (small <= T.Zero)
-            return large;
-        return GreatestCommonDivisor(small, large % small);
+        static (T large, T small) sort(T a, T b)
+            => a > b ? (a, b) : (b, a);
+        (T large, T small) = sort(a, b);
+        while(small > T.Zero)
+            (large, small) = sort(small, large % small);
+        return large;
+    }
+    public static T LeastCommonMultiple<T>(T a, T b)
+        where T : INumber<T>
+        => T.Abs(a) * (T.Abs(b) / GreatestCommonDivisor(a, b));
+    public static T LeastCommonMultiple<T>(this IEnumerable<T> enumerable)
+        where T : INumber<T>
+    {
+        T result = LeastCommonMultiple(enumerable.First(), enumerable.Second());
+        foreach (T item in enumerable.Skip(2))
+            result = LeastCommonMultiple(result, item);
+        return result;
     }
 }
