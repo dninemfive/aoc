@@ -61,6 +61,27 @@ public readonly struct Hand
     }
     public IEnumerable<CamelCard> UniqueCards => Cards.Distinct()
                                                       .Order();
+    public Run Run(CamelCard cc)
+        => (cc, Count(cc));
+    public IEnumerable<Run> Runs
+    {
+        get
+        {            
+            if(JokerMode && UniqueCards.Any(x => x == 'J'))
+            {
+                List<Run> result = [.. UniqueCards.Where(x => x != 'J')
+                                                  .Select(Run)
+                                                  .OrderBy(x => x.Count)];
+                (_, int jokerCount) = Run(new('J', true));
+                result[0] = result[0] + jokerCount;
+                return result;
+            } 
+            else
+            {
+                return UniqueCards.Select(Run).OrderBy(x => x.Count);
+            }
+        }
+    }
     // 7.2 variation: figure out what the largest *possible* run is here instead
     // (by enumerating all the non-excluded combinations when you ignore Js)
     public int LargestRunCount => JokerMode switch
@@ -130,11 +151,25 @@ public readonly struct CamelCard(char c, bool jokerMode = false) : IEquatable<Ca
     public bool Equals(CamelCard other)
         => this == other;
     public override int GetHashCode()
-        => Value.GetHashCode();
+        => HashCode.Combine(_c, JokerMode);
     public int CompareTo(CamelCard other)
         => Value.CompareTo(other.Value);
     public static bool operator ==(CamelCard a, CamelCard b) 
-        => a.Value == b.Value;
+        => a.JokerMode == b.JokerMode && a.Value == b.Value;
     public static bool operator !=(CamelCard a, CamelCard b) 
         => !(a == b);
+}
+public readonly struct Run(CamelCard card, int ct)
+{
+    public readonly CamelCard Card = card;
+    public readonly int Count = ct;
+    public void Deconstruct(out CamelCard card, out int count)
+    {
+        card = Card;
+        count = Count;
+    }
+    public static implicit operator Run((CamelCard card, int ct) tuple)
+        => new(tuple.card, tuple.ct);
+    public static Run operator +(Run run, int amt) 
+        => (run.Card, run.Count + amt);
 }
