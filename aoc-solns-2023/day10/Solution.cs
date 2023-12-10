@@ -95,7 +95,7 @@ public static class Solution
         int highestDistance = int.MinValue;
         HashSet<Point> visitedPoints = new();
         Queue<(Point point, int distance)> queue = new();
-        Grid<char> debugGrid = Grid<char>.Of('.', _grid.Width, _grid.Height);
+        Grid<char> debugGrid = Grid<char>.Of(' ', _grid.Width, _grid.Height);
         void push(Point p, int distance)
         {
             if (visitedPoints.Contains(p))
