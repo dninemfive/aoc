@@ -45,14 +45,25 @@ public static class Solution
         Direction.Left => (-1, 0),
         _ => throw new ArgumentOutOfRangeException(nameof(d))
     };
+    public static Direction Reverse(this Direction d) => d switch
+    {
+        Direction.Up => Direction.Down,
+        Direction.Right => Direction.Left,
+        Direction.Down => Direction.Up,
+        Direction.Left => Direction.Right,
+        _ => throw new ArgumentOutOfRangeException(nameof(d))
+    };
     public static IEnumerable<Point> ConnectedNeighbors(this Point p)
     {
         char c = _grid[p];
         foreach (Direction d in c.Directions())
         {
             Point neighbor = p + d.Offset();
-            if (_grid.HasInBounds(neighbor))
+            if (_grid.HasInBounds(neighbor) && _grid[neighbor].PointsIn(d.Reverse()))
+            {
+                Console.WriteLine($"({p.X,3}, {p.Y,3}): {c} {d,-5}  {d.Reverse(),-5} {_grid[neighbor]}");
                 yield return neighbor;
+            }
         }
     }
     public enum Direction
@@ -79,7 +90,6 @@ public static class Solution
         {
             if (visitedPoints.Contains(p))
                 return;
-            Console.WriteLine(p);
             queue.Enqueue((p, distance));
             visitedPoints.Add(p);
             debugGrid = debugGrid.CopyWith((p, _grid[p]));
