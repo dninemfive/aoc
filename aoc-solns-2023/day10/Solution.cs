@@ -72,14 +72,27 @@ public static class Solution
     public static int Part1()
     {
         int highestDistance = int.MinValue;
-        Queue<(Point point, int distance)> queue = new([(FindStart(), 0)]);
+        HashSet<Point> visitedPoints = new();
+        Queue<(Point point, int distance)> queue = new();
+        Grid<char> debugGrid = Grid<char>.Of(' ', _grid.Width, _grid.Height);
+        void tryToPush(Point p, int distance)
+        {
+            if (visitedPoints.Contains(p))
+                return;
+            Console.WriteLine(p);
+            queue.Enqueue((p, distance));
+            visitedPoints.Add(p);
+            debugGrid = debugGrid.CopyWith((p, _grid[p]));
+        }
+        tryToPush(FindStart(), 0);
         while(queue.Any())
         {
             (Point point, int distance) = queue.Dequeue();
             highestDistance = int.Max(distance, highestDistance);
-            foreach(Point neighbor in point.ConnectedNeighbors())
-                queue.Enqueue((neighbor, distance + 1));
+            foreach (Point neighbor in point.ConnectedNeighbors())
+                tryToPush(neighbor, distance + 1);
         }
+        Console.WriteLine(Grid<char>.LayoutString(debugGrid));
         return highestDistance;
     }
 }

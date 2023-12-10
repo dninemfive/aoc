@@ -40,6 +40,22 @@ public readonly struct Grid<T>(T[,] grid)
                     yield return (x, y);
         }
     }
+    public Grid<T> CopyWith(params (Point point, T item)[] changes)
+    {
+        T[,] newGrid = (T[,])_grid.Clone();
+        foreach(((int x, int y), T item) in changes)
+            newGrid[x, y] = item;
+        return new(newGrid);
+    }
+    public static Grid<U> Of<U>(U item, int width, int height)
+        where U : struct
+    {
+        U[,] grid = new U[width, height];
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
+                grid[x, y] = item;
+        return grid;
+    }
     public static Grid<char> From(string[] lines)
     {
         int height = lines.Length, width = lines.Select(x => x.Length).Max();
