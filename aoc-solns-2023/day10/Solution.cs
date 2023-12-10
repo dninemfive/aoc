@@ -69,7 +69,7 @@ public static class Solution
             Point neighbor = p + d.Offset();
             if (_grid.HasInBounds(neighbor) && _grid[neighbor].PointsIn(d.Reverse()))
             {
-                Console.WriteLine($"{p.Info()} {d,-5} {d.Reverse(),-5} {neighbor.Info()}");
+                //Console.WriteLine($"{p.Info()} {d,-5} {d.Reverse(),-5} {neighbor.Info()}");
                 yield return neighbor;
             }
         }
@@ -100,17 +100,17 @@ public static class Solution
         {
             if (visitedPoints.Contains(p))
                 return;
-            Console.WriteLine($"\t{nameof(push)}({p.Info()}, {distance})");
+            //Console.WriteLine($"\t{nameof(push)}({p.Info()}, {distance})");
             queue.Enqueue((p, distance));
             visitedPoints.Add(p);
         }
         push(FindStart(), 0);
         while(queue.Any())
         {
-            Console.WriteLine($"[{queue.ListNotation(x => x.point.Info())}]");
+            //Console.WriteLine($"[{queue.ListNotation(x => x.point.Info())}]");
             (Point point, int distance) = queue.Dequeue();
-            debugGrid = debugGrid.CopyWith((point, (char)('0' + distance)));
-            Console.WriteLine($"pop {point} {distance}");
+            debugGrid = debugGrid.CopyWith((point, _grid[point]));
+            //Console.WriteLine($"pop {point} {distance}");
             highestDistance = int.Max(distance, highestDistance);
             foreach (Point neighbor in point.ConnectedNeighbors())
                 push(neighbor, distance + 1);
