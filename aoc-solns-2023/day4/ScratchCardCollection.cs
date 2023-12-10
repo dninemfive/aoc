@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using d9.aoc._23.shared;
 namespace d9.aoc._23.day4;
 public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
 {

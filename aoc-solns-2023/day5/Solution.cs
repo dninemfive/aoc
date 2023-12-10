@@ -1,6 +1,4 @@
-﻿using d9.aoc._23.shared;
-
-namespace d9.aoc._23.day5;
+﻿namespace d9.aoc._23.day5;
 // disable warnings for unfinished parts lol
 #pragma warning disable CS0162 // unreachable code
 #pragma warning disable CS8321 // unused function

@@ -1,6 +1,4 @@
-﻿using d9.aoc._23.shared;
-
-namespace d9.aoc._23.day7;
+﻿namespace d9.aoc._23.day7;
 public readonly struct Hand
     : IComparable<Hand>
 {

@@ -1,6 +1,4 @@
-﻿using d9.aoc._23.shared;
-
-namespace d9.aoc._23.day3;
+﻿namespace d9.aoc._23.day3;
 public static class Solution
 {
     [SolutionToProblem(3)]

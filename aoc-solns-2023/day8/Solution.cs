@@ -1,6 +1,4 @@
-﻿using d9.aoc._23.shared;
-
-namespace d9.aoc._23.day8;
+﻿namespace d9.aoc._23.day8;
 public static class Solution
 {
     private static Dictionary<string, (string left, string right)> _nodes = new();

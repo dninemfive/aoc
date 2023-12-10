@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using d9.aoc._23.shared;
 namespace d9.aoc._23.day6;
 public static class Solution
 {
