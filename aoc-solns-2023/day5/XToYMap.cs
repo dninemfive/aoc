@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using d9.aoc._23.shared;
 namespace d9.aoc._23.day5;
 public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     where T : struct, INumber<T>

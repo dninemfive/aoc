@@ -1,4 +1,6 @@
-﻿namespace d9.aoc._23.day1;
+﻿using d9.aoc._23.shared;
+
+namespace d9.aoc._23.day1;
 public static class FindDigit
 {
     public static readonly string[] DIGIT_STRINGS = [

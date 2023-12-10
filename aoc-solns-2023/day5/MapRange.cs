@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using d9.aoc._23.shared;
 namespace d9.aoc._23.day5;
 public class MapRange<T>
     where T : struct, INumber<T>
