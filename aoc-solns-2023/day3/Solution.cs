@@ -4,19 +4,10 @@ public static class Solution
     [SolutionToProblem(3)]
     public static IEnumerable<object> Solve(string[] inputLines)
     {
-        Grid<char> grid = MakeGridFrom(inputLines);
+        Grid<char> grid = Grid<char>.From(inputLines);
         yield return grid.PartNumbers().Sum();
         yield return grid.GearRatios().Sum();
-    }
-    public static Grid<char> MakeGridFrom(string[] lines)
-    {
-        int height = lines.Length, width = lines.Select(x => x.Length).Max();
-        char[,] input = new char[width, height];
-        for (int y = 0; y < height; y++)
-            for (int x = 0; x < width; x++)
-                input[x, y] = lines[y][x];
-        return input;
-    }
+    }    
     public static IEnumerable<int> PartNumbers(this Grid<char> plan)
     {
         string currentNumber = "";

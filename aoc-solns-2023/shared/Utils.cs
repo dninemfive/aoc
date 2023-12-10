@@ -99,4 +99,11 @@ public static class Utils
             return T.Zero;
         return enumerable.Max() ?? T.Zero;
     }
+    public static string ReplaceBy(this string s, Func<char, char> replacer)
+    {
+        string result = "";
+        foreach (char c in s)
+            result += replacer(c);
+        return result;
+    }
 }

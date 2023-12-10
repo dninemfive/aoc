@@ -40,4 +40,24 @@ public readonly struct Grid<T>(T[,] grid)
                     yield return (x, y);
         }
     }
+    public static Grid<char> From(string[] lines)
+    {
+        int height = lines.Length, width = lines.Select(x => x.Length).Max();
+        char[,] input = new char[width, height];
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+                input[x, y] = lines[y][x];
+        return input;
+    }
+    public static string LayoutString(Grid<char> grid)
+    {
+        string result = "";
+        for (int x = 0; x < grid.Width; x++)
+        {
+            for (int y = 0; y < grid.Height; y++)
+                result += grid[x, y];
+            result += "\n";
+        }
+        return result[..^1];
+    }
 }
