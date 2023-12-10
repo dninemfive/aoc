@@ -4,8 +4,9 @@ namespace d9.aoc._23;
 // i should really just use utl...
 public static class Utils
 {
-    public static string ListNotation<T>(this IEnumerable<T> enumerable)
-        => enumerable.Any() ? enumerable.Select(x => $"{x}").Aggregate((x, y) => $"{x}, {y}") : "(no elements)";
+    public static string ListNotation<T>(this IEnumerable<T> enumerable, Func<T, string>? format = null)
+        => enumerable.Any() ? enumerable.Select(x => $"{(format is not null ? format(x) : x)}")
+                                        .Aggregate((x, y) => $"{x}, {y}") : "(no elements)";
     public static IEnumerable<T> ToMany<T>(this string s, string delimiter = " ", IFormatProvider? formatProvider = null, int skip = 0)
         where T : IParsable<T>
         => s.SplitAndTrim(delimiter).Skip(skip).Select(x => T.Parse(x.Trim(), formatProvider ?? CultureInfo.InvariantCulture));
