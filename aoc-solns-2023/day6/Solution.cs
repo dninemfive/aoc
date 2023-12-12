@@ -9,18 +9,21 @@ public static class Solution
                                                            .ToMany<int>(skip: 1)
                                                            .Zip(lines.Second()
                                                                      .ToMany<int>(skip: 1));
-        yield return races.Select(x => NumSolutions(x.time, x.distance)).Aggregate((x, y) => x * y);
+        yield return races.Select(x => NumSolutionsOld(x.time, x.distance)).Aggregate((x, y) => x * y);
+        yield return races.Select(x => NumSolutions<double, long>(x.time, x.distance)).Aggregate((x, y) => x * y);
         long correctTime = long.Parse(lines.First()
                                            .SplitAndTrim(" ")[1..]
                                            .Merge());
         long correctDistance = long.Parse(lines.Second()
                                                .SplitAndTrim(" ")[1..]
                                                .Merge());
-        yield return NumSolutions(correctTime, correctDistance);
+        yield return NumSolutionsOld(correctTime, correctDistance);
+        yield return NumSolutions<double, long>(correctTime, correctDistance);
     }
     public static T Distance<T>(T buttonHeldTime, T totalTime)
         where T : INumber<T>
         => buttonHeldTime * (totalTime - buttonHeldTime);
+    // 
     public static (T left, T right) Intersections<T>(T totalTime, T targetDistance)
         where T : INumber<T>
     {
@@ -34,16 +37,25 @@ public static class Solution
         stepWhile(ref right, subtract: true, x => Distance(x, totalTime) <= targetDistance);
         return (left, right);
     }
-    // distance = b * (t - b) = bt - b^2
-    // distance' (speed?) = t - 2b
-    public static (T left, T right) FirstOrderZeroes<T>(T totalTime)
-    {
-
-    }
-    public static T NumSolutions<T>(T totalTime, T targetDistance)
+    public static T NumSolutionsOld<T>(T totalTime, T targetDistance)
         where T : INumber<T>
     {
+        Console.WriteLine($"{nameof(NumSolutionsOld)}<{typeof(T).Name}>({totalTime}, {targetDistance})");
         (T left, T right) = Intersections(totalTime, targetDistance);
-        return right - left + T.One;
+        Console.WriteLine($"-> {left}, {right}");
+        T result = right - left + T.One;
+        Console.WriteLine($"-> {result}");
+        return result;
+    }
+    public static T NumSolutions<T, R>(T totalTime, T targetDistance)
+        where T : INumber<T>, IFloatingPointIeee754<T>
+        where R : INumber<R>
+    {
+        Console.WriteLine($"{nameof(NumSolutions)}<{typeof(T).Name}, {typeof(R).Name}>({totalTime}, {targetDistance})");
+        (T lo, T hi) = Utils.QuadraticFormula(T.One, totalTime, targetDistance);
+        Console.WriteLine($"-> {lo}, {hi}");
+        T result = T.Floor(-lo) - T.Ceiling(-hi);
+        Console.WriteLine($"-> {result}");
+        return result + T.One;
     }
 }

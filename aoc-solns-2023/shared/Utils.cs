@@ -107,10 +107,13 @@ public static class Utils
             result += replacer(c);
         return result;
     }
-    public static (double lo, double hi) QuadraticFormula(double a, double b, double c)
+    public static (T lo, T hi) QuadraticFormula<T>(T a, T b, T c)
+        where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        double discriminant = Math.Sqrt((b * b) - 4 * a * c);
-        double amendment = 2 * a;
-        return ((-b - discriminant) / amendment, (-b + discriminant) / amendment);
+        // for most types, multiplying by 2 is faster than addition
+        T two = T.CreateChecked(2), four = two * two;
+        T discriminant = T.Sqrt((b * b) - four * a * c), denominator = two * a;
+        T minusResult = (-b - discriminant) / denominator, plusResult = (-b + discriminant) / denominator;
+        return minusResult < plusResult ? (minusResult, plusResult) : (plusResult, minusResult);
     }
 }
