@@ -40,22 +40,14 @@ public static class Solution
     public static T NumSolutionsOld<T>(T totalTime, T targetDistance)
         where T : INumber<T>
     {
-        Console.WriteLine($"{nameof(NumSolutionsOld)}<{typeof(T).Name}>({totalTime}, {targetDistance})");
         (T left, T right) = Intersections(totalTime, targetDistance);
-        Console.WriteLine($"-> {left}, {right}");
-        T result = right - left + T.One;
-        Console.WriteLine($"-> {result}");
-        return result;
+        return right - left + T.One;
     }
     public static T NumSolutions<T, R>(T totalTime, T targetDistance)
         where T : INumber<T>, IFloatingPointIeee754<T>
         where R : INumber<R>
     {
-        Console.WriteLine($"{nameof(NumSolutions)}<{typeof(T).Name}, {typeof(R).Name}>({totalTime}, {targetDistance})");
         (T lo, T hi) = Utils.QuadraticFormula(T.One, totalTime, targetDistance);
-        Console.WriteLine($"-> {lo}, {hi}");
-        T result = T.Floor(-lo) - T.Ceiling(-hi);
-        Console.WriteLine($"-> {result}");
-        return result + T.One;
+        return T.Floor(-lo) - T.Ceiling(-hi) + T.One;
     }
 }
