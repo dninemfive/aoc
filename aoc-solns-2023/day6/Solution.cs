@@ -34,6 +34,12 @@ public static class Solution
         stepWhile(ref right, subtract: true, x => Distance(x, totalTime) <= targetDistance);
         return (left, right);
     }
+    // distance = b * (t - b) = bt - b^2
+    // distance' (speed?) = t - 2b
+    public static (T left, T right) FirstOrderZeroes<T>(T totalTime)
+    {
+
+    }
     public static T NumSolutions<T>(T totalTime, T targetDistance)
         where T : INumber<T>
     {

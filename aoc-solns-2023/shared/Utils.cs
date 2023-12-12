@@ -107,4 +107,10 @@ public static class Utils
             result += replacer(c);
         return result;
     }
+    public static (double lo, double hi) QuadraticFormula(double a, double b, double c)
+    {
+        double discriminant = Math.Sqrt((b * b) - 4 * a * c);
+        double amendment = 2 * a;
+        return ((-b - discriminant) / amendment, (-b + discriminant) / amendment);
+    }
 }

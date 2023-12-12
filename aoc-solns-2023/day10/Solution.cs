@@ -4,19 +4,20 @@ namespace d9.aoc._23.day10;
 public static class Solution
 {
     private static Grid<char> _grid;
+#pragma warning disable IDE1006 // Naming Styles
     private const char UPDOWN       = '│', 
                        LEFTRIGHT    = '─', 
                        UPRIGHT      = '└',
                        UPLEFT       = '┘', 
                        DOWNLEFT     = '┐', 
                        DOWNRIGHT    = '┌', 
-                       START        = '*', 
+                       START        = '█', 
                        EMPTY        = ' ';
+#pragma warning restore IDE1006 // Naming Styles
     [SolutionToProblem(10)]
     public static IEnumerable<object> Solve(string[] input)
     {
         _grid = Grid<char>.From(input.Select(x => x.ReplaceBy(BoxDrawingEquivalent)).ToArray());
-        File.WriteAllText(Path.Join(Program.INPUT_FOLDER, "readable day10 input.txt"), Grid<char>.LayoutString(_grid));
         yield return Part1();
     }
     public static char BoxDrawingEquivalent(this char c) => c switch
@@ -68,10 +69,7 @@ public static class Solution
         {
             Point neighbor = p + d.Offset();
             if (_grid.HasInBounds(neighbor) && _grid[neighbor].PointsIn(d.Reverse()))
-            {
-                //Console.WriteLine($"{p.Info()} {d,-5} {d.Reverse(),-5} {neighbor.Info()}");
                 yield return neighbor;
-            }
         }
     }
     public enum Direction
@@ -100,22 +98,19 @@ public static class Solution
         {
             if (visitedPoints.Contains(p))
                 return;
-            //Console.WriteLine($"\t{nameof(push)}({p.Info()}, {distance})");
             queue.Enqueue((p, distance));
             visitedPoints.Add(p);
         }
         push(FindStart(), 0);
         while(queue.Any())
         {
-            //Console.WriteLine($"[{queue.ListNotation(x => x.point.Info())}]");
             (Point point, int distance) = queue.Dequeue();
             debugGrid = debugGrid.CopyWith((point, _grid[point]));
-            //Console.WriteLine($"pop {point} {distance}");
             highestDistance = int.Max(distance, highestDistance);
             foreach (Point neighbor in point.ConnectedNeighbors())
                 push(neighbor, distance + 1);
         }
-        Console.WriteLine(Grid<char>.LayoutString(debugGrid));
+        File.WriteAllText("loop visualization.txt", Grid<char>.LayoutString(debugGrid));
         return highestDistance;
     }
 }
