@@ -11,7 +11,7 @@ public static class Solution
     [SolutionToProblem(9)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        yield break;
+        yield return lines.Select(x => x.ToMany<int>()).Select(x => x.NextValue()).Sum();
     }
     public static IEnumerable<T> Diffs<T>(this IEnumerable<T> numbers)
         where T : INumber<T>
@@ -24,12 +24,15 @@ public static class Solution
     public static T NextValue<T>(this IEnumerable<T> numbers)
         where T : INumber<T>
     {
+        Console.WriteLine($"{nameof(NextValue)}<{typeof(T).Name}>({numbers.ListNotation()})");
         List<List<T>> sequences = [numbers.ToList()];
-        List<T> cur = numbers.Diffs().ToList();
+        List<T> cur = numbers.ToList();
+        int ct = 0;
         while(cur.Any(x => x != T.Zero))
         {
-            sequences.Add(cur);
             cur = cur.Diffs().ToList();
+            Console.WriteLine($"{ct++,3}\t{cur.ListNotation()}");
+            sequences.Add(cur);
         }
         for (int i = sequences.Count - 1; i >= 0; i--)
             FillIn(sequences, i);
@@ -38,11 +41,13 @@ public static class Solution
     public static void FillIn<T>(this List<List<T>> sequences, int index)
         where T : INumber<T>
     {
+        Console.WriteLine($"{nameof(FillIn)}<{typeof(T).Name}>([{sequences.Count}], {index})");
         if(index == sequences.Count - 1)
         {
             sequences[index].Add(T.Zero);
             return;
         }
         sequences[index].Add(sequences[index + 1].Last() + sequences[index].Last());
+        Console.WriteLine($"\t{sequences[index].ListNotation()}");
     }
 }
