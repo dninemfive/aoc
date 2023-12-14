@@ -19,13 +19,13 @@ public class Sequence<T>
     public T Next(bool print = false)
     {
         _rows[^1].Add(T.Zero);
-        Console.WriteLine(_rows[^1].ListNotation());
+        if (print) Console.WriteLine(_rows[^1].ListNotation());
         for(int i = _rows.Count - 2; i >= 0; i--)
         {
             _rows[i].Add(_rows[i].Last() + _rows[i + 1].Last());
-            Console.WriteLine(_rows[i].ListNotation());
+            if (print) Console.WriteLine(_rows[i].ListNotation());
         }
-        return _rows.First().First();
+        return _rows.First().Last();
     }
     public string Pyramid
     {

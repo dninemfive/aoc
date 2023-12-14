@@ -11,8 +11,14 @@ public static class Solution
     [SolutionToProblem(9)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        yield return lines.Select(x => new Sequence<int>(x.ToMany<int>())).Select(x => x.Next()).Sum();
-        Console.WriteLine(new Sequence<int>(lines.First().ToMany<int>()).Pyramid);
+        int sum = 0;
+        foreach(Sequence<int> seq in lines.Select(x => new Sequence<int>(x.ToMany<int>())))
+        {
+            int next = seq.Next();
+            sum += next;
+            Console.WriteLine($"{next,8}\t{sum,16}");
+        }
+        yield return sum;
     }
     public static IEnumerable<T> Diffs<T>(this IEnumerable<T> numbers)
         where T : INumber<T>
