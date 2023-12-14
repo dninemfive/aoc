@@ -18,29 +18,19 @@ public class Sequence<T>
     }
     private T Extrapolate(bool forward = true)
     {
+        // if we're extrapolating to the future, add to the end of the sequence; otherwise, add to the beginning
         Action<int, T> addToRow = forward ? (i, x) => _rows[i].Add(x) : (i, x) => _rows[i].Insert(0, x);
-        Func<T, T, T> addTwoNumbers = forward ? (x, y) => x + y : (x, y) => x - y;
-        Func<int, T> lastOrFirst = forward ? (i) => _rows[i].Last() : (i) => _rows[i].First();
+        // if we're extrapolating to the future, add the current and next higher derivatives; otherwise, subtract the higher from the current
+        Func<T, T, T> combine = forward ? (x, y) => x + y : (x, y) => x - y;
+        // if we're extrapolating to the future, get the last item of the row; otherwise, get the first
+        Func<int, T> getFromRow = forward ? (i) => _rows[i].Last() : (i) => _rows[i].First();
         addToRow(_rows.Count - 1, T.Zero);
         for(int i = _rows.Count - 2; i >= 0; i--)
-            addToRow(i, addTwoNumbers(lastOrFirst(i), lastOrFirst(i + 1)));
-        return lastOrFirst(0);
+            addToRow(i, combine(getFromRow(i), getFromRow(i + 1)));
+        return getFromRow(0);
     }
     public T Next()
         => Extrapolate(forward: true);
     public T Prev()
         => Extrapolate(forward: false);
-    public string Pyramid
-    {
-        get
-        {
-            string result = "", prefix = "";
-            foreach(string s in _rows.Select(x => x.ListNotation()))
-            {
-                result += $"{prefix}{s}\n";
-                prefix += " ";
-            }
-            return result;
-        }
-    }
 }
