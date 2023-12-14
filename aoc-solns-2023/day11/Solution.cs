@@ -1,48 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace d9.aoc._23.day11;
+﻿namespace d9.aoc._23.day11;
 public static class Solution
 {
+    private static Grid<char> _grid;
     [SolutionToProblem(11)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        Grid<char> grid = Grid<char>.From(lines);
-        for(int x = 0; x < grid.Width; x++)
-        {
-            if(grid.GetColumn(x).All(c => c == '.'))
-            {
-                Console.WriteLine(x);
-                grid = grid.InsertColumn(x, '.');
-                x++;
-            }
-        }
-        for(int y = 0; y < grid.Height; y++)
-        {
-            if (grid.GetRow(y).All(c => c == '.'))
-            {
-                Console.WriteLine(y);
-                grid = grid.InsertRow(y, '.');
-                y++;
-            }
-        }
-        File.WriteAllText(Path.Join(Program.INPUT_FOLDER, "11.output"), Grid<char>.LayOut(grid));
-        yield return grid.GalaxyLocations().ToList().UniquePairs().Select(TaxicabDistance).Sum();
+        _grid = Grid<char>.From(lines);
+        yield return _grid.GalaxyLocations().ToList().UniquePairs().Select(GalaxyDistance).Sum();
     }
-    public static IEnumerable<Point> GalaxyLocations(this Grid<char> grid)
+    public static IEnumerable<NumberPair<int>> GalaxyLocations(this Grid<char> grid)
         => grid.AllPoints.Where(p => grid[p] == '#');
-    public static IEnumerable<(Point a, Point b)> UniquePairs(this List<Point> points)
+    public static IEnumerable<(NumberPair<int> a, NumberPair<int> b)> UniquePairs(this List<NumberPair<int>> Points)
     {
-        HashSet<(Point a, Point b)> seenPairs = new();
-        bool hasBeenSeen(Point a, Point b) => seenPairs.Contains((a, b));
-        for(int i = 0; i <  points.Count; i++)
+        HashSet<(NumberPair<int> a, NumberPair<int> b)> seenPairs = new();
+        bool hasBeenSeen(NumberPair<int> a, NumberPair<int> b) => seenPairs.Contains((a, b));
+        for(int i = 0; i <  Points.Count; i++)
         {
-            for(int j = i + 1; j < points.Count; j++)
+            for(int j = i + 1; j < Points.Count; j++)
             {
-                (Point a, Point b) = (points[i], points[j]);
+                (NumberPair<int> a, NumberPair<int> b) = (Points[i], Points[j]);
                 if (hasBeenSeen(a, b))
                     continue;
                 yield return (a, b);
@@ -51,9 +27,15 @@ public static class Solution
             }
         }
     }
-    // uses the fact that the length of the shortest taxicab distance between a and b is just the sum of the differences of their axes
-    public static int TaxicabDistance(Point a, Point b)
-        => Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-    public static int TaxicabDistance(this (Point a, Point b) pair)
-        => TaxicabDistance(pair.a, pair.b);
+    public static IEnumerable<int> EmptyRowIndices
+        => _grid.Rows.Where(x => x.row.All(y => y == '.')).Select(x => x.index);
+    public static IEnumerable<int> EmptyColumnIndices
+        => _grid.Columns.Where(x => x.column.All(y => y == '.')).Select(x => x.index);
+    public static int GalaxyDistance(this (NumberPair<int> a, NumberPair<int> b) pair, int expansionFactor = 2)
+    {
+        (NumberPair<int> a, NumberPair<int> b) = pair;
+        int emptySpacesBetweenPoints = EmptyRowIndices.Where(i => i.IsBetween(a.Y, b.Y)).Count()
+                                     + EmptyColumnIndices.Where(i => i.IsBetween(a.X, b.X)).Count();
+        return a.ManhattanDistanceFrom(b) + emptySpacesBetweenPoints * expansionFactor;
+    }
 }

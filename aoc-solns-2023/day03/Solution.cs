@@ -12,7 +12,7 @@ public static class Solution
     {
         string currentNumber = "";
         bool isPartNumber = false;
-        foreach (Point p in plan.AllPoints)
+        foreach (NumberPair<int> p in plan.AllPoints)
         {
             char cur = plan[p];
             if (!cur.IsDigit())
@@ -29,7 +29,7 @@ public static class Solution
     }
     public static IEnumerable<int> GearRatios(this Grid<char> plan)
     {
-        foreach (Point p in plan.GearLocations())
+        foreach (NumberPair<int> p in plan.GearLocations())
         {
             IEnumerable<int> adjacentNumbers = plan.NumbersAdjacentTo(p);
             if (adjacentNumbers.Count() != 2)
@@ -39,13 +39,13 @@ public static class Solution
     }
     public static bool IsSymbol(this char c)
         => !c.IsDigit() && c != '.';
-    public static IEnumerable<Point> GearLocations(this Grid<char> grid)
+    public static IEnumerable<NumberPair<int>> GearLocations(this Grid<char> grid)
         => grid.AllPoints.Where(p => grid[p] == '*');
-    public static bool IsAdjacentToSymbolIn(this Point p, Grid<char> grid)
+    public static bool IsAdjacentToSymbolIn(this NumberPair<int> p, Grid<char> grid)
         => grid.ValuesAdjacentTo(p, includeSelf: true).Any(IsSymbol);
-    public static IEnumerable<int> NumbersAdjacentTo(this Grid<char> grid, Point p)
+    public static IEnumerable<int> NumbersAdjacentTo(this Grid<char> grid, NumberPair<int> p)
     {
-        List<Point> digitLocations = grid.PointsAdjacentTo(p)
+        List<NumberPair<int>> digitLocations = grid.PointsAdjacentTo(p)
                                          .Where(p2 => grid[p2].IsDigit())
                                          .ToList();
         void removePointsBetween(int left, int right, int y)
@@ -53,7 +53,7 @@ public static class Solution
 
         while (digitLocations.Any())
         {
-            Point p2 = digitLocations.First();
+            NumberPair<int> p2 = digitLocations.First();
             (int value, int left, int right) = grid.EntireNumberIncluding(p2);
             yield return value;
             removePointsBetween(left, right, p2.Y);
@@ -62,12 +62,12 @@ public static class Solution
 #pragma warning disable IDE1006 // Naming Styles: consts should be all-caps (should switch to a better style enforcer tbh)
     private const int LEFT = -1, RIGHT = 1;
 #pragma warning restore IDE1006 // Naming Styles
-    public static (int value, int left, int right) EntireNumberIncluding(this Grid<char> grid, Point p)
+    public static (int value, int left, int right) EntireNumberIncluding(this Grid<char> grid, NumberPair<int> p)
     {
         (int x, int y) = p;
         char c = grid[p];
         if (!c.IsDigit())
-            throw new Exception($"The character {c} at point {p} is not a digit!");
+            throw new Exception($"The character {c} at NumberPair<int> {p} is not a digit!");
         int findEnd(int step)
         {
             int end = x;

@@ -38,7 +38,7 @@ public static class Solution
         HashSet<(string cur, long index)> visitedStates = new();
         long ct = 0;
         // once we see a (position, ct) pair twice, the sequence will repeat, so we don't need to continue
-        // (it turns out for my input there's always exactly one point where the item ends with Z,
+        // (it turns out for my input there's always exactly one NumberPair<int> where the item ends with Z,
         //  but this code is more general and pretty cool i think)
         while (!visitedStates.Contains((cur, tape.Index)))
         {

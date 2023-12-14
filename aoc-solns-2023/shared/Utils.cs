@@ -116,7 +116,7 @@ public static class Utils
         T minusResult = (-b - discriminant) / denominator, plusResult = (-b + discriminant) / denominator;
         return minusResult < plusResult ? (minusResult, plusResult) : (plusResult, minusResult);
     }
-    public static IEnumerable<(T value, Point point)> Enumerate<T>(this T[,] array)
+    public static IEnumerable<(T value, NumberPair<int> point)> Enumerate<T>(this T[,] array)
     {
         for(int x = 0; x < array.GetLength(0); x++)
             for (int y = 0; y < array.GetLength(1); y++)
@@ -126,4 +126,10 @@ public static class Utils
         => array.GetLength(0);
     public static int Height<T>(this T[,] array)
         => array.GetLength(1);
+    public static bool IsBetween<T>(this T a, T b, T c, bool inclusive = false)
+        where T : INumber<T>
+    {
+        (T hi, T lo) = (T.Max(b, c), T.Min(b, c));
+        return (a > lo && a < hi) || (inclusive && (a == lo || a == hi));
+    }
 }

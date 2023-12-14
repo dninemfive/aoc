@@ -19,7 +19,7 @@ public static class Solution
         yield return (long)NumSolutions<double>(correctTime, correctDistance);
     }
     public static T NumSolutions<T>(T totalTime, T targetDistance)
-        where T : INumber<T>, IFloatingPointIeee754<T>
+        where T : INumber<T>, IFloatingNumberPair<int>Ieee754<T>
     {
         (T lo, T hi) = Utils.QuadraticFormula(T.One, totalTime, targetDistance);
         return T.Floor(-lo) - T.Ceiling(-hi) + T.One;
