@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace d9.aoc._23.day09;
+namespace d9.aoc._23.day9;
 public class Sequence<T>
     where T : INumber<T>
 {
@@ -16,17 +16,19 @@ public class Sequence<T>
         while(_rows.Last().Any(x => x != T.Zero))
             _rows.Add(_rows.Last().Diffs().ToList());
     }
-    public T Next(bool print = false)
+    private T Extrapolate(bool forward = true)
     {
-        _rows[^1].Add(T.Zero);
-        if (print) Console.WriteLine(_rows[^1].ListNotation());
+        Action<int, T> addToRow = forward ? (i, x) => _rows[i].Add(x) : (i, x) => _rows[i].Insert(0, x);
+        Func<T, T, T> addTwoNumbers = forward ? (x, y) => x + y : (x, y) => x - y;
+        addToRow(_rows.Count - 1, T.Zero);
         for(int i = _rows.Count - 2; i >= 0; i--)
-        {
-            _rows[i].Add(_rows[i].Last() + _rows[i + 1].Last());
-            if (print) Console.WriteLine(_rows[i].ListNotation());
-        }
-        return _rows.First().Last();
+            addToRow(i, addTwoNumbers(_rows[i].Last(), _rows[i + 1].Last()));
+        return forward ? _rows.First().Last() : _rows.First().First();
     }
+    public T Next()
+        => Extrapolate(forward: true);
+    public T Prev()
+        => Extrapolate(forward: false);
     public string Pyramid
     {
         get

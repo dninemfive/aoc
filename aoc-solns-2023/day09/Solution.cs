@@ -5,20 +5,15 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace d9.aoc._23.day09;
+namespace d9.aoc._23.day9;
 public static class Solution
 {
     [SolutionToProblem(9)]
     public static IEnumerable<object> Solve(string[] lines)
     {
-        int sum = 0;
-        foreach(Sequence<int> seq in lines.Select(x => new Sequence<int>(x.ToMany<int>())))
-        {
-            int next = seq.Next();
-            sum += next;
-            Console.WriteLine($"{next,8}\t{sum,16}");
-        }
-        yield return sum;
+        IEnumerable<Sequence<int>> sequences = lines.Select(x => new Sequence<int>(x.ToMany<int>()));
+        yield return sequences.Select(x => x.Next()).Sum();
+        yield return sequences.Select(x => x.Prev()).Sum();
     }
     public static IEnumerable<T> Diffs<T>(this IEnumerable<T> numbers)
         where T : INumber<T>

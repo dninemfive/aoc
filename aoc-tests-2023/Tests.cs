@@ -6,6 +6,7 @@ using d9.aoc._23.day5;
 using d9.aoc._23.day6;
 using d9.aoc._23.day7;
 using d9.aoc._23.day8;
+using d9.aoc._23.day9;
 namespace d9.aoc._23.tests;
 [TestClass]
 public class Tests
@@ -26,4 +27,6 @@ public class Tests
     public void Test_Day7() => Utils.AssertSolution(day7.Solution.Solve, 248453531, 248781813);
     [TestMethod]
     public void Test_Day8() => Utils.AssertSolution(day8.Solution.Solve, 12083, 13385272668829);
+    [TestMethod]
+    public void Test_Day9() => Utils.AssertSolution(day9.Solution.Solve, 1993300041);
 }
