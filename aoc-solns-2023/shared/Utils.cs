@@ -122,4 +122,8 @@ public static class Utils
             for (int y = 0; y < array.GetLength(1); y++)
                 yield return (array[x, y], (x, y));
     }
+    public static int Width<T>(this T[,] array)
+        => array.GetLength(0);
+    public static int Height<T>(this T[,] array)
+        => array.GetLength(1);
 }

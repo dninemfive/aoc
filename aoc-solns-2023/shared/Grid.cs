@@ -1,5 +1,6 @@
 ﻿namespace d9.aoc._23;
 public readonly struct Grid<T>(T[,] grid)
+    where T : struct
 {
     private readonly T[,] _grid = grid;
     public T this[int x, int y] => _grid[x, y];
@@ -47,10 +48,9 @@ public readonly struct Grid<T>(T[,] grid)
             newGrid[x, y] = item;
         return new(newGrid);
     }
-    public static Grid<U> Of<U>(U item, int width, int height)
-        where U : struct
+    public static Grid<T> Of(T item, int width, int height)
     {
-        U[,] grid = new U[width, height];
+        T[,] grid = new T[width, height];
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
                 grid[x, y] = item;
@@ -75,5 +75,29 @@ public readonly struct Grid<T>(T[,] grid)
             result += "\n";
         }
         return result[..^1];
+    }
+    public Grid<T> InsertRow(int newRowIndex, T defaultItem = default)
+    {
+        T[,] newGrid = new T[Width, Height + 1];
+        foreach((T item, (int x, int y)) in _grid.Enumerate())
+        {
+            int y_ = y < newRowIndex ? y : y + 1;
+            newGrid[x, y_] = item;
+        }
+        for(int x = 0; x < newGrid.Width(); x++)
+            newGrid[x, newRowIndex] = defaultItem;
+        return newGrid;
+    }
+    public Grid<T> InsertColumn(int newColIndex, T defaultItem = default)
+    {
+        T[,] newGrid = new T[Width + 1, Height];
+        foreach ((T item, (int x, int y)) in _grid.Enumerate())
+        {
+            int x_ = x < newColIndex ? x : x + 1;
+            newGrid[x_, y] = item;
+        }
+        for (int y = 0; y < newGrid.Height(); y++)
+            newGrid[newColIndex, y] = defaultItem;
+        return newGrid;
     }
 }
