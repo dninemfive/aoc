@@ -86,13 +86,13 @@ public static class Solution
                 return p;
         throw new Exception($"Could not find starting NumberPair<int>!");
     }
-    public static string Info(this NumberPair<int> NumberPair<int>)
-        => $"{_grid[NumberPair<int>]}({NumberPair<int>.X,3}, {NumberPair<int>.Y,3})";
+    public static string Info(this NumberPair<int> point)
+        => $"{_grid[point]}({point.X,3}, {point.Y,3})";
     public static int Part1()
     {
         int highestDistance = int.MinValue;
         HashSet<NumberPair<int>> visitedPoints = new();
-        Queue<(NumberPair<int> NumberPair<int>, int distance)> queue = new();
+        Queue<(NumberPair<int> point, int distance)> queue = new();
         Grid<char> debugGrid = Grid<char>.Of(' ', _grid.Width, _grid.Height);
         void push(NumberPair<int> p, int distance)
         {
@@ -104,10 +104,10 @@ public static class Solution
         push(FindStart(), 0);
         while(queue.Any())
         {
-            (NumberPair<int> NumberPair<int>, int distance) = queue.Dequeue();
-            debugGrid = debugGrid.CopyWith((NumberPair<int>, _grid[NumberPair<int>]));
+            (NumberPair<int> point, int distance) = queue.Dequeue();
+            debugGrid = debugGrid.CopyWith((point, _grid[point]));
             highestDistance = int.Max(distance, highestDistance);
-            foreach (NumberPair<int> neighbor in NumberPair<int>.ConnectedNeighbors())
+            foreach (NumberPair<int> neighbor in point.ConnectedNeighbors())
                 push(neighbor, distance + 1);
         }
         File.WriteAllText("loop visualization.txt", Grid<char>.LayOut(debugGrid));

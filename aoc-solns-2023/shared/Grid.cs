@@ -32,7 +32,7 @@ public readonly struct Grid<T>(T[,] grid)
         Grid<T> _this = this;
         return PointsAdjacentTo(point, includeSelf).Select(x => _this[x]);
     }
-    public IEnumerable<NumberPair<int>> AllNumberPoints
+    public IEnumerable<NumberPair<int>> AllPoints
     {
         get
         {
