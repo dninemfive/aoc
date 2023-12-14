@@ -28,5 +28,7 @@ public class Tests
     [TestMethod]
     public void Test_Day8() => Utils.AssertSolution(day8.Solution.Solve, 12083, 13385272668829);
     [TestMethod]
-    public void Test_Day9() => Utils.AssertSolution(day9.Solution.Solve, 1993300041);
+    public void Test_Day9() => Utils.AssertSolution(day9.Solution.Solve, 1993300041, 1038);
+    [TestMethod]
+    public void Test_Day10() => Utils.AssertSolution(day10.Solution.Solve, 6733);
 }
