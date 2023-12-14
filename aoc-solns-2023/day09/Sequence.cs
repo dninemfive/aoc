@@ -20,10 +20,11 @@ public class Sequence<T>
     {
         Action<int, T> addToRow = forward ? (i, x) => _rows[i].Add(x) : (i, x) => _rows[i].Insert(0, x);
         Func<T, T, T> addTwoNumbers = forward ? (x, y) => x + y : (x, y) => x - y;
+        Func<int, T> lastOrFirst = forward ? (i) => _rows[i].Last() : (i) => _rows[i].First();
         addToRow(_rows.Count - 1, T.Zero);
         for(int i = _rows.Count - 2; i >= 0; i--)
-            addToRow(i, addTwoNumbers(_rows[i].Last(), _rows[i + 1].Last()));
-        return forward ? _rows.First().Last() : _rows.First().First();
+            addToRow(i, addTwoNumbers(lastOrFirst(i), lastOrFirst(i + 1)));
+        return lastOrFirst(0);
     }
     public T Next()
         => Extrapolate(forward: true);
