@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Numerics;
 namespace d9.aoc._23.day9;
 public class Sequence<T>
     where T : INumber<T>
