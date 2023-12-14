@@ -65,7 +65,7 @@ public readonly struct Grid<T>(T[,] grid)
                 input[x, y] = lines[y][x];
         return input;
     }
-    public static string LayoutString(Grid<char> grid)
+    public static string LayOut(Grid<char> grid)
     {
         string result = "";
         for (int x = 0; x < grid.Width; x++)
@@ -99,5 +99,15 @@ public readonly struct Grid<T>(T[,] grid)
         for (int y = 0; y < newGrid.Height(); y++)
             newGrid[newColIndex, y] = defaultItem;
         return newGrid;
+    }
+    public IEnumerable<T> GetColumn(int columnIndex)
+    {
+        for (int y = 0; y < Height; y++)
+            yield return _grid[columnIndex, y];
+    }
+    public IEnumerable<T> GetRow(int rowIndex)
+    {
+        for (int x = 0; x < Width; x++)
+            yield return _grid[x, rowIndex];
     }
 }

@@ -110,7 +110,7 @@ public static class Solution
             foreach (Point neighbor in point.ConnectedNeighbors())
                 push(neighbor, distance + 1);
         }
-        File.WriteAllText("loop visualization.txt", Grid<char>.LayoutString(debugGrid));
+        File.WriteAllText("loop visualization.txt", Grid<char>.LayOut(debugGrid));
         return highestDistance;
     }
 }
