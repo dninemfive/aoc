@@ -4,35 +4,35 @@ public readonly struct Grid<T>(T[,] grid)
 {
     private readonly T[,] _grid = grid;
     public T this[int x, int y] => _grid[x, y];
-    public T this[NumberPair<int> p] => _grid[p.X, p.Y];
+    public T this[Point<int> p] => _grid[p.X, p.Y];
     public static implicit operator T[,](Grid<T> grid) => grid._grid;
     public static implicit operator Grid<T>(T[,] grid) => new(grid);
     public int Width => _grid.GetLength(0);
     public int Height => _grid.GetLength(1);
-    public bool HasInBounds(NumberPair<int> point)
+    public bool HasInBounds(Point<int> point)
     {
         (int x, int y) = point;
         return x >= 0 && x < Width && y >= 0 && y < Height;
     }
-    public IEnumerable<NumberPair<int>> PointsAdjacentTo(NumberPair<int> point, bool includeSelf = false)
+    public IEnumerable<Point<int>> PointsAdjacentTo(Point<int> point, bool includeSelf = false)
     {
         for (int xo = -1; xo <= 1; xo++)
             for (int yo = -1; yo <= 1; yo++)
             {
                 if (!includeSelf && xo is 0 && yo is 0)
                     continue;
-                NumberPair<int> cur = point + (xo, yo);
+                Point<int> cur = point + (xo, yo);
                 if (HasInBounds(cur))
                     yield return cur;
             }
     }
-    public IEnumerable<T> ValuesAdjacentTo(NumberPair<int> point, bool includeSelf = false)
+    public IEnumerable<T> ValuesAdjacentTo(Point<int> point, bool includeSelf = false)
     {
         // "lambda methods (&c) don't have access to `this`" for some reason
         Grid<T> _this = this;
         return PointsAdjacentTo(point, includeSelf).Select(x => _this[x]);
     }
-    public IEnumerable<NumberPair<int>> AllPoints
+    public IEnumerable<Point<int>> AllPoints
     {
         get
         {
@@ -41,7 +41,7 @@ public readonly struct Grid<T>(T[,] grid)
                     yield return (x, y);
         }
     }
-    public Grid<T> CopyWith(params (NumberPair<int> point, T item)[] changes)
+    public Grid<T> CopyWith(params (Point<int> point, T item)[] changes)
     {
         T[,] newGrid = (T[,])_grid.Clone();
         foreach(((int x, int y), T item) in changes)

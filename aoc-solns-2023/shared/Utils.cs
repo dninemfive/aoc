@@ -116,7 +116,7 @@ public static class Utils
         T minusResult = (-b - discriminant) / denominator, plusResult = (-b + discriminant) / denominator;
         return minusResult < plusResult ? (minusResult, plusResult) : (plusResult, minusResult);
     }
-    public static IEnumerable<(T value, NumberPair<int> point)> Enumerate<T>(this T[,] array)
+    public static IEnumerable<(T value, Point<int> point)> Enumerate<T>(this T[,] array)
     {
         for(int x = 0; x < array.GetLength(0); x++)
             for (int y = 0; y < array.GetLength(1); y++)

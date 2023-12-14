@@ -12,7 +12,7 @@ public static class Solution
     {
         string currentNumber = "";
         bool isPartNumber = false;
-        foreach (NumberPair<int> p in plan.AllPoints)
+        foreach (Point<int> p in plan.AllPoints)
         {
             char cur = plan[p];
             if (!cur.IsDigit())
@@ -29,7 +29,7 @@ public static class Solution
     }
     public static IEnumerable<int> GearRatios(this Grid<char> plan)
     {
-        foreach (NumberPair<int> p in plan.GearLocations())
+        foreach (Point<int> p in plan.GearLocations())
         {
             IEnumerable<int> adjacentNumbers = plan.NumbersAdjacentTo(p);
             if (adjacentNumbers.Count() != 2)
@@ -39,13 +39,13 @@ public static class Solution
     }
     public static bool IsSymbol(this char c)
         => !c.IsDigit() && c != '.';
-    public static IEnumerable<NumberPair<int>> GearLocations(this Grid<char> grid)
+    public static IEnumerable<Point<int>> GearLocations(this Grid<char> grid)
         => grid.AllPoints.Where(p => grid[p] == '*');
-    public static bool IsAdjacentToSymbolIn(this NumberPair<int> p, Grid<char> grid)
+    public static bool IsAdjacentToSymbolIn(this Point<int> p, Grid<char> grid)
         => grid.ValuesAdjacentTo(p, includeSelf: true).Any(IsSymbol);
-    public static IEnumerable<int> NumbersAdjacentTo(this Grid<char> grid, NumberPair<int> p)
+    public static IEnumerable<int> NumbersAdjacentTo(this Grid<char> grid, Point<int> p)
     {
-        List<NumberPair<int>> digitLocations = grid.PointsAdjacentTo(p)
+        List<Point<int>> digitLocations = grid.PointsAdjacentTo(p)
                                          .Where(p2 => grid[p2].IsDigit())
                                          .ToList();
         void removePointsBetween(int left, int right, int y)
@@ -53,7 +53,7 @@ public static class Solution
 
         while (digitLocations.Any())
         {
-            NumberPair<int> p2 = digitLocations.First();
+            Point<int> p2 = digitLocations.First();
             (int value, int left, int right) = grid.EntireNumberIncluding(p2);
             yield return value;
             removePointsBetween(left, right, p2.Y);
@@ -62,7 +62,7 @@ public static class Solution
 #pragma warning disable IDE1006 // Naming Styles: consts should be all-caps (should switch to a better style enforcer tbh)
     private const int LEFT = -1, RIGHT = 1;
 #pragma warning restore IDE1006 // Naming Styles
-    public static (int value, int left, int right) EntireNumberIncluding(this Grid<char> grid, NumberPair<int> p)
+    public static (int value, int left, int right) EntireNumberIncluding(this Grid<char> grid, Point<int> p)
     {
         (int x, int y) = p;
         char c = grid[p];
