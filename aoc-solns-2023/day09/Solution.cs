@@ -12,6 +12,7 @@ public static class Solution
     public static IEnumerable<object> Solve(string[] lines)
     {
         yield return lines.Select(x => new Sequence<int>(x.ToMany<int>())).Select(x => x.Next()).Sum();
+        Console.WriteLine(new Sequence<int>(lines.First().ToMany<int>()).Pyramid);
     }
     public static IEnumerable<T> Diffs<T>(this IEnumerable<T> numbers)
         where T : INumber<T>
