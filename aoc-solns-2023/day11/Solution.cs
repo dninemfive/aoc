@@ -15,18 +15,21 @@ public static class Solution
         {
             if(grid.GetColumn(x).All(c => c == '.'))
             {
+                Console.WriteLine(x);
                 grid = grid.InsertColumn(x, '.');
                 x++;
             }
         }
-        for(int y = 0; y < grid.Width; y++)
+        for(int y = 0; y < grid.Height; y++)
         {
             if (grid.GetRow(y).All(c => c == '.'))
             {
+                Console.WriteLine(y);
                 grid = grid.InsertRow(y, '.');
                 y++;
             }
         }
+        File.WriteAllText(Path.Join(Program.INPUT_FOLDER, "11.output"), Grid<char>.LayOut(grid));
         yield return grid.GalaxyLocations().ToList().UniquePairs().Select(TaxicabDistance).Sum();
     }
     public static IEnumerable<Point> GalaxyLocations(this Grid<char> grid)
