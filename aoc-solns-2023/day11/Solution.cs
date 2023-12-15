@@ -12,12 +12,12 @@ public static class Solution
     {
         _grid = Grid<char>.From(lines);
         (_emptyRows, _emptyColumns) = (EmptyRowIndices.ToHashSet(), EmptyColumnIndices.ToHashSet());
-        Console.WriteLine(_emptyRows.Order().ListNotation());
-        yield return _grid.GalaxyLocations()
-                          .ToList()
-                          .UniquePairs()
-                          .Select(x => x.GalaxyDistance(expansionFactor: 2))
-                          .Sum();
+        List<(Point<int> a, Point<int> b)> uniquePairs = _grid.GalaxyLocations()
+                                                    .ToList()
+                                                    .UniquePairs()
+                                                    .ToList();
+        yield return uniquePairs.Select(x => x.GalaxyDistance(2)).Sum();
+        yield return uniquePairs.Select(x => x.GalaxyDistance((int)1e6)).Sum();
     }
     private static IEnumerable<Point<int>> GalaxyLocations(this Grid<char> grid)
         => grid.AllPoints.Where(p => grid[p] == '#');
@@ -49,21 +49,17 @@ public static class Solution
             dX = Math.Sign(x2 - x1), 
             y = y1, 
             dY = Math.Sign(y2 - y1);
-        Console.WriteLine($"> {x1,3} {x2,3} {y1,3} {y2,3}");
         long distance = 0;
         while(x != x2)
         {
-            Console.WriteLine($"  {_emptyColumns.Contains(x),-5} {x1,3} {x,6} {x2,3} {distance,6} {expansionFactor,2}");
             distance += _emptyColumns.Contains(x) ? expansionFactor : 1;
             x += dX;
         }
         while (y != y2)
         {
-            Console.WriteLine($"  {_emptyRows.Contains(y),-5} {y1,3} {y,6} {y2,3} {distance,6} {expansionFactor,2}");
             distance += _emptyRows.Contains(y) ? expansionFactor : 1;
             y += dY;
         }
-        Console.WriteLine($"{distance,8}  {pair.a.ManhattanDistanceFrom(pair.b),8} {pair.b.ManhattanDistanceFrom(pair.a),8}");
-        return distance + 1;
+        return distance;
     }
 }
