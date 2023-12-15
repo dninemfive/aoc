@@ -30,11 +30,12 @@ public static class Solution
     public static int EmptyRowsBetween(int aY, int bY)
         => _grid.CountRowsWhereAll((t, _, y) => t == '.' && y.IsBetween(aY, bY));
     public static int EmptyColumnsBetween(int aX, int bX)
-        => _grid.CountRowsWhereAll((t, x, _) => t == '.' && x.IsBetween(aX, bX));
-    public static long GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
+        => _grid.CountColumnsWhereAll((t, x, _) => t == '.' && x.IsBetween(aX, bX));
+    public static int GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
     {
         (Point<int> a, Point<int> b) = pair;
-        // int emptySpacesBetweenPoints = EmptyRowsBetween(a.Y, b.Y) + EmptyColumnsBetween(a.X, b.X);
-        return a.ManhattanDistanceFrom(b); // + emptySpacesBetweenPoints * (expansionFactor - 1);
+        int emptySpacesBetweenPoints = EmptyRowsBetween(a.Y, b.Y) + EmptyColumnsBetween(a.X, b.X);
+        // -1 to avoid double-counting
+        return a.ManhattanDistanceFrom(b) + emptySpacesBetweenPoints * (expansionFactor - 1);
     }
 }

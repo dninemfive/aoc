@@ -118,10 +118,14 @@ public readonly struct Grid<T>(T[,] grid)
         int ct = 0;
         for (int x = 0; x < Width; x++)
         {
+            bool broke = false;
             for (int y = 0; y < Height; y++)
                 if (!predicate(_grid[x, y], x, y))
+                {
+                    broke = true;
                     break;
-            ct++;
+                }
+            if (!broke) ct++;
         }
         return ct;
     }
@@ -143,10 +147,14 @@ public readonly struct Grid<T>(T[,] grid)
         int ct = 0;
         for(int y = 0; y < Height; y++)
         {
+            bool broke = false;
             for (int x = 0; x < Width; x++)
                 if (!predicate(_grid[x, y], x, y))
+                {
+                    broke = true;
                     break;
-            ct++;
+                }
+            if(!broke) ct++;
         }
         return ct;
     }

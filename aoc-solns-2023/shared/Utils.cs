@@ -126,10 +126,7 @@ public static class Utils
         => array.GetLength(0);
     public static int Height<T>(this T[,] array)
         => array.GetLength(1);
-    public static bool IsBetween<T>(this T a, T b, T c, bool inclusive = false)
+    public static bool IsBetween<T>(this T a, T b, T c)
         where T : INumber<T>
-    {
-        (T hi, T lo) = (T.Max(b, c), T.Min(b, c));
-        return (a > lo && a < hi) || (inclusive && (a == lo || a == hi));
-    }
+        => a > T.Min(b, c) && a < T.Max(b, c);
 }
