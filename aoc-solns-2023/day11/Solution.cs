@@ -12,6 +12,7 @@ public static class Solution
     {
         _grid = Grid<char>.From(lines);
         (_emptyRows, _emptyColumns) = (EmptyRowIndices.ToHashSet(), EmptyColumnIndices.ToHashSet());
+        Console.WriteLine(_emptyRows.Order().ListNotation());
         yield return _grid.GalaxyLocations().ToList().UniquePairs().Select(GalaxyDistance).Sum();
     }
     private static IEnumerable<Point<int>> GalaxyLocations(this Grid<char> grid)
@@ -37,14 +38,28 @@ public static class Solution
         => _grid.Rows.Where(r => r.row.All(x => x == '.')).Select(r => r.index);
     private static IEnumerable<int> EmptyColumnIndices
         => _grid.Columns.Where(c => c.column.All(x => x == '.')).Select(c => c.index);
-    private static long GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
+    private static long GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 1)
     {
         ((int x1, int y1), (int x2, int y2)) = pair;
-        int xStep = Math.Sign(x2 - x1), yStep = Math.Sign(y2 - y1);
+        int x = x1, 
+            dX = Math.Sign(x2 - x1), 
+            y = y1, 
+            dY = Math.Sign(y2 - y1);
+        Console.WriteLine($"> {x1,3} {x2,3} {y1,3} {y2,3}");
         long distance = 0;
-        for (int x = x1; x != x2; x += xStep)
-            for (int y = y1; y != y2; y += yStep)
-                distance += _emptyColumns.Contains(x) || _emptyRows.Contains(y) ? expansionFactor : 1;
-        return distance;
+        while(x != x2)
+        {
+            Console.WriteLine($"  {_emptyColumns.Contains(x),-5} {x1,3} {x,6} {x2,3} {distance,6} {expansionFactor,2}");
+            distance += _emptyColumns.Contains(x) ? (long)expansionFactor : 1;
+            x += dX;
+        }
+        while (y != y2)
+        {
+            Console.WriteLine($"  {_emptyRows.Contains(y),-5} {y1,3} {y,6} {y2,3} {distance,6} {expansionFactor,2}");
+            distance += _emptyRows.Contains(y) ? (long)expansionFactor : 1;
+            y += dY;
+        }
+        Console.WriteLine($"{distance,8}  {pair.a.ManhattanDistanceFrom(pair.b),8} {pair.b.ManhattanDistanceFrom(pair.a),8}");
+        return distance + 1;
     }
 }
