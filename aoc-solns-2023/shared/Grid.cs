@@ -113,6 +113,18 @@ public readonly struct Grid<T>(T[,] grid)
                 yield return (GetColumn(i).ToArray(), i);
         }
     }
+    public int CountColumnsWhereAll(Func<T, int, int, bool> predicate)
+    {
+        int ct = 0;
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+                if (!predicate(_grid[x, y], x, y))
+                    break;
+            ct++;
+        }
+        return ct;
+    }
     public IEnumerable<T> GetRow(int rowIndex)
     {
         for (int x = 0; x < Width; x++)
@@ -125,5 +137,17 @@ public readonly struct Grid<T>(T[,] grid)
             for (int i = 0; i < Width; i++)
                 yield return (GetRow(i).ToArray(), i);
         }
+    }
+    public int CountRowsWhereAll(Func<T, int, int, bool> predicate)
+    {
+        int ct = 0;
+        for(int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+                if (!predicate(_grid[x, y], x, y))
+                    break;
+            ct++;
+        }
+        return ct;
     }
 }

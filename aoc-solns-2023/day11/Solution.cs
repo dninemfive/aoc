@@ -27,15 +27,14 @@ public static class Solution
             }
         }
     }
-    public static IEnumerable<int> EmptyRowIndices
-        => _grid.Rows.Where(x => x.row.All(y => y == '.')).Select(x => x.index);
-    public static IEnumerable<int> EmptyColumnIndices
-        => _grid.Columns.Where(x => x.column.All(y => y == '.')).Select(x => x.index);
-    public static int GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
+    public static int EmptyRowsBetween(int aY, int bY)
+        => _grid.CountRowsWhereAll((t, _, y) => t == '.' && y.IsBetween(aY, bY));
+    public static int EmptyColumnsBetween(int aX, int bX)
+        => _grid.CountRowsWhereAll((t, x, _) => t == '.' && x.IsBetween(aX, bX));
+    public static long GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
     {
         (Point<int> a, Point<int> b) = pair;
-        int emptySpacesBetweenPoints = EmptyRowIndices.Where(i => i.IsBetween(a.Y, b.Y)).Count()
-                                     + EmptyColumnIndices.Where(i => i.IsBetween(a.X, b.X)).Count();
-        return a.ManhattanDistanceFrom(b) + emptySpacesBetweenPoints * expansionFactor;
+        // int emptySpacesBetweenPoints = EmptyRowsBetween(a.Y, b.Y) + EmptyColumnsBetween(a.X, b.X);
+        return a.ManhattanDistanceFrom(b); // + emptySpacesBetweenPoints * (expansionFactor - 1);
     }
 }
