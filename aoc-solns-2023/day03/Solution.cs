@@ -1,10 +1,11 @@
 ﻿namespace d9.aoc._23.day3;
 public static class Solution
 {
-    [SolutionToProblem(3)]
+    [SolutionToProblem(3, true)]
     public static IEnumerable<object> Solve(string[] inputLines)
     {
         Grid<char> grid = Grid<char>.From(inputLines);
+        yield return 0b0;
         yield return grid.PartNumbers().Sum();
         yield return grid.GearRatios().Sum();
     }    

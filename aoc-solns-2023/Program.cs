@@ -25,13 +25,21 @@ public static class Program
                 continue;
             Console.WriteLine($"Solution for Problem {attribute.Index}:");
             string inputFile = Path.Join(INPUT_FOLDER, $"{attribute.Index}.input");
-            int partNumber = 1;
+            int partNumber = attribute.HasStartupMarker ? 0 : 1;
             Stopwatch stopwatch = new();
             stopwatch.Start();
             foreach (object part in solution.UsingFile(inputFile))
             {
                 stopwatch.Stop();
-                Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{$"{stopwatch.Elapsed:c}",16}");
+                if(partNumber < 1)
+                {
+                    Console.WriteLine($"\tpreinit:\t{"",15}\t{$"{stopwatch.Elapsed:c}",16}");
+                    partNumber++;
+                }
+                else
+                {
+                    Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{$"{stopwatch.Elapsed:c}",16}");
+                } 
                 stopwatch.Restart();
             }
         }

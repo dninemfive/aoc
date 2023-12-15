@@ -14,10 +14,11 @@ public static class Solution
                        START        = '█', 
                        EMPTY        = ' ';
 #pragma warning restore IDE1006 // Naming Styles
-    [SolutionToProblem(10)]
+    [SolutionToProblem(10, true)]
     public static IEnumerable<object> Solve(string[] input)
     {
         _grid = Grid<char>.From(input.Select(x => x.ReplaceBy(BoxDrawingEquivalent)).ToArray());
+        yield return 0b0;
         yield return Part1();
     }
     public static char BoxDrawingEquivalent(this char c) => c switch

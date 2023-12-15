@@ -7,7 +7,12 @@
 /// </summary>
 /// <param name="index">Which problem the method is a solution for.</param>
 [AttributeUsage(AttributeTargets.Method)]
-public class SolutionToProblemAttribute(int index) : Attribute
+public class SolutionToProblemAttribute(int index, bool hasStartupMarker = false) : Attribute
 {
     public int Index { get; private set; } = index;
+    /// <summary>
+    /// If <see langword="true"/>, indicates that the method yields an item which should be ignored and is only used to
+    /// measure time used to preprocess data before working on the main solution.
+    /// </summary>
+    public bool HasStartupMarker { get; private set; } = hasStartupMarker;
 }

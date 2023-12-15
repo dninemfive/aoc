@@ -2,13 +2,14 @@
 public static class Solution
 {
     private static Dictionary<string, (string left, string right)> _nodes = new();
-    [SolutionToProblem(8)]
+    [SolutionToProblem(8, true)]
     public static IEnumerable<object> Solve(string[] lines)
     {
         string tape = lines.First();
         _nodes = lines.Skip(2)
                       .Select(x => x.SplitAndTrim(" = (", ", ", ")"))
                       .ToDict(keys: x => x[0], values: x => (x[1], x[2]));
+        yield return 0b0;
         yield return NavigateBetween("AAA", "ZZZ", tape).Count();
         yield return GhostPathLength(tape);
     }

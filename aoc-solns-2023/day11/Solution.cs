@@ -7,7 +7,7 @@ public static class Solution
 #pragma warning disable CS8618 // Initialized in .Solve() and other things are not public
     private static HashSet<int> _emptyRows, _emptyColumns;
 #pragma warning restore CS8618
-    [SolutionToProblem(11)]
+    [SolutionToProblem(11, true)]
     public static IEnumerable<object> Solve(string[] lines)
     {
         _grid = Grid<char>.From(lines);
@@ -16,6 +16,7 @@ public static class Solution
                                                     .ToList()
                                                     .UniquePairs()
                                                     .ToList();
+        yield return 0b0;
         yield return uniquePairs.Select(x => x.GalaxyDistance(2)).Sum();
         yield return uniquePairs.Select(x => x.GalaxyDistance((int)1e6)).Sum();
     }
