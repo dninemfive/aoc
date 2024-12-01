@@ -1,18 +1,15 @@
 ﻿namespace d9.aoc.core;
 /// <summary>
-/// When applied to a method with a signature of 
-/// <inheritdoc cref="Program.HasAppropriateSignature(System.Reflection.MethodInfo)" path="/sig"/>,
-/// causes <see cref="Program.Main"/> to run it along with other matching methods in order of
-/// <paramref name="index"/>.
+/// Specifies that the class on which the attribute is placed is a solution to an Advent of Code 
+/// problem, allowing it to automatically be found by a <see cref="AocSolutionGroup"/> generated from
+/// the assembly which contains it.
 /// </summary>
-/// <param name="index">Which problem the method is a solution for.</param>
-[AttributeUsage(AttributeTargets.Method)]
-public class SolutionToProblemAttribute(int index, bool hasStartupMarker = false) : Attribute
+/// <param name="day">The day the class is a solution for.</param>
+/// <param name="startingIndex">The index of the first part. 1 by default, but sometimes zero if
+/// there is a preinitialization part.</param>
+[AttributeUsage(AttributeTargets.Class)]
+public class SolutionToProblemAttribute(int day, int startingIndex = 1) : Attribute
 {
-    public int Index { get; private set; } = index;
-    /// <summary>
-    /// If <see langword="true"/>, indicates that the method yields an item which should be ignored and is only used to
-    /// measure time used to preprocess data before working on the main solution.
-    /// </summary>
-    public bool HasStartupMarker { get; private set; } = hasStartupMarker;
+    public int Day => day;
+    public int StartingIndex => startingIndex;
 }

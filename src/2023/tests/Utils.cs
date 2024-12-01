@@ -8,7 +8,7 @@ public static class Utils
     {
         (_, SolutionToProblemAttribute? stpa) = method.GetMethodInfo().MethodAndAttribute();
         Assert.IsNotNull(stpa);
-        object[] actual = method(InputForProblem(stpa.Index)).ToArray();
+        object[] actual = method(InputForProblem(stpa.Day)).ToArray();
         int offset = stpa.HasStartupMarker ? 1 : 0;
         for (int i = 0; i < expected.Length; i++)
             Assert.AreEqual(expected[i], actual[i + offset]);

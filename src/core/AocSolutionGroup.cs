@@ -1,10 +1,20 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using d9.utl;
+
 namespace d9.aoc.core;
-public class SolutionGroup(Assembly assembly, string? name = null)
+public class AocSolutionGroup(Assembly assembly, string? name = null)
 {
     public Assembly Assembly => assembly;
     public string Name => name ?? assembly.ToString();
+    /// <remarks>
+    /// See 
+    /// <see href="https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in#comment26343106_2887537">
+    /// this StackOverflow comment
+    /// </see>.
+    /// </remarks>
+    public string BaseFolderPath
+        => $"{Path.GetDirectoryName(Assembly.Location)}/input";
     /// <summary>
     /// Main method for the program. Looks for static methods with the 
     /// <see cref="SolutionToProblemAttribute">SolutionToProblem</see> attribute with the appropriate
@@ -20,25 +30,21 @@ public class SolutionGroup(Assembly assembly, string? name = null)
                            .SelectMany(type => type.GetMethods())
                            .Where(HasAppropriateSignature)
                            .Select(MethodAndAttribute)
-                           .OrderBy(x => x.attr?.Index))
+                           .OrderBy(x => x.attr?.Day))
         {
             if (attribute is null)
                 continue;
             ExecuteSolution(solution, attribute);
         }
     }
-    public IEnumerable<(MethodInfo solution, SolutionToProblemAttribute attribute)> AllSolutions
+    public IEnumerable<AocSolution> AllSolutions()
         => Assembly.GetTypes()
-                           .SelectMany(type => type.GetMethods())
-                           .Where(HasAppropriateSignature)
-                           .Select(MethodAndAttribute)
-                           .OrderBy(x => x.attr?.Index)
-                           .Where(x => x.attr is not null)
-                           .Select(x => (x.method, x.attr));
+                   .Where(x => x.HasCustomAttribute<SolutionToProblemAttribute>())
+                   .Select(x => AocSolution.From(x, ))
     public void ExecuteSolution(MethodInfo solution, SolutionToProblemAttribute attribute)
     {
-        Console.WriteLine($"Solution for Problem {attribute.Index}:");
-        string inputFile = Path.Join(InputFolder, $"{attribute.Index}.input");
+        Console.WriteLine($"Solution for Problem {attribute.Day}:");
+        string inputFile = Path.Join(InputFolder, $"{attribute.Day}.input");
         int partNumber = attribute.HasStartupMarker ? 0 : 1;
         Stopwatch stopwatch = new();
         stopwatch.Start();
