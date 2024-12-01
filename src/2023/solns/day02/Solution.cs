@@ -1,4 +1,6 @@
-﻿namespace d9.aoc._23.day2;
+﻿using d9.aoc.core;
+
+namespace d9.aoc._23.day2;
 public static class Solution
 {
     [SolutionToProblem(2, true)]

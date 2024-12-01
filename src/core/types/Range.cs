@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace d9.aoc._23.day5;
+namespace d9.aoc.core;
 public readonly struct Range<T>(T start, T length)
     where T : INumber<T>
 {

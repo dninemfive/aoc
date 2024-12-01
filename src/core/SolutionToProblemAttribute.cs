@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23;
+﻿namespace d9.aoc.core;
 /// <summary>
 /// When applied to a method with a signature of 
 /// <inheritdoc cref="Program.HasAppropriateSignature(System.Reflection.MethodInfo)" path="/sig"/>,

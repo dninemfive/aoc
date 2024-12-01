@@ -23,7 +23,7 @@ public static class Solution
     public static T NumSolutions<T>(T totalTime, T targetDistance)
         where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        (T lo, T hi) = Utils.QuadraticFormula(T.One, totalTime, targetDistance);
+        (T lo, T hi) = StringExtensions.QuadraticFormula(T.One, totalTime, targetDistance);
         return T.Floor(-lo) - T.Ceiling(-hi) + T.One;
     }
 }

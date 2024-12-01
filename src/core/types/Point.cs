@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+
 namespace d9.aoc.core;
 public readonly struct Point<T>(T x, T y)
     where T : INumber<T>

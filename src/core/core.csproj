@@ -1,10 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>d9.aoc.core</RootNamespace>
+    <AssemblyName>d9.aoc.core</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="utl">
+      <HintPath>..\..\..\utl\bin\Release\net8.0\utl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>

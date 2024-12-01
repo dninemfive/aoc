@@ -1,6 +1,6 @@
-﻿namespace d9.aoc._23.day4;
-using d9.aoc.core;
+﻿using d9.aoc.core;
 
+namespace d9.aoc._23.day4;
 public class ScratchCard
 {
     public int CardNumber { get; private set; }

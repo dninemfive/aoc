@@ -17,7 +17,7 @@ public static class Solution
     [SolutionToProblem(10, true)]
     public static IEnumerable<object> Solve(string[] input)
     {
-        _grid = Grid<char>.From(input.Select(x => x.ReplaceBy(BoxDrawingEquivalent)).ToArray());
+        _grid = Grid<char>.From(input.Select(x => x.ReplaceWith(BoxDrawingEquivalent)).ToArray());
         yield return 0b0;
         yield return Part1();
     }

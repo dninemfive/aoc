@@ -1,10 +1,5 @@
-﻿using d9.aoc._23.day1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using d9.aoc.core;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace d9.aoc._23.tests;
 public static class Utils

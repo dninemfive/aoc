@@ -1,4 +1,6 @@
 ﻿using d9.aoc.core;
+using d9.utl;
+
 using System.Numerics;
 
 namespace d9.aoc._23.day5;
@@ -9,7 +11,7 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     public string ResultType => title.SplitAndTrim("-", " ")[2];
     public string Name => $"{InputType}-to-{ResultType} map";
     private readonly List<MapRange<T>> _ranges = [.. nonTitleLines.Select(x => new MapRange<T>(x))
-                                                                .OrderBy(x => x.Source.Start)];
+                                                                  .OrderBy(x => x.Source.Start)];
     public IEnumerable<MapRange<T>> Ranges => _ranges;
     public (string type, T val) this[(string type, T val) input]
     {
@@ -40,5 +42,5 @@ public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     }
     public override string ToString() => Name;
     public string FullString
-        => $"{Name} {{\n\t{_ranges.Select(x => $"{x}").Aggregate((x, y) => $"{x}\n\t{y}")}\n}}";
+        => $"{Name} {{\n\t{_ranges.Select(x => $"{x}").JoinWithDelimiter("\n\t")}\n}}";
 }

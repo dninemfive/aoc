@@ -1,7 +1,6 @@
-﻿using d9.aoc.core;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace d9.aoc._23.day5;
+namespace d9.aoc.core;
 public class MapRange<T>
     where T : struct, INumber<T>
 {
