@@ -1,7 +1,8 @@
 ﻿using d9.aoc.core;
 
 namespace d9.aoc._23.day10;
-public static class Solution
+[SolutionToProblem(10)]
+public class Solution : AocSolution
 {
     private static Grid<char> _grid;
 #pragma warning disable IDE1006 // Naming Styles
@@ -14,14 +15,13 @@ public static class Solution
                        START        = '█', 
                        EMPTY        = ' ';
 #pragma warning restore IDE1006 // Naming Styles
-    [SolutionToProblem(10, true)]
-    public static IEnumerable<object> Solve(string[] input)
+    public override IEnumerable<AocPartialResult> Solve(string[] input)
     {
         _grid = Grid<char>.From(input.Select(x => x.ReplaceWith(BoxDrawingEquivalent)).ToArray());
-        yield return 0b0;
+        yield return (0b0, "preinit");
         yield return Part1();
     }
-    public static char BoxDrawingEquivalent(this char c) => c switch
+    public static char BoxDrawingEquivalent(char c) => c switch
     {
         '|' => UPDOWN,
         '-' => LEFTRIGHT,
@@ -33,10 +33,10 @@ public static class Solution
         '.' => EMPTY,
         _ => throw new ArgumentOutOfRangeException(nameof(c))
     };
-    public static IEnumerable<Direction> Directions(this char c)
+    public static IEnumerable<Direction> Directions(char c)
     {
         if (c is '|' or '-' or 'L' or 'J' or '7' or 'F' or 'S' or '.')
-            c = c.BoxDrawingEquivalent();
+            c = BoxDrawingEquivalent(c);
         if (c is UPDOWN or UPRIGHT or UPLEFT or START)
             yield return Direction.Up;
         if (c is LEFTRIGHT or UPRIGHT or DOWNRIGHT or START)
@@ -46,16 +46,16 @@ public static class Solution
         if (c is LEFTRIGHT or UPLEFT or DOWNLEFT or START)
             yield return Direction.Left;
     }
-    public static bool PointsIn(this char c, Direction d) 
-        => c.Directions().Contains(d);
-    public static Point<int> Offset(this Direction d) => d switch {
+    public static bool PointsIn(char c, Direction d) 
+        => Directions(c).Contains(d);
+    public static Point<int> Offset(Direction d) => d switch {
         Direction.Up => (0, -1),
         Direction.Right => (1, 0),
         Direction.Down => (0, 1),
         Direction.Left => (-1, 0),
         _ => throw new ArgumentOutOfRangeException(nameof(d))
     };
-    public static Direction Reverse(this Direction d) => d switch
+    public static Direction Reverse(Direction d) => d switch
     {
         Direction.Up => Direction.Down,
         Direction.Right => Direction.Left,
@@ -63,13 +63,13 @@ public static class Solution
         Direction.Left => Direction.Right,
         _ => throw new ArgumentOutOfRangeException(nameof(d))
     };
-    public static IEnumerable<Point<int>> ConnectedNeighbors(this Point<int> p)
+    public static IEnumerable<Point<int>> ConnectedNeighbors(Point<int> p)
     {
         char c = _grid[p];
-        foreach (Direction d in c.Directions())
+        foreach (Direction d in Directions(c))
         {
-            Point<int> neighbor = p + d.Offset();
-            if (_grid.HasInBounds(neighbor) && _grid[neighbor].PointsIn(d.Reverse()))
+            Point<int> neighbor = p + Offset(d);
+            if (_grid.HasInBounds(neighbor) && PointsIn(_grid[neighbor], Reverse(d)))
                 yield return neighbor;
         }
     }
@@ -87,7 +87,7 @@ public static class Solution
                 return p;
         throw new Exception($"Could not find starting NumberPair<int>!");
     }
-    public static string Info(this Point<int> point)
+    public static string Info(Point<int> point)
         => $"{_grid[point]}({point.X,3}, {point.Y,3})";
     public static int Part1()
     {
@@ -108,7 +108,7 @@ public static class Solution
             (Point<int> point, int distance) = queue.Dequeue();
             debugGrid = debugGrid.CopyWith((point, _grid[point]));
             highestDistance = int.Max(distance, highestDistance);
-            foreach (Point<int> neighbor in point.ConnectedNeighbors())
+            foreach (Point<int> neighbor in ConnectedNeighbors(point))
                 push(neighbor, distance + 1);
         }
         File.WriteAllText("loop visualization.txt", Grid<char>.LayOut(debugGrid));

@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day1;
+﻿namespace d9.aoc._23.day01;
 
 internal delegate (int digit, int index)? DigitFinder(string line, bool first);
 internal static class Extensions

@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day8;
+﻿namespace d9.aoc._23.day08;
 public class Tape(string s)
 {
     public readonly string Items = s.All(x => x is 'L' or 'R') ? s

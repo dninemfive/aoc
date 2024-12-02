@@ -1,15 +1,15 @@
 ﻿using d9.aoc.core;
 using d9.utl;
 
-namespace d9.aoc._23.day5;
+namespace d9.aoc._23.day05;
 // disable warnings for unfinished parts lol
 #pragma warning disable CS0162 // unreachable code
 #pragma warning disable CS8321 // unused function
-public static class Solution
+[SolutionToProblem(5)]
+public class Solution : AocSolution
 {
     private static Dictionary<string, XToYMap<long>> _mapMap = new();
-    [SolutionToProblem(5)]
-    public static IEnumerable<object> Solve(string[] lines)
+    public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);

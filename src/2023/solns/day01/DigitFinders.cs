@@ -1,6 +1,6 @@
 ﻿using d9.aoc.core;
 
-namespace d9.aoc._23.day1;
+namespace d9.aoc._23.day01;
 public static class FindDigit
 {
     public static readonly string[] DIGIT_STRINGS = [

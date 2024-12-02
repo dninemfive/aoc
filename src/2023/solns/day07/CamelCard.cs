@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day7;
+﻿namespace d9.aoc._23.day07;
 public readonly struct CamelCard(char c, bool jokerMode = false) : IEquatable<CamelCard>, IComparable<CamelCard>
 {
     private readonly char _c = c;

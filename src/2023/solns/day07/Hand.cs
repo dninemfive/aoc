@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day7;
+﻿namespace d9.aoc._23.day07;
 using d9.aoc.core;
 
 public readonly struct Hand

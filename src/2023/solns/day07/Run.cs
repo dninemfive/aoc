@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day7;
+﻿namespace d9.aoc._23.day07;
 // basically just a tuple, but "Run" is a lot shorter than "(CamelCard card, int count)"
 public readonly struct Run(CamelCard card, int ct)
 {

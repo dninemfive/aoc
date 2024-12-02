@@ -1,11 +1,11 @@
 ﻿using d9.aoc.core;
 
-namespace d9.aoc._23.day8;
-public static class Solution
+namespace d9.aoc._23.day08;
+[SolutionToProblem(8)]
+public class Solution : AocSolution
 {
     private static Dictionary<string, (string left, string right)> _nodes = new();
-    [SolutionToProblem(8, true)]
-    public static IEnumerable<object> Solve(string[] lines)
+    public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
         string tape = lines.First();
         _nodes = lines.Skip(2)
@@ -16,16 +16,16 @@ public static class Solution
         yield return GhostPathLength(tape);
     }
     public static IEnumerable<(string position, long ct)> NavigateBetween(string start, string end, string tape)
-        => start.NavigateUntil(x => x.position == end, tape);
-    public static IEnumerable<(string position, long ct)> NavigateUntil(this string start, Func<(string position, long ct), bool> end, string input)
+        => NavigateUntil(start, x => x.position == end, tape);
+    public static IEnumerable<(string position, long ct)> NavigateUntil(string start, Func<(string position, long ct), bool> end, string input)
     {
         Tape tape = new(input);
         string cur = start;
         long ct = 0;
         while (!end((cur, ct)))
-            yield return (cur = tape.Step(cur), ++ct);
+            yield return (cur = Step(tape, cur), ++ct);
     }
-    public static string Step(this Tape tape, string cur)
+    public static string Step(Tape tape, string cur)
     {
         (string left, string right) = _nodes[cur];
         char c = tape.Advance();
@@ -33,9 +33,9 @@ public static class Solution
     }
     public static long GhostPathLength(string tape)
         => _nodes.Keys.Where(x => x.EndsWith('A'))
-                      .SelectMany(tape.ZPositions)
+                      .SelectMany(x => ZPositions(tape, x))
                       .LeastCommonMultiple();
-    public static IEnumerable<long> ZPositions(this string input, string cur)
+    public static IEnumerable<long> ZPositions(string input, string cur)
     {
         Tape tape = new(input);
         HashSet<(string cur, long index)> visitedStates = new();
@@ -48,7 +48,7 @@ public static class Solution
             if (cur.EndsWith('Z'))
                 yield return ct;
             visitedStates.Add((cur, tape.Index));
-            cur = tape.Step(cur);
+            cur = Step(tape, cur);
             ct++;
         }
     }

@@ -3,7 +3,7 @@ using d9.utl;
 
 using System.Numerics;
 
-namespace d9.aoc._23.day5;
+namespace d9.aoc._23.day05;
 public class XToYMap<T>(string title, IEnumerable<string> nonTitleLines)
     where T : struct, INumber<T>
 {

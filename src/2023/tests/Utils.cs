@@ -4,11 +4,10 @@ using System.Reflection;
 namespace d9.aoc._23.tests;
 public static class Utils
 {
-    public static void AssertSolution(Func<string[], IEnumerable<object>> method, params object[] expected)
+    public static void AssertSolution(AocSolution solution, params object[] expected)
     {
-        (_, SolutionToProblemAttribute? stpa) = method.GetMethodInfo().MethodAndAttribute();
-        Assert.IsNotNull(stpa);
-        object[] actual = method(InputForProblem(stpa.Day)).ToArray();
+        Assert.IsNotNull(solution);
+        object[] actual = solution.Solve(InputForProblem(solution.Day)).ToArray();
         int offset = stpa.HasStartupMarker ? 1 : 0;
         for (int i = 0; i < expected.Length; i++)
             Assert.AreEqual(expected[i], actual[i + offset]);

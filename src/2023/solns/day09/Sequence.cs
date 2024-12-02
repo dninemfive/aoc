@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-namespace d9.aoc._23.day9;
+namespace d9.aoc._23.day09;
 public class Sequence<T>
     where T : INumber<T>
 {

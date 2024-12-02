@@ -2,37 +2,34 @@
 using System.Reflection;
 
 namespace d9.aoc.core;
-public abstract class AocSolution(string inputFolder)
+public abstract class AocSolution
 {
-    public readonly string InputFolder = inputFolder;
-    public string InputFile => Path.Join(InputFolder, $"{Day:00}.input");
+    public string InputFileName => $"{Day:00}.input";
     public int Day => Attribute.Day;
-    public int StartingIndex => Attribute.StartingIndex;
+    public static AocSolution? From(Type implementingType, string inputFolder)
+        => Activator.CreateInstance(implementingType, inputFolder) as AocSolution;
     public SolutionToProblemAttribute Attribute 
         => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
             ?? throw new Exception($"{GetType().Name} must have a SolutionToProblem attribute to run properly!");
-    public void Execute()
+    public IEnumerable<AocSolutionPart> Execute(string inputFolder)
     {
-        Console.WriteLine($"Solution for Problem {Attribute.Day}:");
-        int partIndex = StartingIndex;
+        int partIndex = 1;
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        foreach (object part in Solve(File.ReadAllLines(InputFile)))
+        foreach (AocPartialResult result in Solve(File.ReadAllLines(Path.Join(inputFolder, InputFileName))))
         {
             stopwatch.Stop();
-            if (partIndex < 1)
-            {
-                Console.WriteLine($"\tpreinit:\t{"",15}\t{$"{stopwatch.Elapsed:c}",16}");
+            yield return new(result, partIndex, stopwatch.Elapsed);
+            if (result.Label is null)
                 partIndex++;
-            }
-            else
-            {
-                Console.WriteLine($"\tPart {partIndex++}:\t{part,16}\t{$"{stopwatch.Elapsed:c}",16}");
-            }
             stopwatch.Restart();
         }
     }
-    public abstract IEnumerable<AocSolutionPart> Solve(params string[] lines);
-    public static AocSolution? From(Type implementingType, string inputFolder)
-        => Activator.CreateInstance(implementingType, inputFolder) as AocSolution;
+    public IEnumerable<string> ResultLines(string inputFolder)
+    {
+        yield return $"Solution for Problem {Attribute.Day:00}:";
+        foreach (AocSolutionPart part in Execute(inputFolder))
+            yield return $"\t{part}";
+    }
+    public abstract IEnumerable<AocPartialResult> Solve(params string[] lines);
 }

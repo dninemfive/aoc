@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection.Emit;
 
 namespace d9.aoc.core;
-public record AocSolutionPart(object Result, string? Label = null)
+public record AocPartialResult(object Result, string? Label = null)
 {
-    public static implicit operator AocSolutionPart((object result, string label) tuple)
+    public static implicit operator AocPartialResult((object result, string label) tuple)
         => new(tuple.result, tuple.label);
-    public static implicit operator AocSolutionPart(string result)
+    public static implicit operator AocPartialResult(string result)
+        => new(0b0, result);
+    public static implicit operator AocPartialResult(int result)
         => new(result);
+    public static implicit operator AocPartialResult(long result)
+        => new(result);
+}
+public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
+{
+    public override string ToString()
+        => $"{Result.Label ?? $"Part {Index,2}"}:\t{Elapsed,16:c}";
 }

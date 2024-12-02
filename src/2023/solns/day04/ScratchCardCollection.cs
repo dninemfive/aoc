@@ -1,7 +1,7 @@
 ﻿using d9.aoc.core;
 using System.Collections;
 
-namespace d9.aoc._23.day4;
+namespace d9.aoc._23.day04;
 public class ScratchCardCollection(IEnumerable<ScratchCard> scratchCards) : IEnumerable<ScratchCard>
 {
     private readonly Dictionary<int, ScratchCard> _cards = scratchCards.ToDictWithKey(x => x.CardNumber);

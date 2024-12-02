@@ -15,64 +15,32 @@ public class AocSolutionGroup(Assembly assembly, string? name = null)
     /// </remarks>
     public string BaseFolderPath
         => $"{Path.GetDirectoryName(Assembly.Location)}/input";
-    /// <summary>
-    /// Main method for the program. Looks for static methods with the 
-    /// <see cref="SolutionToProblemAttribute">SolutionToProblem</see> attribute with the appropriate
-    /// signature and uses the results to generate output with a consistent structure.
-    /// </summary>
-    public void ExecuteAllSolutions()
+    public IEnumerable<IEnumerable<AocSolutionPart>> ExecuteAllSolutions()
+        => Solutions.OrderBy(x => x.Day)
+                    .Select(x => x.Execute(BaseFolderPath));
+    private List<AocSolution>? _solutions = null;
+    public IEnumerable<AocSolution> Solutions
     {
-        // scary query just gets all the loaded methods with the appropriate signature
-        // and associates them with their attribute, if any.
-        foreach ((MethodInfo solution, SolutionToProblemAttribute? attribute)
-                in Assembly.GetExecutingAssembly()
-                           .GetTypes()
-                           .SelectMany(type => type.GetMethods())
-                           .Where(HasAppropriateSignature)
-                           .Select(MethodAndAttribute)
-                           .OrderBy(x => x.attr?.Day))
+        get
         {
-            if (attribute is null)
-                continue;
-            ExecuteSolution(solution, attribute);
+            if (_solutions is null)
+            {
+                _solutions = new();
+                foreach (Type type in Assembly.GetTypes()
+                                         .Where(x => x.HasCustomAttribute<SolutionToProblemAttribute>()))
+                {
+                    AocSolution? solution = AocSolution.From(type, BaseFolderPath);
+                    if (solution is not null)
+                        _solutions.Add(solution);
+                }
+            }
+            return _solutions;
         }
     }
-    public IEnumerable<AocSolution> AllSolutions()
-        => Assembly.GetTypes()
-                   .Where(x => x.HasCustomAttribute<SolutionToProblemAttribute>())
-                   .Select(x => AocSolution.From(x, ))
-    public void ExecuteSolution(MethodInfo solution, SolutionToProblemAttribute attribute)
+    public void ExecuteAll()
     {
-        Console.WriteLine($"Solution for Problem {attribute.Day}:");
-        string inputFile = Path.Join(InputFolder, $"{attribute.Day}.input");
-        int partNumber = attribute.HasStartupMarker ? 0 : 1;
-        Stopwatch stopwatch = new();
-        stopwatch.Start();
-        foreach (object part in solution.UsingFile(inputFile))
-        {
-            stopwatch.Stop();
-            if (partNumber < 1)
-            {
-                Console.WriteLine($"\tpreinit:\t{"",15}\t{$"{stopwatch.Elapsed:c}",16}");
-                partNumber++;
-            }
-            else
-            {
-                Console.WriteLine($"\tPart {partNumber++}:\t{part,16}\t{$"{stopwatch.Elapsed:c}",16}");
-            }
-            stopwatch.Restart();
-        }
+        foreach (AocSolution solution in Solutions)
+            foreach (string line in solution.ResultLines(BaseFolderPath))
+                Console.WriteLine(line);
     }
-    /// <summary>
-    /// Checks that the given method has the signature desired for AoC 2023 solution methods, i.e. 
-    /// <inheritdoc cref="HasAppropriateSignature(MethodInfo)" path="/sig"/>.
-    /// </summary>
-    /// <sig><c><see langword="static"/> <see cref="IEnumerable{T}">IEnumerable</see>
-    /// &lt;<see langword="object"/>&gt; [method](<see langword="string"/>[])</c></sig>
-    /// <param name="method"></param>
-    /// <returns></returns>
-    public static bool HasAppropriateSignature(MethodInfo method)
-        => method.IsStatic && method.ParametersMatch(typeof(IEnumerable<object>), typeof(string[]));
-    public static (MethodInfo method, SolutionToProblemAttribute? attr) MethodAndAttribute(MethodInfo method)
-        => (method, method.GetCustomAttribute<SolutionToProblemAttribute>());
 }

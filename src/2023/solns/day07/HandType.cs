@@ -1,4 +1,4 @@
-﻿namespace d9.aoc._23.day7;
+﻿namespace d9.aoc._23.day07;
 public enum HandType
 {
     FiveOfAKind,

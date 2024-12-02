@@ -1,17 +1,13 @@
-﻿namespace d9.aoc._23.day7;
-public static class Solution
+﻿using d9.aoc.core;
+
+namespace d9.aoc._23.day07;
+[SolutionToProblem(7)]
+public class Solution : AocSolution
 {
-    [SolutionToProblem(7)]
-    public static IEnumerable<object> Solve(string[] lines)
+    public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
         yield return Winnings(lines, jokerMode: false);
         yield return Winnings(lines, jokerMode: true);
-    }
-    public static IEnumerable<int> Rank(this IEnumerable<Hand> hands)
-    {
-        int rank = hands.Count();
-        foreach (Hand hand in hands.OrderDescending())
-            yield return rank--;
     }
     public static int Winnings(IEnumerable<string> lines, bool jokerMode)
     {

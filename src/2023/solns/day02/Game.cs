@@ -1,6 +1,6 @@
 ﻿using d9.aoc.core;
 
-namespace d9.aoc._23.day2;
+namespace d9.aoc._23.day02;
 public class Game(string line)
 {
     public int Id = int.Parse(line.Split(": ")[0].Split(" ")[1]);
