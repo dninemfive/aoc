@@ -14,11 +14,5 @@ public class Solution : AocSolution
         yield return "preinit";
         yield return reports.Count(x => x.IsStrictlySafe);
         yield return reports.Count(x => x.IsLooselySafe);
-        foreach (Report report in reports.OrderBy(x => x.Deltas.Min()).ThenBy(x => x.Deltas.Max()))
-            if(report.IsStrictlySafe != report.IsLooselySafe)
-            Console.WriteLine($"{report,-33} {report.Deltas
-                                                    .Order()
-                                                    .Select(x => $"{x,2}")
-                                                    .ListNotation()}");
     }
 }

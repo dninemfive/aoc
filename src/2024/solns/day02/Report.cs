@@ -17,11 +17,5 @@ public class Report(string line)
     public bool IsStrictlySafe
         => Deltas.IsSafe();
     public bool IsLooselySafe
-    {
-        get
-        {
-            IEnumerable<int> orderedDeltas = Deltas.Order();
-            return orderedDeltas.Skip(1).IsSafe() || orderedDeltas.SkipLast(1).IsSafe();
-        }
-    }
+        => Items.Variations().Any(x => x.Deltas().IsSafe());
 }
