@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace d9.aoc.core;
 public abstract class AocSolution
