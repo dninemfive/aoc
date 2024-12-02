@@ -11,7 +11,7 @@ public class Solution : AocSolution
         _nodes = lines.Skip(2)
                       .Select(x => x.SplitAndTrim(" = (", ", ", ")"))
                       .ToDict(keys: x => x[0], values: x => (x[1], x[2]));
-        yield return 0b0;
+        yield return "preinit";
         yield return NavigateBetween("AAA", "ZZZ", tape).Count();
         yield return GhostPathLength(tape);
     }

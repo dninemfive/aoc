@@ -8,9 +8,9 @@ public record AocPartialResult(object Value, string? Label = null)
     public static implicit operator AocPartialResult(string result)
         => new(0b0, result);
     public static implicit operator AocPartialResult(int result)
-        => new(result);
+        => new(result, null);
     public static implicit operator AocPartialResult(long result)
-        => new(result);
+        => new(result, null);
 }
 public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
 {

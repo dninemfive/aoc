@@ -8,7 +8,7 @@ public class Solution : AocSolution
     public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
         IEnumerable<Sequence<int>> sequences = lines.Select(x => new Sequence<int>(x.ToMany<int>()));
-        yield return 0b0;
+        yield return "preinit";
         yield return sequences.Select(x => x.Next()).Sum();
         yield return sequences.Select(x => x.Prev()).Sum();
     }
