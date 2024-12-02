@@ -11,13 +11,12 @@ public class Solution : AocSolution
     public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
         IEnumerable<Report> reports = lines.Select(x => new Report(x));
+        yield return "preinit";
         yield return reports.Count(x => x.IsStrictlySafe);
         yield return reports.Count(x => x.IsLooselySafe);
-        static string s(bool b)
-            => b ? "T " : " F";
-        foreach (Report report in reports.OrderBy(x => x.IsStrictlySafe).ThenBy(x => x.IsLooselySafe))
-            Console.WriteLine($"{s(report.IsStrictlySafe)}{s(report.IsLooselySafe)}"
-                            + $"{report,-33} {report.Deltas
+        foreach (Report report in reports.OrderBy(x => x.Deltas.Min()).ThenBy(x => x.Deltas.Max()))
+            if(report.IsStrictlySafe != report.IsLooselySafe)
+            Console.WriteLine($"{report,-33} {report.Deltas
                                                     .Order()
                                                     .Select(x => $"{x,2}")
                                                     .ListNotation()}");
