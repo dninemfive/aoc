@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using d9.utl;
+using System.Reflection.Emit;
 
 namespace d9.aoc.core;
 public record AocPartialResult(object Value, string? Label = null)
@@ -14,6 +15,12 @@ public record AocPartialResult(object Value, string? Label = null)
 }
 public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
 {
+    public string Label
+        => Result.Label ?? $"Part {Index,2}";
+    public string ValueString
+        => Result.Label is null
+            ? Result.Value.PrintNull()
+            : "";
     public override string ToString()
-        => $"{Result.Label ?? $"Part {Index,2}"}:\t{Result.Value,16}\t{Elapsed,16:c}";
+        => $"{Label}:\t{ValueString,16}\t{Elapsed,16:c}";
 }
