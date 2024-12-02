@@ -2,7 +2,6 @@ using d9.aoc.core;
 using d9.aoc.core.test;
 
 namespace d9.aoc._24.tests;
-
 [TestClass]
 public class Tests
 {
@@ -11,10 +10,12 @@ public class Tests
     {
         get
         {
-            _group ??= new AocSolutionGroup(typeof(Program).Assembly, "2024");
+            _group ??= new AocSolutionGroup(typeof(Program).Assembly);
             return _group;
         }
     }
     [TestMethod]
-    public void Test_Day1() => Group.Test(1, 1660292, 22776016);
+    public void Test_Day01() => Group.Test(1, 1660292, 22776016);
+    [TestMethod]
+    public void Test_Day02() => Group.Test(2, 257, 328);
 }

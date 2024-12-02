@@ -10,7 +10,7 @@ public class Tests
     {
         get
         {
-            _group ??= new AocSolutionGroup(typeof(Program).Assembly, "2023");
+            _group ??= new AocSolutionGroup(typeof(Program).Assembly);
             return _group;
         }
     }

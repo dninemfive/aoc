@@ -1,13 +1,17 @@
 ﻿using d9.utl;
 using System.Collections;
 using System.Reflection;
+using static d9.aoc.core.meta.Constants;
 
 namespace d9.aoc.core;
-public class AocSolutionGroup(Assembly assembly, string? name = null)
+public class AocSolutionGroup(Assembly assembly)
     : IEnumerable<AocSolution>
 {
     public Assembly Assembly => assembly;
-    public string Name => name ?? assembly.ToString();
+    private SolutionsForYearAttribute? Attribute => Assembly.GetCustomAttribute<SolutionsForYearAttribute>();
+    public int Year
+        => Attribute?.Year
+        ?? throw new Exception("Cannot create an AocSolutionGroup for an assembly without a SolutionsForYear attribute!");
     /// <remarks>
     /// See 
     /// <see href="https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in#comment26343106_2887537">
@@ -42,9 +46,10 @@ public class AocSolutionGroup(Assembly assembly, string? name = null)
                        .Select(x => x.Value);
     public void ExecuteAll()
     {
+        Console.WriteLine($"Solutions for year {Year}:");
         foreach (AocSolution solution in Solutions)
             foreach (string line in solution.ResultLines(InputFolder))
-                Console.WriteLine(line);
+                Console.WriteLine($"{TAB}{line}");
     }
     public IEnumerator<AocSolution> GetEnumerator()
         => Solutions.GetEnumerator();
