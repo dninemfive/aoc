@@ -39,23 +39,22 @@ public static class MathUtils
         for (int i = 1; i < enumerable.Count(); i++)
             yield return enumerable.ElementAt(i) - enumerable.ElementAt(i - 1);
     }
-    public static bool IsMonotonic<T>(this IEnumerable<T> numbers)
-        where T : INumber<T>
+    public static (int min, int max) MinMax(this IEnumerable<int> numbers)
     {
-        IEnumerable<T> deltas = numbers.Deltas();
-        bool? isIncreasing = null;
-        foreach(T t in deltas)
+        int min = int.MaxValue, max = int.MinValue;
+        foreach(int n in numbers)
         {
-            int sign = 0;
-            if(isIncreasing is null && (sign = T.Sign(t)) != 0)
-            {
-                isIncreasing = sign > 0;
-            }
-            else if(isIncreasing != sign > 0)
-            {
-                return false;
-            }
+            if(n < min)
+                min = n;
+            if (n > max)
+                max = n;
         }
-        return true;
+        return (min, max);
+    }
+    public static bool IsMonotonic(this IEnumerable<int> numbers, bool strict = false)
+    {
+        (int min, int max) minMax = numbers.Deltas().MinMax();
+        return strict ? minMax is ( >  0, > 0) or ( < 0, <  0)
+                      : minMax is ( >= 0, > 0) or ( < 0, <= 0);
     }
 }

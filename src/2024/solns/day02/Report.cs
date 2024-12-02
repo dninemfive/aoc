@@ -15,14 +15,13 @@ public class Report(string line)
     public override string ToString()
         => Items.ListNotation();
     public bool IsSafe
-    // => Deltas.IsMonotonic() && Deltas.Select(Math.Abs).Max() <= 3;
+    // => Deltas.MinMax() is ( > 0, <= 3) or ( >= -3, < 0);
     {
         get
         {
-            bool isMonotonic = Deltas.IsMonotonic();
-            int max = Deltas.Select(Math.Abs).Max();
-            Console.WriteLine($"{this}: {isMonotonic}, {max}");
-            return isMonotonic && max <= 3;
+            bool result = Deltas.MinMax() is ( > 0, <= 3) or ( >= -3, < 0);
+            Console.WriteLine($"{this} {Deltas.MinMax()} {result}");
+            return result;
         }
     }
 }
