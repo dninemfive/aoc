@@ -1,6 +1,7 @@
 ﻿using d9.utl;
 using System.Collections;
 using System.Reflection;
+using static d9.aoc.core.meta.Constants;
 
 namespace d9.aoc.core;
 public class AocSolutionGroup(Assembly assembly)
@@ -48,7 +49,7 @@ public class AocSolutionGroup(Assembly assembly)
         Console.WriteLine($"Solutions for year {Year}:");
         foreach (AocSolution solution in Solutions)
             foreach (string line in solution.ResultLines(InputFolder))
-                Console.WriteLine($"    {line}");
+                Console.WriteLine($"{TAB}{line}");
     }
     public IEnumerator<AocSolution> GetEnumerator()
         => Solutions.GetEnumerator();

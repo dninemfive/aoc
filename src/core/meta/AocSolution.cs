@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using static d9.aoc.core.meta.Constants;
 
 namespace d9.aoc.core;
 public abstract class AocSolution
@@ -28,9 +29,9 @@ public abstract class AocSolution
     }
     public IEnumerable<string> ResultLines(string inputFolder)
     {
-        yield return $"Solution for Problem {Day:00}:";
+        yield return $"Day {Day,2}:";
         foreach (AocSolutionPart part in Execute(inputFolder))
-            yield return $"\t{part}";
+            yield return $"{TAB}{part}";
     }
     public abstract IEnumerable<AocPartialResult> Solve(params string[] lines);
 }
