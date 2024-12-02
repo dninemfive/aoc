@@ -31,30 +31,4 @@ public static class MathUtils
         T minusResult = (-b - discriminant) / denominator, plusResult = (-b + discriminant) / denominator;
         return minusResult < plusResult ? (minusResult, plusResult) : (plusResult, minusResult);
     }
-    public static IEnumerable<T> Deltas<T>(this IEnumerable<T> enumerable)
-        where T : INumber<T>
-    {
-        if (enumerable.Count() < 2)
-            throw new ArgumentException("Can only calculate deltas of two or more numbers!");
-        for (int i = 1; i < enumerable.Count(); i++)
-            yield return enumerable.ElementAt(i) - enumerable.ElementAt(i - 1);
-    }
-    public static (int min, int max) MinMax(this IEnumerable<int> numbers)
-    {
-        int min = int.MaxValue, max = int.MinValue;
-        foreach(int n in numbers)
-        {
-            if(n < min)
-                min = n;
-            if (n > max)
-                max = n;
-        }
-        return (min, max);
-    }
-    public static bool IsMonotonic(this IEnumerable<int> numbers, bool strict = false)
-    {
-        (int min, int max) minMax = numbers.Deltas().MinMax();
-        return strict ? minMax is ( >  0, > 0) or ( < 0, <  0)
-                      : minMax is ( >= 0, > 0) or ( < 0, <= 0);
-    }
 }
