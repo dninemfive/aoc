@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,5 +30,32 @@ public static class MathUtils
         T discriminant = T.Sqrt((b * b) - four * a * c), denominator = two * a;
         T minusResult = (-b - discriminant) / denominator, plusResult = (-b + discriminant) / denominator;
         return minusResult < plusResult ? (minusResult, plusResult) : (plusResult, minusResult);
+    }
+    public static IEnumerable<T> Deltas<T>(this IEnumerable<T> enumerable)
+        where T : INumber<T>
+    {
+        if (enumerable.Count() < 2)
+            throw new ArgumentException("Can only calculate deltas of two or more numbers!");
+        for (int i = 1; i < enumerable.Count(); i++)
+            yield return enumerable.ElementAt(i) - enumerable.ElementAt(i - 1);
+    }
+    public static bool IsMonotonic<T>(this IEnumerable<T> numbers)
+        where T : INumber<T>
+    {
+        IEnumerable<T> deltas = numbers.Deltas();
+        bool? isIncreasing = null;
+        foreach(T t in deltas)
+        {
+            int sign = 0;
+            if(isIncreasing is null && (sign = T.Sign(t)) != 0)
+            {
+                isIncreasing = sign > 0;
+            }
+            else if(isIncreasing != sign > 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
