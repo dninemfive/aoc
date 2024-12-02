@@ -74,4 +74,11 @@ public static class StringExtensions
             result += replacer(c);
         return result;
     }
+    public static string Ancestor(this string path, int index)
+    {
+        DirectoryInfo result = new DirectoryInfo(path);
+        for (int i = 0; i < index; i++)
+            result = result.Parent!;
+        return result.ToString();
+    }
 }

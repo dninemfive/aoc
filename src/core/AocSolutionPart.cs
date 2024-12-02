@@ -1,7 +1,7 @@
 ﻿using System.Reflection.Emit;
 
 namespace d9.aoc.core;
-public record AocPartialResult(object Result, string? Label = null)
+public record AocPartialResult(object Value, string? Label = null)
 {
     public static implicit operator AocPartialResult((object result, string label) tuple)
         => new(tuple.result, tuple.label);

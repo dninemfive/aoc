@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core", "core\core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2024", "2024\solns\aoc-solns-2024.csproj", "{7E070611-37D4-4771-9A16-2A3B65C2D4FD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2023", "2023", "{96551022-65F3-4020-BDFF-BB2E43F0D7E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{59B30FE0-775B-4C05-9190-C7A8CD92E697} = {96551022-65F3-4020-BDFF-BB2E43F0D7E2}
+		{CF129B24-1DC7-4D52-ADF3-3BE09BD3AB26} = {96551022-65F3-4020-BDFF-BB2E43F0D7E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90727EEC-6BD9-41AD-88DD-F53787501CA8}

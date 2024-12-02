@@ -22,24 +22,4 @@ internal static class Extensions
             }
         }
     }
-    internal static long GalaxyDistance(this (Point<int> a, Point<int> b) pair, int expansionFactor = 2)
-    {
-        ((int x1, int y1), (int x2, int y2)) = pair;
-        int x = x1,
-            dX = Math.Sign(x2 - x1),
-            y = y1,
-            dY = Math.Sign(y2 - y1);
-        long distance = 0;
-        while (x != x2)
-        {
-            distance += _emptyColumns.Contains(x) ? expansionFactor : 1;
-            x += dX;
-        }
-        while (y != y2)
-        {
-            distance += _emptyRows.Contains(y) ? expansionFactor : 1;
-            y += dY;
-        }
-        return distance;
-    }
 }

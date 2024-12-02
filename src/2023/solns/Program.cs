@@ -5,6 +5,6 @@ public static class Program
 {
     private static void Main()
     {
-        new AocSolutionGroup(typeof(Program).Assembly, "2023").ExecuteAllSolutions();
+        new AocSolutionGroup(typeof(Program).Assembly, "2023").ExecuteAll();
     }
 }

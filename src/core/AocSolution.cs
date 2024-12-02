@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace d9.aoc.core;
 public abstract class AocSolution
 {
-    public string InputFileName => $"{Day:00}.input";
+    public AocSolution() { }
+    public string FileName => $"day{Day:00}.txt";
     public int Day => Attribute.Day;
-    public static AocSolution? From(Type implementingType, string inputFolder)
-        => Activator.CreateInstance(implementingType, inputFolder) as AocSolution;
+    public static AocSolution? Instantiate(Type implementingType)
+        => Activator.CreateInstance(implementingType) as AocSolution;
     public SolutionToProblemAttribute Attribute 
         => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
             ?? throw new Exception($"{GetType().Name} must have a SolutionToProblem attribute to run properly!");
@@ -16,7 +18,7 @@ public abstract class AocSolution
         int partIndex = 1;
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        foreach (AocPartialResult result in Solve(File.ReadAllLines(Path.Join(inputFolder, InputFileName))))
+        foreach (AocPartialResult result in Solve(File.ReadAllLines(Path.Join(inputFolder, FileName))))
         {
             stopwatch.Stop();
             yield return new(result, partIndex, stopwatch.Elapsed);
@@ -27,7 +29,7 @@ public abstract class AocSolution
     }
     public IEnumerable<string> ResultLines(string inputFolder)
     {
-        yield return $"Solution for Problem {Attribute.Day:00}:";
+        yield return $"Solution for Problem {Day:00}:";
         foreach (AocSolutionPart part in Execute(inputFolder))
             yield return $"\t{part}";
     }
