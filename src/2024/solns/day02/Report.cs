@@ -13,15 +13,15 @@ public class Report(string line)
         }
     }
     public override string ToString()
-        => Items.ListNotation();
-    public bool IsSafe
-    // => Deltas.MinMax() is ( > 0, <= 3) or ( >= -3, < 0);
+        => Items.Select(x => $"{x,2}").ListNotation();
+    public bool IsStrictlySafe
+        => Deltas.IsSafe();
+    public bool IsLooselySafe
     {
         get
         {
-            bool result = Deltas.MinMax() is ( > 0, <= 3) or ( >= -3, < 0);
-            Console.WriteLine($"{this} {Deltas.MinMax()} {result}");
-            return result;
+            IEnumerable<int> orderedDeltas = Deltas.Order();
+            return orderedDeltas.Skip(1).IsSafe() || orderedDeltas.SkipLast(1).IsSafe();
         }
     }
 }

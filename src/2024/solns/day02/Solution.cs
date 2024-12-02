@@ -10,6 +10,16 @@ public class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(string[] lines)
     {
-        yield return lines.Select(x => new Report(x)).Count(x => x.IsSafe);
+        IEnumerable<Report> reports = lines.Select(x => new Report(x));
+        yield return reports.Count(x => x.IsStrictlySafe);
+        yield return reports.Count(x => x.IsLooselySafe);
+        static string s(bool b)
+            => b ? "T " : " F";
+        foreach (Report report in reports.OrderBy(x => x.IsStrictlySafe).ThenBy(x => x.IsLooselySafe))
+            Console.WriteLine($"{s(report.IsStrictlySafe)}{s(report.IsLooselySafe)}"
+                            + $"{report,-33} {report.Deltas
+                                                    .Order()
+                                                    .Select(x => $"{x,2}")
+                                                    .ListNotation()}");
     }
 }
