@@ -15,5 +15,5 @@ public record AocPartialResult(object Value, string? Label = null)
 public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
 {
     public override string ToString()
-        => $"{Result.Label ?? $"Part {Index,2}"}:\t{Elapsed,16:c}";
+        => $"{Result.Label ?? $"Part {Index,2}"}:\t{Result.Value,16}\t{Elapsed,16:c}";
 }

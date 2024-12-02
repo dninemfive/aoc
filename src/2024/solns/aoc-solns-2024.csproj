@@ -3,9 +3,24 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>aoc_solns_2024</RootNamespace>
+    <RootNamespace>d9.aoc._24</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="utl">
+      <HintPath>..\..\..\..\utl\bin\Release\net8.0\utl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="d9.aoc.core" />
+    <Using Include="d9.utl" />
+  </ItemGroup>
 
 </Project>
