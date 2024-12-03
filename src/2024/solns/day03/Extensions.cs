@@ -13,8 +13,9 @@ internal static partial class Extensions
     }
     public static bool? TryEvaluateDoOrDont(this string match)
     {
-        if (match is not "do()" or "dont()")
+        if (match is not ("do()" or "don't()"))
             return null;
+        //Console.WriteLine($"TryEvaluateDoOrDont({match})");
         return match == "do()";
     }
     public static int? TryEvaluateMul(this string match)

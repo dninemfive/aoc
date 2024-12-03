@@ -15,23 +15,20 @@ internal partial class Solution : AocSolution
         int sum = 0;
         foreach(Union<bool, int> instruction in instructions)
         {
-            // Console.WriteLine(instruction);
             if (instruction.IsT1(out bool b))
             {
-                Console.WriteLine(b);
                 active = b;
             }
             else if(instruction.IsT2(out int i))
             {
                 if (active)
                     sum += i;
-                Console.WriteLine($"\t{i}");
             }
         }
         yield return sum;
     }
     private static Regex _anyInstruction = AnyInstruction();
     // til about the non-capturing modifier: https://stackoverflow.com/a/632248
-    [GeneratedRegex(@"(?:mul\(\d+,\d+\)|do\(\)|dont\(\))")]
+    [GeneratedRegex(@"(?:mul\(\d+,\d+\)|do\(\)|don't\(\))")]
     private static partial Regex AnyInstruction();
 }
