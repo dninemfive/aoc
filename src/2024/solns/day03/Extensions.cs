@@ -5,7 +5,7 @@ internal static partial class Extensions
 {
     private static readonly Regex _mulRegex = GenerateMulRegex();
     public static Regex MulRegex => _mulRegex;
-    public static object Evaluate(this string match)
+    public static Union<bool, int> Evaluate(this string match)
     {
         if (match.TryEvaluateDoOrDont() is bool b)
             return b;
