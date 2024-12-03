@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace d9.aoc._24.day03;
 internal partial class MulInstruction(int left, int right)
+    : IInstruction<MulInstruction>
 {
-    public static Regex Regex = MulRegex();
+    private static readonly Regex _regex = MulRegex();
+    public static Regex Regex => _regex;
     public int Value => left * right;
     public static MulInstruction FromMatch(string match)
     {
