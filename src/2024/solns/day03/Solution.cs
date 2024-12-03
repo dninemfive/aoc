@@ -10,21 +10,22 @@ internal partial class Solution : AocSolution
                                                           .Select(x => x.Value.Evaluate());
         yield return "preinit";
         yield return instructions.Select(x => x.As<int>())
-                                 .Where(x => x is not null)
                                  .Sum()!;
         bool active = true;
         int sum = 0;
         foreach(Union<bool, int> instruction in instructions)
         {
-            Console.WriteLine(instruction);
-            if (instruction.As<bool>() is bool b)
+            // Console.WriteLine(instruction);
+            if (instruction.IsT1(out bool b))
             {
+                Console.WriteLine(b);
                 active = b;
             }
-            else if(instruction.As<int>() is int i)
+            else if(instruction.IsT2(out int i))
             {
                 if (active)
                     sum += i;
+                Console.WriteLine($"\t{i}");
             }
         }
         yield return sum;
