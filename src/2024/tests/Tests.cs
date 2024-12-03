@@ -18,4 +18,6 @@ public class Tests
     public void Test_Day01() => Group.Test(1, 1660292, 22776016);
     [TestMethod]
     public void Test_Day02() => Group.Test(2, 257, 328);
+    [TestMethod]
+    public void Test_Day03() => Group.Test(3, 179834255, 80570939);
 }

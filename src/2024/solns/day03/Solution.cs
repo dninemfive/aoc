@@ -11,21 +11,25 @@ internal partial class Solution : AocSolution
         yield return "preinit";
         yield return instructions.Select(x => x.As<int>())
                                  .Sum()!;
+        yield return SumOnlyWhileActive(instructions);
+    }
+    public int SumOnlyWhileActive(IEnumerable<Union<bool, int>> instructions)
+    {
         bool active = true;
         int sum = 0;
-        foreach(Union<bool, int> instruction in instructions)
+        foreach (Union<bool, int> instruction in instructions)
         {
             if (instruction.IsT1(out bool b))
             {
                 active = b;
             }
-            else if(instruction.IsT2(out int i))
+            else if (instruction.IsT2(out int i))
             {
                 if (active)
                     sum += i;
             }
         }
-        yield return sum;
+        return sum;
     }
     private static Regex _anyInstruction = AnyInstruction();
     // til about the non-capturing modifier: https://stackoverflow.com/a/632248
