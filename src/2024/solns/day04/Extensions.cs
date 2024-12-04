@@ -1,4 +1,5 @@
-﻿using Coordinate    = d9.aoc.core.Point<int>;
+﻿using d9.aoc.core.utils;
+using Coordinate    = d9.aoc.core.Point<int>;
 using Direction     = d9.aoc.core.Point<int>;
 using Directions    = d9.aoc.core.Directions<int>;
 
@@ -22,7 +23,7 @@ internal static class Extensions
         if (directions.Count < 2)
             return 0;
         int ct = 0;
-        Console.WriteLine($"{location}\n{grid.NeighborhoodOf(location).Select(x => x.Join()).JoinWithDelimiter("\n")}");
+        Console.WriteLine($"{location}\n{grid.NeighborhoodOf(location).LayOut()}");
         while(directions.Any())
         {
             Direction cur = directions.Pop();
@@ -37,7 +38,7 @@ internal static class Extensions
         Coordinate cur = start;
         foreach (char c in word)
         {
-            if (!grid.HasInBounds(cur) || grid[cur] != c)
+            if (!grid.Contains(cur) || grid[cur] != c)
                 return false;
             cur += direction;
         }

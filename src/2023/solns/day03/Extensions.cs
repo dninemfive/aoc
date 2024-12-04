@@ -71,7 +71,7 @@ internal static class Extensions
         int findEnd(int step)
         {
             int end = x;
-            while (grid.HasInBounds((end + step, y)) && grid[end + step, y].IsDigit())
+            while (grid.Contains((end + step, y)) && grid[end + step, y].IsDigit())
                 end += step;
             return end;
         }

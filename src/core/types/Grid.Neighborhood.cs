@@ -4,41 +4,21 @@ namespace d9.aoc.core;
 public readonly partial struct Grid<T>
     where T : struct
 {
-    public static IEnumerable<IEnumerable<Point>> NeighborhoodOffsets(int radius = 1)
+    public Grid<T> SubgridWithin(Point a, Point b)
     {
-        if (radius < 1)
-            throw new ArgumentException($"Cannot get a neighborhood with radius {radius}!");
-        IEnumerable<Point> generateRow(int y)
-        {
-            for (int x = -radius; x <= radius; x++)
-                yield return (x, y);
-        }
-        for (int y = -radius; y <= radius; y++)
-            yield return generateRow(y);
+        (int ax, int ay) = ClampInBounds(a);
+        (int bx, int by) = ClampInBounds(b);
+        int x1 = Math.Min(ax, bx), x2 = Math.Max(ax, bx),
+            y1 = Math.Min(ay, by), y2 = Math.Max(ay, by);
+        T[,] result = new T[x2 - x1, y2 - y1];
+        for (int x = x1; x <= x2; x++)
+            for (int y = y1; y <= y2; y++)
+                result[x - x1, y - y1] = this[x, y];
+        return result;
     }
-    public IEnumerable<IEnumerable<Point>> NeighborhoodPointsOf(Point point, int radius = 1)
+    public Grid<T> NeighborhoodOf(Point p, int radius = 1)
     {
-        Func<Point, bool> contains = Contains;
-        IEnumerable<Point> generateRow(IEnumerable<Point> row)
-        {
-            foreach(Point offset in row)
-            {
-                Point neighbor = point + offset;
-                if (contains(neighbor))
-                    yield return neighbor;
-            }
-        }
-        foreach (IEnumerable<Point> row in NeighborhoodOffsets(radius))
-            yield return generateRow(row);
-    }
-    public IEnumerable<T> GetMany(IEnumerable<Point> points)
-    {
-        foreach (Point p in points)
-            yield return this[p];
-    }
-    public IEnumerable<IEnumerable<T>> NeighborhoodOf(Point point, int radius = 1)
-    {
-        foreach (IEnumerable<Point> row in NeighborhoodPointsOf(point, radius))
-            yield return GetMany(row);
+        ArgumentOutOfRangeException.ThrowIfLessThan(radius, 1, nameof(radius));
+        return SubgridWithin((p.X - radius, p.Y - radius), (p.X + radius, p.Y + radius));
     }
 }
