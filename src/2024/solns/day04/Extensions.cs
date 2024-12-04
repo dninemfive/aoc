@@ -22,6 +22,7 @@ internal static class Extensions
         if (directions.Count < 2)
             return 0;
         int ct = 0;
+        Console.WriteLine($"{location}\n{grid.NeighborhoodOf(location).Select(x => x.Join()).JoinWithDelimiter("\n")}");
         while(directions.Any())
         {
             Direction cur = directions.Pop();
