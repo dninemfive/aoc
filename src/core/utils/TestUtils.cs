@@ -1,4 +1,5 @@
 ﻿using d9.aoc.core;
+using d9.aoc.core.meta;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -24,46 +25,48 @@ public static class TestUtils
         foreach(AocSolution solution in group)
         {
             Assert.IsNotNull(solution);
-            foreach (string line in solution.TestFinalResults(group.InputFolder))
+            foreach (string line in solution.TestResults(group.InputFolder))
                 Console.WriteLine($"\t{line}");
         }
     }
-    private static string[]? TryReadAllLines(string path)
+    private static string[]? TryReadAllLines(params string[] path)
     {
         try
         {
-            return File.ReadAllLines(path);
+            return File.ReadAllLines(Path.Join(path));
         }
         catch
         {
             return null;
         }
     }
-    public static IEnumerable<string> TestExampleResults(this AocSolution solution, string inputFolder)
+    public static IEnumerable<string> TestResults(this AocSolution solution, string inputFolder)
     {
-        string[]? generalFile = TryReadAllLines(solution.FileName(example: true));
-        // for each part:
-        foreach((int i, AocSolutionResult part) in solution.Execute(inputFolder).Parts)
+        IEnumerable<ExpectedResultsAttribute> attrs = solution.GetType().GetCustomAttributes<ExpectedResultsAttribute>();
+        if(attrs.Any())
         {
-
-        }
-        //  try to get specific file
-        //      test on specific ?? general ?? throw exception
-    }
-    public static IEnumerable<string> TestFinalResults(this AocSolution solution, string inputFolder)
-    {
-        if(solution.GetType().GetCustomAttribute<FinalResultsAttribute>() is FinalResultsAttribute attr)
-        {
-            yield return $"Testing solution for day {solution.Day}...";
-            foreach ((int i, AocSolutionResult part) in solution.Execute(inputFolder).Parts)
+            foreach(ExpectedResultsAttribute expectedResults in attrs)
             {
-                Assert.AreEqual(attr.ExpectedResults[i - 1], part.Value);
-                yield return $"\tPart {i} succeeded!";
+                bool example = expectedResults.Example;
+                string generalFileName = solution.FileName(example);
+                string[]? generalData = TryReadAllLines(inputFolder, solution.FileName(example));
+                yield return $"Testing solution for day {solution.Day} on {(example ? "example" : "final")} data...";
+                foreach ((int i, object expected) in expectedResults)
+                {
+                    string specificFileName = solution.FileName(example, i);
+                    string[]? specificData = TryReadAllLines(inputFolder, specificFileName);
+                    string[] data = specificData
+                                ?? generalData
+                                ?? throw new Exception($"Couldn't find either {generalFileName} or {specificFileName}!");
+                    AocSolutionResults actual = solution.Execute(data);
+                    Assert.AreEqual(expected, actual[i]);
+                    yield return $"\tPart {i} succeeded!";
+                }
             }
         }
         else
         {
-            yield return $"Couldn't find {typeof(FinalResultsAttribute).Name} for day {solution.Day}!";
+            yield return $"Couldn't find {typeof(ExpectedResultsAttribute).Name} for day {solution.Day}!";
         }
     }
 }
