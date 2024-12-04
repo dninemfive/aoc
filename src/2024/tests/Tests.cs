@@ -41,27 +41,5 @@ public class Tests
         Assert.AreEqual( 9, results[2].Value);
     }
     [TestMethod]
-    public void Test_Day04_DoubleX_MAS()
-    {
-        string[] exampleInput =
-        {
-            "SMS",
-            "SAM",
-            "MSM"
-        };
-        AocSolutionResults results = Group[4].Execute(exampleInput);
-        Assert.AreEqual(2, results[2].Value);
-    }
-    [TestMethod]
-    public void Test_Day04_NoX_MAS()
-    {
-        string[] exampleInput =
-        {
-            "SMS",
-            "SAM",
-            "SMM"
-        };
-        AocSolutionResults results = Group[4].Execute(exampleInput);
-        Assert.AreEqual(0, results[2].Value);
-    }
+    public void Test_Day04() => Group.Test(4, 2569, 1998);
 }

@@ -10,7 +10,6 @@ internal class Solution : AocSolution
                               .Count(x => crossword.WordStartsAtLocation("XMAS", x.start, x.direction));
         yield return crossword.AllPoints
                               .Where(x => !crossword.IsOnEdge(x))
-                              .Select(x => crossword.X_MASesAt(x))
-                              .Sum();
+                              .Count(x => crossword.HasXMASAt(x));
     }
 }
