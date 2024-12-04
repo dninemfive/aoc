@@ -59,7 +59,7 @@ public static class TestUtils
                                 ?? generalData
                                 ?? throw new Exception($"Couldn't find either {generalFileName} or {specificFileName}!");
                     AocSolutionResults actual = solution.Execute(data);
-                    Assert.AreEqual(expected, actual[i]);
+                    Assert.AreEqual(expected, actual[i].Value);
                     yield return $"\tPart {i} succeeded!";
                 }
             }
