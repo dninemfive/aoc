@@ -28,6 +28,7 @@ internal static class Extensions
             if (directions.Any(x => x.IsOrthogonalTo(cur)))
                 ct++;
         }
+        Console.WriteLine($"X-MASes at {location}: {ct}");
         return ct;
     }
     internal static bool WordStartsAtLocation(this Grid<char> grid, string word, Coordinate start, Direction direction)
