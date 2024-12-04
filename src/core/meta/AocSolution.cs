@@ -7,13 +7,13 @@ public abstract class AocSolution
 {
     public AocSolution() { }
     public string BaseFileName => $"day{Day:00}";
-    public string FileName(bool example = false, int? index = null)
+    public string FileName(bool sample = false, int? index = null)
     {
         string result = BaseFileName;
-        if (example)
-            result += ".example";
+        if (sample)
+            result += ".sample";
         if (index is int i)
-            result += $".{i}";
+            result += $".{i:00}";
         return $"{result}.txt";
     }
     public int Day => Attribute.Day;

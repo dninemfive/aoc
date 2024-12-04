@@ -47,13 +47,13 @@ public static class TestUtils
         {
             foreach(ExpectedResultsAttribute expectedResults in attrs)
             {
-                bool example = expectedResults.Example;
-                string generalFileName = solution.FileName(example);
-                string[]? generalData = TryReadAllLines(inputFolder, solution.FileName(example));
-                yield return $"Testing solution for day {solution.Day} on {(example ? "example" : "final")} data...";
+                bool useSampleData = expectedResults.UseSampleData;
+                string generalFileName = solution.FileName(useSampleData);
+                string[]? generalData = TryReadAllLines(inputFolder, solution.FileName(useSampleData));
+                yield return $"Testing solution for day {solution.Day} on {(useSampleData ? "sample" : "final")} data...";
                 foreach ((int i, object expected) in expectedResults)
                 {
-                    string specificFileName = solution.FileName(example, i);
+                    string specificFileName = solution.FileName(useSampleData, i);
                     string[]? specificData = TryReadAllLines(inputFolder, specificFileName);
                     string[] data = specificData
                                 ?? generalData

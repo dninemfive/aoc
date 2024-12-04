@@ -1,6 +1,6 @@
 ﻿namespace d9.aoc._24.day04;
 [SolutionToProblem(4)]
-[ExampleResults(18, 9)]
+[SampleResults(18, 9)]
 [FinalResults(2569, 1998)]
 internal class Solution : AocSolution
 {

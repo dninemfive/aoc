@@ -1,12 +1,11 @@
-﻿using d9.utl;
-using System.Collections;
+﻿using System.Collections;
 
 namespace d9.aoc.core;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public abstract class ExpectedResultsAttribute(params object[] expectedResults)
     : Attribute, IEnumerable<(int index, object expectedResult)>
 {
-    public abstract bool Example { get; }
+    public abstract bool UseSampleData { get; }
     public object[] ExpectedResults => expectedResults;
     private IEnumerable<(int index, object expectedResult)> _enumerable
     {
@@ -27,10 +26,10 @@ public abstract class ExpectedResultsAttribute(params object[] expectedResults)
 public class FinalResultsAttribute(params object[] expectedResults)
     : ExpectedResultsAttribute(expectedResults)
 {
-    public override bool Example => false;
+    public override bool UseSampleData => false;
 }
-public class ExampleResultsAttribute(params object[] expectedResults)
+public class SampleResultsAttribute(params object[] expectedResults)
     : ExpectedResultsAttribute(expectedResults)
 {
-    public override bool Example => true;
+    public override bool UseSampleData => true;
 }
