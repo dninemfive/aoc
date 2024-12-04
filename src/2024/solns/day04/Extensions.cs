@@ -1,4 +1,5 @@
-﻿using Coordinate    = d9.aoc.core.Point<int>;
+﻿using d9.aoc.core.utils;
+using Coordinate    = d9.aoc.core.Point<int>;
 using Direction     = d9.aoc.core.Point<int>;
 using Directions    = d9.aoc.core.Directions<int>;
 
@@ -40,7 +41,7 @@ internal static class Extensions
         Coordinate cur = start;
         foreach (char c in word)
         {
-            if (!grid.HasInBounds(cur) || grid[cur] != c)
+            if (!grid.Contains(cur) || grid[cur] != c)
                 return false;
             cur += direction;
         }
