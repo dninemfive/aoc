@@ -1,5 +1,6 @@
 ﻿using Coordinate = d9.aoc.core.Point<int>;
-using Direction = d9.aoc.core.Point<int>;
+using Direction  = d9.aoc.core.Point<int>;
+using Directions = d9.aoc.core.Directions<int>;
 
 namespace d9.aoc._24.day04;
 [SolutionToProblem(4)]
@@ -27,5 +28,11 @@ internal class Solution : AocSolution
         foreach (Coordinate start in grid.AllPoints)
             foreach (Direction direction in Directions.Clockwise)
                 yield return (start, direction);
+    }
+    public bool HasMas(Grid<char> grid, Coordinate start, Direction direction)
+    {
+        if (!grid.TryGet(start, out char? c) || c != 'A')
+            return false;
+        return
     }
 }

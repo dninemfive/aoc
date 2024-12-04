@@ -1,4 +1,6 @@
-﻿namespace d9.aoc.core;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace d9.aoc.core;
 public readonly partial struct Grid<T>(T[,] grid)
     where T : struct
 {
@@ -157,5 +159,11 @@ public readonly partial struct Grid<T>(T[,] grid)
             if(!broke) ct++;
         }
         return ct;
+    }
+    public bool TryGet(Point<int> coordinate, [NotNullWhen(true)] out T? result)
+    {
+        bool inbounds = HasInBounds(coordinate);
+        result = inbounds ? this[coordinate] : default;
+        return inbounds;
     }
 }

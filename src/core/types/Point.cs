@@ -15,6 +15,10 @@ public readonly struct Point<T>(T x, T y)
         => new(a.X + b.X, a.Y + b.Y);
     public static Point<T> operator -(Point<T> a, Point<T> b)
         => new(a.X - b.X, a.Y - b.Y);
+    public static Point<T> operator -(Point<T> p)
+        => (-p.X, -p.Y);
+    public static Point<T> operator *(Point<T> p, T factor)
+        => (p.X * factor, p.Y * factor);
     public T ManhattanDistanceFrom(Point<T> other)
     {
         (T dX, T dY) = this - other;

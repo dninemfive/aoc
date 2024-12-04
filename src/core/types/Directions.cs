@@ -1,11 +1,19 @@
-﻿namespace d9.aoc.core;
-public static class Directions
+﻿using System.Numerics;
+
+namespace d9.aoc.core;
+public static class Directions<T>
+    where T : INumber<T>
 {
-    public static readonly Point<int> Up     = ( 0,  1),
-                                      Right  = ( 1,  0),
-                                      Down   = ( 0, -1),
-                                      Left   = (-1,  0);
-    public static IEnumerable<Point<int>> Clockwise
+    public static readonly Point<T>   Up     = ( T.Zero,  T.One),
+                                      Right  = ( T.One,   T.Zero),
+                                      Down   = ( T.Zero, -T.One),
+                                      Left   = (-T.One,   T.Zero);
+
+    public static readonly Point<T> UpRight     = Up   + Right,
+                                    DownRight   = Down + Right,
+                                    DownLeft    = Down + Left,
+                                    UpLeft      = Up   + Left;
+    public static IEnumerable<Point<T>> Clockwise
     {
         get
         {
@@ -19,5 +27,11 @@ public static class Directions
             yield return Up + Left;
         }
     }
-    public static IEnumerable<Point<int>> Counterclockwise => Clockwise.Reverse();
+    public static IEnumerable<Point<T>> Counterclockwise => Clockwise.Reverse();
+}
+public static class DirectionExtensions
+{
+    public static Point<T> Opposite<T>(this Point<T> point)
+        where T : INumber<T>
+        => -point;
 }
