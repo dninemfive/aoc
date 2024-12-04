@@ -166,4 +166,6 @@ public readonly partial struct Grid<T>(T[,] grid)
         result = inbounds ? this[coordinate] : default;
         return inbounds;
     }
+    public bool IsEdge(Point<int> point)
+        => point.X == 0 || point.X == Width - 1 || point.Y == 0 || point.Y == Height - 1;
 }

@@ -13,7 +13,7 @@ public record AocPartialResult(object Value, string? Label = null)
     public static implicit operator AocPartialResult(long result)
         => new(result, null);
 }
-public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
+public record AocSolutionPart(AocPartialResult Result, int? Index, TimeSpan Elapsed)
 {
     public string Label
         => Result.Label ?? $"Part {Index,2}";

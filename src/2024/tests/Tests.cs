@@ -20,4 +20,24 @@ public class Tests
     public void Test_Day02() => Group.Test(2, 257, 328);
     [TestMethod]
     public void Test_Day03() => Group.Test(3, 179834255, 80570939);
+    [TestMethod]
+    public void Test_Day04_ExampleInput()
+    {
+        string[] exampleInput =
+        {
+            "MMMSXXMASM",
+            "MSAMXMSMSA",
+            "AMXSXMAAMM",
+            "MSAMASMSMX",
+            "XMASAMXAMM",
+            "XXAMMXXAMA",
+            "SMSMSASXSS",
+            "SAXAMASAAA",
+            "MAMMMXMMMM",
+            "MXMXAXMASX"
+        };
+        IEnumerable<AocSolutionPart> exampleOutput = Group[4].Execute(exampleInput);
+        Assert.AreEqual(18, exampleOutput.First(x => x.Index == 1).Result.Value);
+        Assert.AreEqual(9,  exampleOutput.First(x => x.Index == 2).Result.Value);
+    }
 }

@@ -8,11 +8,6 @@ public static class Directions<T>
                                       Right  = ( T.One,   T.Zero),
                                       Down   = ( T.Zero, -T.One),
                                       Left   = (-T.One,   T.Zero);
-
-    public static readonly Point<T> UpRight     = Up   + Right,
-                                    DownRight   = Down + Right,
-                                    DownLeft    = Down + Left,
-                                    UpLeft      = Up   + Left;
     public static IEnumerable<Point<T>> Clockwise
     {
         get

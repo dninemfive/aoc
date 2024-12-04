@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace d9.aoc.core;
 public readonly struct Point<T>(T x, T y)
@@ -19,6 +20,20 @@ public readonly struct Point<T>(T x, T y)
         => (-p.X, -p.Y);
     public static Point<T> operator *(Point<T> p, T factor)
         => (p.X * factor, p.Y * factor);
+    public T Dot(Point<T> b)
+    {
+        (T a1, T a2) = this;
+        (T b1, T b2) = b;
+        return a1 * b1 + a2 * b2;
+    }
+    public static bool operator ==(Point<T> a, Point<T> b)
+        => a.X == b.X && a.Y == b.Y;
+    public static bool operator !=(Point<T> a, Point<T> b)
+        => !(a == b);
+    public override bool Equals([NotNullWhen(true)] object? obj)
+        => obj is Point<T> other && this == other;
+    public override int GetHashCode()
+        => HashCode.Combine(X, Y);
     public T ManhattanDistanceFrom(Point<T> other)
     {
         (T dX, T dY) = this - other;

@@ -10,29 +10,11 @@ internal class Solution : AocSolution
     {
         Grid<char> crossword = Grid<char>.From(lines);
         yield return "preinit";
-        yield return AllPossibleWordStarts(crossword).Count(x => WordStartsAtLocation(crossword, "XMAS", x.start, x.direction));
-    }
-    public bool WordStartsAtLocation(Grid<char> grid, string word, Coordinate start, Direction direction)
-    {
-        Coordinate cur = start;
-        foreach(char c in word)
-        {
-            if (!grid.HasInBounds(cur) || grid[cur] != c)
-                return false;
-            cur += direction;
-        }
-        return true;
-    }
-    public IEnumerable<(Coordinate start, Direction direction)> AllPossibleWordStarts(Grid<char> grid)
-    {
-        foreach (Coordinate start in grid.AllPoints)
-            foreach (Direction direction in Directions.Clockwise)
-                yield return (start, direction);
-    }
-    public bool HasMas(Grid<char> grid, Coordinate start, Direction direction)
-    {
-        if (!grid.TryGet(start, out char? c) || c != 'A')
-            return false;
-        return
+        yield return crossword.AllPossibleWordStarts()
+                              .Count(x => crossword.WordStartsAtLocation("XMAS", x.start, x.direction));
+        yield return crossword.AllPoints
+                              .Where(x => !crossword.IsEdge(x))
+                              .Select(x => crossword.X_MASesAt(x))
+                              .Sum();
     }
 }
