@@ -6,7 +6,16 @@ namespace d9.aoc.core;
 public abstract class AocSolution
 {
     public AocSolution() { }
-    public string FileName => $"day{Day:00}.txt";
+    public string BaseFileName => $"day{Day:00}";
+    public string FileName(bool example = false, int? index = null)
+    {
+        string result = BaseFileName;
+        if (example)
+            result += ".example";
+        if (index is int i)
+            result += $".{i}";
+        return $"{result}.txt";
+    }
     public int Day => Attribute.Day;
     public static AocSolution? Instantiate(Type implementingType)
         => Activator.CreateInstance(implementingType) as AocSolution;
@@ -28,7 +37,7 @@ public abstract class AocSolution
         return results;
     }
     public AocSolutionResults Execute(string inputFolder)
-        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName)));
+        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName())));
     public IEnumerable<string> ResultLines(string inputFolder)
     {
         yield return $"Day {Day,2}:";

@@ -28,6 +28,28 @@ public static class TestUtils
                 Console.WriteLine($"\t{line}");
         }
     }
+    private static string[]? TryReadAllLines(string path)
+    {
+        try
+        {
+            return File.ReadAllLines(path);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+    public static IEnumerable<string> TestExampleResults(this AocSolution solution, string inputFolder)
+    {
+        string[]? generalFile = TryReadAllLines(solution.FileName(example: true));
+        // for each part:
+        foreach((int i, AocSolutionResult part) in solution.Execute(inputFolder).Parts)
+        {
+
+        }
+        //  try to get specific file
+        //      test on specific ?? general ?? throw exception
+    }
     public static IEnumerable<string> TestFinalResults(this AocSolution solution, string inputFolder)
     {
         if(solution.GetType().GetCustomAttribute<FinalResultsAttribute>() is FinalResultsAttribute attr)
