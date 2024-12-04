@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using static d9.aoc.core.meta.Constants;
+using static d9.aoc.core.Constants;
 
 namespace d9.aoc.core;
 public abstract class AocSolution

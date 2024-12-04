@@ -1,7 +1,7 @@
 ﻿using d9.utl;
 using System.Collections;
 using System.Reflection;
-using static d9.aoc.core.meta.Constants;
+using static d9.aoc.core.Constants;
 
 namespace d9.aoc.core;
 public class AocSolutionGroup(Assembly assembly)
