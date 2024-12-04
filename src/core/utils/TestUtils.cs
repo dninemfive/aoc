@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,13 +20,28 @@ public static class TestUtils
     }
     public static void Test(this AocSolutionGroup group)
     {
+        Console.WriteLine($"Testing solutions for {group.Year}...");
         foreach(AocSolution solution in group)
         {
             Assert.IsNotNull(solution);
-            // flatten annotations so that for each part you have string[] input
+            foreach (string line in solution.TestFinalResults(group.InputFolder))
+                Console.WriteLine($"\t{line}");
         }
     }
-    public static void TestFinalResults(this AocSolution solution)
+    public static IEnumerable<string> TestFinalResults(this AocSolution solution, string inputFolder)
     {
+        if(solution.GetType().GetCustomAttribute<FinalResultsAttribute>() is FinalResultsAttribute attr)
+        {
+            yield return $"Testing solution for day {solution.Day}...";
+            foreach ((int i, AocSolutionResult part) in solution.Execute(inputFolder).Parts)
+            {
+                Assert.AreEqual(attr.ExpectedResults[i - 1], part.Value);
+                yield return $"\tPart {i} succeeded!";
+            }
+        }
+        else
+        {
+            yield return $"Couldn't find {typeof(FinalResultsAttribute).Name} for day {solution.Day}!";
+        }
     }
 }

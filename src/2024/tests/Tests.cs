@@ -42,4 +42,6 @@ public class Tests
     }
     [TestMethod]
     public void Test_Day04() => Group.Test(4, 2569, 1998);
+    [TestMethod]
+    public void Test_2024() => Group.Test();
 }
