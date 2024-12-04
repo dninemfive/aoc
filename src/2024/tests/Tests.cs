@@ -36,9 +36,9 @@ public class Tests
             "MAMMMXMMMM",
             "MXMXAXMASX"
         };
-        IEnumerable<AocSolutionPart> exampleOutput = Group[4].Execute(exampleInput);
-        Assert.AreEqual(18, exampleOutput.First(x => x.ValidIndex == 1).Result.Value);
-        Assert.AreEqual( 9, exampleOutput.First(x => x.ValidIndex == 2).Result.Value);
+        AocSolutionResults results = Group[4].Execute(exampleInput);
+        Assert.AreEqual(18, results[1].Value);
+        Assert.AreEqual( 9, results[2].Value);
     }
     [TestMethod]
     public void Test_Day04_DoubleX_MAS()
@@ -49,7 +49,7 @@ public class Tests
             "SAM",
             "MSM"
         };
-        IEnumerable<AocSolutionPart> exampleOutput = Group[4].Execute(exampleInput);
-        Assert.AreEqual(2, exampleOutput.First(x => x.ValidIndex == 2).Result.Value);
+        AocSolutionResults results = Group[4].Execute(exampleInput);
+        Assert.AreEqual(2, results[2].Value);
     }
 }
