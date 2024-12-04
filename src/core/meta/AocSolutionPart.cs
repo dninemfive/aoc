@@ -1,5 +1,4 @@
 ﻿using d9.utl;
-using System.Reflection.Emit;
 
 namespace d9.aoc.core;
 public record AocPartialResult(object Value, string? Label = null)
@@ -13,7 +12,7 @@ public record AocPartialResult(object Value, string? Label = null)
     public static implicit operator AocPartialResult(long result)
         => new(result, null);
 }
-public record AocSolutionPart(AocPartialResult Result, int? Index, TimeSpan Elapsed)
+public record AocSolutionPart(AocPartialResult Result, int Index, TimeSpan Elapsed)
 {
     public string Label
         => Result.Label ?? $"Part {Index,2}";
@@ -21,6 +20,8 @@ public record AocSolutionPart(AocPartialResult Result, int? Index, TimeSpan Elap
         => Result.Label is null
             ? Result.Value.PrintNull()
             : "";
+    public int? ValidIndex
+        => Result.Label is null ? Index : null;
     public override string ToString()
         => $"{Label}:\t{ValueString,16}\t{Elapsed,16:c}";
 }

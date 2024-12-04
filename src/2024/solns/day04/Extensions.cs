@@ -18,13 +18,16 @@ internal static class Extensions
         => a.Dot(b) == 0;
     internal static int X_MASesAt(this Grid<char> grid, Coordinate location)
     {
-        IEnumerable<Direction> directions = grid.MasDirectionsAt(location);
-        if (directions.Count() < 2)
+        Stack<Direction> directions = new(grid.MasDirectionsAt(location));
+        if (directions.Count < 2)
             return 0;
         int ct = 0;
-        foreach (Direction direction in directions)
-            if (directions.Where(x => x != direction).Any(x => direction.IsOrthogonalTo(x)))
+        while(directions.Any())
+        {
+            Direction cur = directions.Pop();
+            if (directions.Any(x => x.IsOrthogonalTo(cur)))
                 ct++;
+        }
         return ct;
     }
     internal static bool WordStartsAtLocation(this Grid<char> grid, string word, Coordinate start, Direction direction)

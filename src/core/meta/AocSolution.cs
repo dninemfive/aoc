@@ -21,7 +21,7 @@ public abstract class AocSolution
         foreach (AocPartialResult result in Solve(lines))
         {
             stopwatch.Stop();
-            yield return new(result, result.Label is null ? partIndex : null, stopwatch.Elapsed);
+            yield return new(result, partIndex, stopwatch.Elapsed);
             if (result.Label is null)
                 partIndex++;
             stopwatch.Restart();

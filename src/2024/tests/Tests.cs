@@ -37,7 +37,7 @@ public class Tests
             "MXMXAXMASX"
         };
         IEnumerable<AocSolutionPart> exampleOutput = Group[4].Execute(exampleInput);
-        Assert.AreEqual(18, exampleOutput.First(x => x.Index == 1).Result.Value);
-        Assert.AreEqual(9,  exampleOutput.First(x => x.Index == 2).Result.Value);
+        Assert.AreEqual(18, exampleOutput.First(x => x.ValidIndex == 1).Result.Value);
+        Assert.AreEqual( 9, exampleOutput.First(x => x.ValidIndex == 2).Result.Value);
     }
 }
