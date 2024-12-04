@@ -11,7 +11,7 @@ internal static class Extensions
     {
         if (grid.TryGet(location, out char? center) && center != 'A')
             yield break;
-        foreach (Direction direction in HalfClockwise)
+        foreach (Direction direction in new List<Direction> { (1, 1), (1, -1) })
             if (grid.WordAt(location, direction) is "MAS" or "SAM")
                 yield return direction;
     }
@@ -29,7 +29,7 @@ internal static class Extensions
             if (directions.Any(x => x.IsOrthogonalTo(cur)))
                 ct++;
         }
-        if(ct > 0)
+        if(false && ct > 0)
         {
             Console.WriteLine($"=======\n{location}\n{grid.NeighborhoodOf(location).LayOut()}");
             Console.WriteLine($"-> {ct}");
