@@ -52,4 +52,16 @@ public class Tests
         AocSolutionResults results = Group[4].Execute(exampleInput);
         Assert.AreEqual(2, results[2].Value);
     }
+    [TestMethod]
+    public void Test_Day04_NoX_MAS()
+    {
+        string[] exampleInput =
+        {
+            "SMS",
+            "SAM",
+            "SMM"
+        };
+        AocSolutionResults results = Group[4].Execute(exampleInput);
+        Assert.AreEqual(0, results[2].Value);
+    }
 }

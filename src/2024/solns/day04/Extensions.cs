@@ -22,14 +22,17 @@ internal static class Extensions
         if (directions.Count < 2)
             return 0;
         int ct = 0;
-        Console.WriteLine($"{location}\n{grid.NeighborhoodOf(location).Select(x => x.Join()).JoinWithDelimiter("\n")}");
         while(directions.Any())
         {
             Direction cur = directions.Pop();
             if (directions.Any(x => x.IsOrthogonalTo(cur)))
                 ct++;
         }
-        Console.WriteLine($"X-MASes at {location}: {ct}");
+        if(ct > 0)
+        {
+            Console.WriteLine($"=======\n{location}\n{grid.NeighborhoodOf(location).LayOut()}");
+            Console.WriteLine($"-> {ct}");
+        }
         return ct;
     }
     internal static bool WordStartsAtLocation(this Grid<char> grid, string word, Coordinate start, Direction direction)
