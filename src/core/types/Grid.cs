@@ -1,5 +1,5 @@
 ﻿namespace d9.aoc.core;
-public readonly struct Grid<T>(T[,] grid)
+public readonly partial struct Grid<T>(T[,] grid)
     where T : struct
 {
     private readonly T[,] _grid = grid;
