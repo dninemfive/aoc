@@ -12,8 +12,8 @@ public static class TestUtils
     {
         AocSolution solution = group[index];
         Assert.IsNotNull(solution);
-        foreach (AocSolutionPart part in solution.Execute(group.InputFolder))
+        foreach ((int i, AocSolutionResult part) in solution.Execute(group.InputFolder).Parts)
             if (part.Result.Label is null)
-                Assert.AreEqual(expectedValues[part.Index - 1], part.Result.Value);
+                Assert.AreEqual(expectedValues[i - 1], part.Value);
     }
 }

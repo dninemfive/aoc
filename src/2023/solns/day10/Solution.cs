@@ -1,4 +1,5 @@
 ﻿using d9.aoc.core;
+using d9.aoc.core.utils;
 
 namespace d9.aoc._23.day10;
 [SolutionToProblem(10)]
@@ -69,7 +70,7 @@ public class Solution : AocSolution
         foreach (Direction d in Directions(c))
         {
             Point<int> neighbor = p + Offset(d);
-            if (_grid.HasInBounds(neighbor) && PointsIn(_grid[neighbor], Reverse(d)))
+            if (_grid.Contains(neighbor) && PointsIn(_grid[neighbor], Reverse(d)))
                 yield return neighbor;
         }
     }
@@ -111,7 +112,7 @@ public class Solution : AocSolution
             foreach (Point<int> neighbor in ConnectedNeighbors(point))
                 push(neighbor, distance + 1);
         }
-        File.WriteAllText("loop visualization.txt", Grid<char>.LayOut(debugGrid));
+        File.WriteAllText("loop visualization.txt", debugGrid.LayOut());
         return highestDistance;
     }
 }

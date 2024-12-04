@@ -13,24 +13,26 @@ public abstract class AocSolution
     public SolutionToProblemAttribute Attribute 
         => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
             ?? throw new Exception($"{GetType().Name} must have a SolutionToProblem attribute to run properly!");
-    public IEnumerable<AocSolutionPart> Execute(string inputFolder)
+    public AocSolutionResults Execute(string[] lines)
     {
         int partIndex = 1;
         Stopwatch stopwatch = new();
+        AocSolutionResults results = new();
         stopwatch.Start();
-        foreach (AocPartialResult result in Solve(File.ReadAllLines(Path.Join(inputFolder, FileName))))
+        foreach (AocPartialResult result in Solve(lines))
         {
             stopwatch.Stop();
-            yield return new(result, partIndex, stopwatch.Elapsed);
-            if (result.Label is null)
-                partIndex++;
+            results.Add(result, stopwatch.Elapsed, result.Label is null ? partIndex++ : null);
             stopwatch.Restart();
         }
+        return results;
     }
+    public AocSolutionResults Execute(string inputFolder)
+        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName)));
     public IEnumerable<string> ResultLines(string inputFolder)
     {
         yield return $"Day {Day,2}:";
-        foreach (AocSolutionPart part in Execute(inputFolder))
+        foreach (AocSolutionResult part in Execute(inputFolder))
             yield return $"{TAB}{part}";
     }
     public abstract IEnumerable<AocPartialResult> Solve(params string[] lines);
