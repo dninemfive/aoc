@@ -1,5 +1,7 @@
 ﻿namespace d9.aoc._24.day04;
 [SolutionToProblem(4)]
+[SampleResults(18, 9)]
+[FinalResults(2569, 1998)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)

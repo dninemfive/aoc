@@ -1,7 +1,6 @@
-﻿using System.Linq;
-
-namespace d9.aoc._24.day01;
+﻿namespace d9.aoc._24.day01;
 [SolutionToProblem(1)]
+[FinalResults(1660292, 22776016)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(string[] lines)

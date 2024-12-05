@@ -5,7 +5,7 @@
 /// generated from it.
 /// </summary>
 /// <param name="year">The year the solutions in the assembly are for.</param>
-[AttributeUsage(AttributeTargets.Assembly)]
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 public class SolutionsForYearAttribute(int year) : Attribute
 {
     public int Year => year;

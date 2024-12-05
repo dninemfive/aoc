@@ -5,7 +5,7 @@
 /// the assembly which contains it.
 /// </summary>
 /// <param name="day">The day the class is a solution for.</param>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class SolutionToProblemAttribute(int day) : Attribute
 {
     public int Day => day;
