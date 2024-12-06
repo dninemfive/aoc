@@ -1,12 +1,21 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using static d9.aoc.core.meta.Constants;
+using static d9.aoc.core.Constants;
 
 namespace d9.aoc.core;
 public abstract class AocSolution
 {
     public AocSolution() { }
-    public string FileName => $"day{Day:00}.txt";
+    public string BaseFileName => $"day{Day:00}";
+    public string FileName(bool sample = false, int? index = null)
+    {
+        string result = BaseFileName;
+        if (sample)
+            result += ".sample";
+        if (index is int i)
+            result += $".{i:00}";
+        return $"{result}.txt";
+    }
     public int Day => Attribute.Day;
     public static AocSolution? Instantiate(Type implementingType)
         => Activator.CreateInstance(implementingType) as AocSolution;
@@ -28,7 +37,7 @@ public abstract class AocSolution
         return results;
     }
     public AocSolutionResults Execute(string inputFolder)
-        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName)));
+        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName())));
     public IEnumerable<string> ResultLines(string inputFolder)
     {
         yield return $"Day {Day,2}:";

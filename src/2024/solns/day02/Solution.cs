@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace d9.aoc._24.day02;
 [SolutionToProblem(2)]
+[FinalResults(257, 328)]
 public class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(string[] lines)
