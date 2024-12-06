@@ -6,36 +6,43 @@ using System.Threading.Tasks;
 using Position      = d9.aoc.core.Point<int>;
 using Direction     = d9.aoc.core.Point<int>;
 using Directions    = d9.aoc.core.Directions<int>;
+using d9.aoc.core.utils;
 namespace d9.aoc._24.day06;
 internal record Guard(Position Position, Direction Direction)
 {
     internal static readonly Dictionary<Direction, char> DirectionMap = new()
     {
-        { Directions.Up,    '^' },
+        { Directions.Down,    '^' },
         { Directions.Right, '>' },
-        { Directions.Down,  'v' },
+        { Directions.Up,  'v' },
         { Directions.Left,  '<' }
     };
     internal Guard(Position position, char c) : this(position, c.Direction()) { }
     public char Character
-        => DirectionMap[Position];
+        => DirectionMap[Direction];
+    public override string ToString()
+        => $"{Character} {Position}";
 }
-internal class Map(string[] lines)
+internal class Map(Grid<char> map)
 {
-    private Grid<char> _map = Grid<char>.From(lines);
+    private Grid<char> _map = map;
     private HashSet<Position> _touchedPositions = new();
-    private Guard _guard;
+    private Guard _guard = map.FindGuard();
     public void Run()
     {
-        _guard = _map.FindGuard();
         _touchedPositions.Add(_guard.Position);
+        Position lastGuardPosition = _guard.Position;
         while((_guard = Step()) is not null)
         {
             _touchedPositions.Add(_guard.Position);
+            UpdateMap(lastGuardPosition);
+            lastGuardPosition = _guard.Position;
         }
     }
     public Guard? Step()
     {
+        //Console.WriteLine();
+        //Console.WriteLine(_map.LayOut());
         char? next = _map.CellInFrontOf(_guard);
         if (next is null)
         {
@@ -46,13 +53,13 @@ internal class Map(string[] lines)
         {
             dir = dir.RotateClockwise();
         }
-        return new(pos, dir);
+        return new(pos + dir, dir);
     }
-    public void UpdateMap(Position lastGuardPosition, Guard guard)
+    public void UpdateMap(Position lastGuardPosition)
     {
         _map = _map.CopyWith(
             (lastGuardPosition, '.'),
-            (guard.Position, guard.Character)
+            (_guard.Position, _guard.Character)
             );
     }
     public int TouchedPositionCount
@@ -87,10 +94,10 @@ internal static class Extensions
     public static Direction RotateClockwise(this Direction d)
         => d switch
         {
-            ( 0,  1) => ( 1,  0),
-            ( 1,  0) => ( 0, -1),
-            ( 0, -1) => (-1,  0),
-            (-1,  0) => ( 0,  1),
+            ( 0,  1) => (-1,  0),
+            ( 1,  0) => ( 0,  1),
+            ( 0, -1) => ( 1,  0),
+            (-1,  0) => ( 0, -1),
             _ => throw new ArgumentException($"{d} is not a direction i know how to rotate, sorry!", nameof(d))
         };
 }
