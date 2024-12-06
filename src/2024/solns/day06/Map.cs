@@ -27,10 +27,10 @@ internal class Map(Grid<char> map)
 {
     private Grid<char> _map = map;
     private HashSet<Position> _touchedPositions = new();
-    private Guard _guard = map.FindGuard();
+    private Guard? _guard = map.FindGuard();
     public void Run()
     {
-        _touchedPositions.Add(_guard.Position);
+        _touchedPositions.Add(_guard!.Position);
         Position lastGuardPosition = _guard.Position;
         while((_guard = Step()) is not null)
         {
@@ -43,12 +43,12 @@ internal class Map(Grid<char> map)
     {
         //Console.WriteLine();
         //Console.WriteLine(_map.LayOut());
-        char? next = _map.CellInFrontOf(_guard);
+        char? next = _map.CellInFrontOf(_guard!);
         if (next is null)
         {
             return null;
         }
-        (Position pos, Direction dir) = _guard;
+        (Position pos, Direction dir) = _guard!;
         if(next.IsObstacle())
         {
             dir = dir.RotateClockwise();
@@ -59,11 +59,11 @@ internal class Map(Grid<char> map)
     {
         _map = _map.CopyWith(
             (lastGuardPosition, '.'),
-            (_guard.Position, _guard.Character)
+            (_guard!.Position, _guard.Character)
             );
     }
-    public int TouchedPositionCount
-        => _touchedPositions.Count;
+    public IEnumerable<Position> TouchedPositions
+        => _touchedPositions;
 }
 internal static class Extensions
 {

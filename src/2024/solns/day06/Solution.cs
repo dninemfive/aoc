@@ -1,6 +1,6 @@
 ﻿namespace d9.aoc._24.day06;
 [SolutionToProblem(6)]
-[SampleResults(41)]
+[SampleResults(41, 6)]
 [FinalResults(5453)]
 internal class Solution : AocSolution
 {
@@ -10,6 +10,6 @@ internal class Solution : AocSolution
         yield return "preinit";
         Map map = new(data);
         map.Run();
-        yield return map.TouchedPositionCount;
+        yield return map.TouchedPositions.Count();
     }
 }
