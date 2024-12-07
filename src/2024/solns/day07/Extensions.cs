@@ -41,4 +41,10 @@ internal static class Extensions
             }
         }
     }
+    internal static IEnumerable<T> ValidSolutions<T>(this IEnumerable<(IEnumerable<T> numbers, T expected)> parsedLines,
+                                                        params Operator<T>[] operators)
+        where T : INumber<T>
+        => parsedLines.Where(x => x.numbers.PossibleExpressions(operators)
+                                           .Any(y => y == x.expected))
+                      .Select(x => x.expected);
 }
