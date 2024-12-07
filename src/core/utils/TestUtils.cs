@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using d9.utl;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
 using static d9.aoc.core.Constants;
 
@@ -16,13 +17,20 @@ public static class TestUtils
     public static void TestAll(this AocSolutionGroup group)
     {
         Console.WriteLine($"Testing solutions for {group.Year}...");
+        bool anyFailed = false;
         foreach(AocSolution solution in group)
         {
             Assert.IsNotNull(solution);
             Console.WriteLine($"{TAB}Day {solution.Day,2}:");
             foreach (string line in solution.TestResults(group.InputFolder))
+            {
                 Console.WriteLine($"{TAB}{TAB}{line}");
+                if(line.Contains("Failed"))
+                    anyFailed = true;
+            }
         }
+        if (anyFailed)
+            Assert.Fail();
     }
     private static string[]? TryReadAllLines(params string[] path)
     {
@@ -54,8 +62,23 @@ public static class TestUtils
                                 ?? generalData
                                 ?? throw new Exception($"Couldn't find either {generalFileName} or {specificFileName}!");
                     AocSolutionResults actual = solution.Execute(data);
-                    Assert.AreEqual(expected, actual[i].Value);
-                    yield return $"{TAB}Part {i} succeeded!";
+                    Exception? exception = null;
+                    try
+                    {
+                        Assert.AreEqual(expected, actual[i].Value);
+                    }
+                    catch(Exception e)
+                    {
+                        exception = e;
+                    }
+                    if(exception is null)
+                    {
+                        yield return $"{TAB}Part {i} succeeded!";
+                    }
+                    else
+                    {
+                        yield return $"{TAB}Part {i} failed: {exception.Summary()}";
+                    }
                 }
             }
         }
