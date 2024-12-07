@@ -9,7 +9,17 @@ internal class Solution : AocSolution
         Grid<char> data = Grid<char>.From(lines);
         yield return "preinit";
         Map map = new(data);
-        map.Run();
-        yield return map.TouchedPositions.Count();
+        GuardReport report1 = map.Run();
+        yield return report1.TouchedPositions.Count;
+        int ct = 0;
+        foreach(Point<int> p in  report1.TouchedPositions)
+        {
+            if (p == data.GuardPosition())
+                continue;
+            Grid<char> variant = data.CopyWith((p, '#'));
+            if (new Map(variant).Run().IsCycle)
+                ct++;
+        }
+        yield return ct;
     }
 }

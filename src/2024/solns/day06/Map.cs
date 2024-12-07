@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Position      = d9.aoc.core.Point<int>;
-using Direction     = d9.aoc.core.Point<int>;
-using Directions    = d9.aoc.core.Directions<int>;
-using d9.aoc.core.utils;
+﻿using Direction = d9.aoc.core.Point<int>;
+using Directions = d9.aoc.core.Directions<int>;
+using Position = d9.aoc.core.Point<int>;
 namespace d9.aoc._24.day06;
 internal record Guard(Position Position, Direction Direction)
 {
@@ -23,18 +17,26 @@ internal record Guard(Position Position, Direction Direction)
     public override string ToString()
         => $"{Character} {Position}";
 }
+internal record GuardReport(HashSet<Position> TouchedPositions, bool IsCycle) { }
 internal class Map(Grid<char> map)
 {
     private Grid<char> _map = map;
     private HashSet<Position> _touchedPositions = new();
     private Guard? _guard = map.FindGuard();
-    public void Run()
+    private HashSet<Guard> _guardPositions = new();
+    public GuardReport Run()
     {
         _touchedPositions.Add(_guard!.Position);
         Position lastGuardPosition = _guard.Position;
-        while((_guard = Step()) is not null)
+        while(true)
         {
+            _guard = Step();
+            if (_guard is null)
+                return new(_touchedPositions, false);
             _touchedPositions.Add(_guard.Position);
+            if (_guardPositions.Contains(_guard))
+                return new(_touchedPositions, true);
+            _guardPositions.Add(_guard);
             UpdateMap(lastGuardPosition);
             lastGuardPosition = _guard.Position;
         }
