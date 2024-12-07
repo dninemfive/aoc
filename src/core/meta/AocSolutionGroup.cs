@@ -48,8 +48,11 @@ public class AocSolutionGroup(Assembly assembly)
     {
         Console.WriteLine($"Solutions for year {Year}:");
         foreach (AocSolution solution in Solutions)
+        {
+            Console.Out.Flush();
             foreach (string line in solution.ResultLines(InputFolder))
                 Console.WriteLine($"{TAB}{line}");
+        }
     }
     public IEnumerator<AocSolution> GetEnumerator()
         => Solutions.GetEnumerator();
