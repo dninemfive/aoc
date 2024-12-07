@@ -1,7 +1,6 @@
-﻿using System.Numerics;
-using Expression    = d9.aoc._24.day07.Expression<long>;
-using Operator      = d9.aoc._24.day07.Operator<long>;
-using Operators     = d9.aoc._24.day07.Operators<long>;
+﻿using Expression = d9.aoc._24.day07.Expression<long>;
+using Operator = d9.aoc._24.day07.Operator<long>;
+using Operators = d9.aoc._24.day07.Operators<long>;
 
 namespace d9.aoc._24.day07;
 [SolutionToProblem(7)]
