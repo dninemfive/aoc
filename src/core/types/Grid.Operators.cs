@@ -53,4 +53,6 @@ public readonly partial struct Grid<T>
             result[p.X, p.Y] = map(this[p]);
         return result;
     }
+    public Grid<T> Map(IReadOnlyDictionary<T, T> map)
+        => Map(x => map.TryGetValue(x, out T val) ? val : x);
 }

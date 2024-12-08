@@ -13,9 +13,9 @@ internal class Solution : AocSolution
         MapState initial = MapState.FromInitial(data);
         (HashSet<Point<int>> positions, bool _, Grid<char> _) = initial.Run();
         yield return positions.Count;
-        yield return CyclesIn(data, data.AllPoints).Count(x => x);
+        yield return CyclesIn(data, positions).Count(x => x);
     }
-    public IEnumerable<bool> CyclesIn(Grid<char> data, IEnumerable<Point<int>> variantPositions)
+    public static IEnumerable<bool> CyclesIn(Grid<char> data, IEnumerable<Point<int>> variantPositions)
     {
         string baseDir = $"_debug/{data.GetHashCode()}",
                cycleDir     = Path.Join(baseDir, "cycle"),
@@ -27,7 +27,18 @@ internal class Solution : AocSolution
             if (!data[p].IsGuard() && !data[p].IsObstacle())
             {
                 (HashSet<Point<int>> positions, bool isCycle, Grid<char> track) = MapState.FromInitial(data.CopyWith((p, '#'))).Run();
-                File.WriteAllText(Path.Join(isCycle ? cycleDir : noCycleDir, $"{p}-{positions.Count}.track"), track.Map(x => x is '.' ? ' ' : x).LayOut());
+                File.WriteAllText(
+                    Path.Join(isCycle ? cycleDir : noCycleDir,
+                              $"{positions.Count} {p}.track"),
+                    track.Map(new Dictionary<char, char>()
+                        {
+                            { '.', ' ' },
+                            { '^', '↑' },
+                            { '>', '→' },
+                            { 'v', '↓' },
+                            { '<', '←' },
+                        })
+                    .LayOut());
                 yield return isCycle;
             }
     }
