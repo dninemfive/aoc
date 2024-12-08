@@ -9,7 +9,7 @@ internal class Solution : AocSolution
     {
         (List<Rule> allRules, List<Update> allUpdates) = ParseInput(lines);
         yield return "preinit";
-        yield return allUpdates.Where(x => x.ViolatesAny(allRules))
+        yield return allUpdates.Where(x => !x.ViolatesAny(allRules))
                                .Select(x => x.MiddleValue)
                                .Sum();
     }
