@@ -1,12 +1,22 @@
-﻿namespace d9.aoc._24.day05;
+﻿using System.Data;
+
+namespace d9.aoc._24.day05;
 [SolutionToProblem(5)]
 [SampleResults(143)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        List<Rule> allRules = new();
-        List<IEnumerable<int>> allUpdates = new();
+        (List<Rule> allRules, List<Update> allUpdates) = ParseInput(lines);
+        yield return "preinit";
+        yield return allUpdates.Where(x => x.ViolatesAny(allRules))
+                               .Select(x => x.MiddleValue)
+                               .Sum();
+    }
+    public static (List<Rule> rules, List<Update> updates) ParseInput(string[] lines)
+    {
+        List<Rule> rules = new();
+        List<Update> updates = new();
         bool rule = true;
         foreach (string line in lines)
         {
@@ -15,16 +25,15 @@ internal class Solution : AocSolution
                 rule = false;
                 continue;
             }
-            if(rule)
+            if (rule)
             {
-                allRules.Add(new Rule(line));
+                rules.Add(new(line));
             }
             else
             {
-                allUpdates.Add(line.ToMany<int>(","));
+                updates.Add(new(line));
             }
         }
-        yield return "preinit";
-        yield return allUpdates.Count(u => !allRules.Any(r => u.Violates(r)));
+        return (rules, updates);
     }
 }
