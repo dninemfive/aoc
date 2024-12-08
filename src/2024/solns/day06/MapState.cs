@@ -29,7 +29,7 @@ internal readonly struct MapState(Map map, Guard? guard)
         {
             (Position p, Direction d) = Guard!;
             if (c == '#')
-                d.RotateClockwise();
+                d = d.RotateClockwise();
             nextState = new(Map, new(p + d, d));
             return true;
         }
@@ -42,11 +42,14 @@ internal readonly struct MapState(Map map, Guard? guard)
         HashSet<Guard> guardStates = [Guard];
         MapState? state = this;
         bool isCycle = false;
+        // int step = 0;
         while(state?.Step(out state) ?? false)
         {
+            // Console.WriteLine($"\nStep {++step}");
+            // Console.WriteLine(state);
             if(state is MapState s && s.Guard is Guard g)
             {
-                if (guardStates.Contains(g))
+                if (guardStates.Contains(g))// || step > 10000)
                 {
                     isCycle = true;
                     break;

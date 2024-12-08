@@ -11,6 +11,8 @@ internal class Solution : AocSolution
         MapState initial = MapState.FromInitial(data);
         (HashSet<Point<int>> positions, bool _) = initial.Run();
         yield return positions.Count;
+        // yield return 6;
+        // yield break;
         int ct = 0;
         foreach(Point<int> p in positions)
         {
