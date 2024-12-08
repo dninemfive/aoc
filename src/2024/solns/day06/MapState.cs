@@ -1,7 +1,9 @@
 ﻿using d9.aoc.core.utils;
 using System.Diagnostics.CodeAnalysis;
 using Direction = d9.aoc.core.Point<int>;
-using GuardReport = (System.Collections.Generic.HashSet<d9.aoc.core.Point<int>> initialPositions, bool isCycle);
+using GuardReport = (System.Collections.Generic.HashSet<d9.aoc.core.Point<int>> initialPositions,
+                     bool isCycle,
+                     d9.aoc.core.Grid<char> track);
 using Map = d9.aoc.core.Grid<char>;
 using Position = d9.aoc.core.Point<int>;
 namespace d9.aoc._24.day06;
@@ -28,7 +30,7 @@ internal readonly struct MapState(Map map, Guard? guard)
         if (this[Guard?.Ahead] is char c)
         {
             (Position p, Direction d) = Guard!;
-            if (c == '#')
+            if (c.IsObstacle())
                 d = d.RotateClockwise();
             nextState = new(Map, new(p + d, d));
             return true;
@@ -41,15 +43,14 @@ internal readonly struct MapState(Map map, Guard? guard)
         HashSet<Position> touchedPositions = [Guard!.Position];
         HashSet<Guard> guardStates = [Guard];
         MapState? state = this;
+        Map track = MapWithGuard;
         bool isCycle = false;
-        // int step = 0;
         while(state?.Step(out state) ?? false)
         {
-            // Console.WriteLine($"\nStep {++step}");
-            // Console.WriteLine(state);
             if(state is MapState s && s.Guard is Guard g)
             {
-                if (guardStates.Contains(g))// || step > 10000)
+                track = track.CopyWith(g);
+                if (guardStates.Contains(g))
                 {
                     isCycle = true;
                     break;
@@ -58,12 +59,10 @@ internal readonly struct MapState(Map map, Guard? guard)
                 guardStates.Add(g);
             }
         }
-        return new(touchedPositions, isCycle);
+        return (touchedPositions, isCycle, track);
     }
+    public Map MapWithGuard
+        => Guard is null ? Map : Map.CopyWith(Guard);
     public override string ToString()
-    {
-        if (Guard is not null)
-            return Map.CopyWith((Guard.Position, Guard.Character)).LayOut();
-        return Map.LayOut();
-    }
+        => MapWithGuard.LayOut();
 }

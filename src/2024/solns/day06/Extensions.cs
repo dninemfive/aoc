@@ -20,7 +20,7 @@ namespace d9.aoc._24.day06; internal static class Extensions
     }
     public static bool IsGuard(this char c)
         => c is '^' or '>' or 'v' or '<';
-    public static bool IsObstacle(this char? c)
+    public static bool IsObstacle(this char c)
         => c is '#';
     public static char? CellInFrontOf(this Grid<char> grid, Position cell, Direction direction)
         => grid.TryGet(cell + direction, out char? c) ? c : null;
@@ -37,4 +37,6 @@ namespace d9.aoc._24.day06; internal static class Extensions
         };
     public static Guard RotateClockwise(this Guard guard)
         => new(guard.Position, guard.Direction.RotateClockwise());
+    public static Grid<char> CopyWith(this Grid<char> grid, Guard g)
+        => grid.CopyWith((g.Position, g.Character));
 }
