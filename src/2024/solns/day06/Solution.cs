@@ -8,16 +8,16 @@ internal class Solution : AocSolution
     {
         Grid<char> data = Grid<char>.From(lines);
         yield return "preinit";
-        Map map = new(data);
-        GuardReport report1 = map.Run();
-        yield return report1.TouchedPositions.Count;
+        MapState initial = MapState.FromInitial(data);
+        (HashSet<Point<int>> positions, bool _) = initial.Run();
+        yield return positions.Count;
         int ct = 0;
-        foreach(Point<int> p in  report1.TouchedPositions)
+        foreach(Point<int> p in positions)
         {
-            if (p == data.GuardPosition())
+            if (p == initial.Guard!.Position)
                 continue;
             Grid<char> variant = data.CopyWith((p, '#'));
-            if (new Map(variant).Run().IsCycle)
+            if (MapState.FromInitial(variant).Run().isCycle)
                 ct++;
         }
         yield return ct;
