@@ -26,26 +26,9 @@ internal class Update(IEnumerable<int> items)
         return false;
     }
     public bool ViolatesAny(IEnumerable<Rule> rules)
-    //    => rules.Any(Violates);
-    {
-        foreach(Rule rule in rules)
-            if(Violates(rule))
-            {
-                Console.WriteLine($"{this} violates rule {rule}");
-                return true;
-            }
-        Console.WriteLine($"{this} does not violate any rule.");
-        return false;
-    }
-    public int MiddleValue //=> _items[_items.Count / 2];
-    {
-        get
-        {
-            int result = _items[_items.Count / 2];
-            Console.WriteLine($"{this} middle value: {result}");
-            return result;
-        }
-    }
+        => rules.Any(Violates);
+    public int MiddleValue
+        => _items[_items.Count / 2];
     public override string ToString()
         => _items.ListNotation(brackets: null);
 }
