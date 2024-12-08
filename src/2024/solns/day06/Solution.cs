@@ -1,4 +1,8 @@
 ﻿using d9.aoc.core.utils;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.ColorSpaces;
+using SixLabors.ImageSharp.ColorSpaces.Conversion;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace d9.aoc._24.day06;
 [SolutionToProblem(6)]
@@ -11,7 +15,7 @@ internal class Solution : AocSolution
         Grid<char> data = Grid<char>.From(lines);
         yield return "preinit";
         MapState initial = MapState.FromInitial(data);
-        (HashSet<Point<int>> positions, bool _, Grid<char> _) = initial.Run();
+        (HashSet<Point<int>> positions, bool _, Grid<int> _) = initial.Run();
         yield return positions.Count;
         yield return CyclesIn(data, positions).Count(x => x);
     }
@@ -26,20 +30,25 @@ internal class Solution : AocSolution
         foreach(Point<int> p in variantPositions)
             if (!data[p].IsGuard() && !data[p].IsObstacle())
             {
-                (HashSet<Point<int>> positions, bool isCycle, Grid<char> track) = MapState.FromInitial(data.CopyWith((p, '#'))).Run();
-                File.WriteAllText(
-                    Path.Join(isCycle ? cycleDir : noCycleDir,
-                              $"{positions.Count} {p}.track"),
-                    track.Map(new Dictionary<char, char>()
-                        {
-                            { '.', ' ' },
-                            { '^', '↑' },
-                            { '>', '→' },
-                            { 'v', '↓' },
-                            { '<', '←' },
-                        })
-                    .LayOut());
+                (HashSet<Point<int>> positions, bool isCycle, Grid<int> track) = MapState.FromInitial(data.CopyWith((p, '#'))).Run();
+                WriteImage(track, positions.Count, Path.Join(isCycle ? cycleDir : noCycleDir, $"{positions.Count} {p}.png"));
                 yield return isCycle;
             }
+    }
+    public static void WriteImage(Grid<int> data, int positionCount, string path)
+    {
+        using Image<Rgb24> result = new(data.Width, data.Height);
+        float HueFor(int index)
+            => index / (float)positionCount;
+        foreach ((int x, int y) in data.AllPoints)
+        {
+            result[x, y] = data[x, y] switch
+            {
+                -1 => Color.Black,
+                0 => Color.White,
+                _ => ColorSpaceConverter.ToRgb(new Hsv(HueFor(data[x, y]), 1, 1))
+            };
+        }
+        Task.Run(() => result.SaveAsPng(path));
     }
 }

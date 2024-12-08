@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Direction = d9.aoc.core.Point<int>;
 using GuardReport = (System.Collections.Generic.HashSet<d9.aoc.core.Point<int>> initialPositions,
                      bool isCycle,
-                     d9.aoc.core.Grid<char> track);
+                     d9.aoc.core.Grid<int> track);
 using Map = d9.aoc.core.Grid<char>;
 using Position = d9.aoc.core.Point<int>;
 namespace d9.aoc._24.day06;
@@ -43,13 +43,20 @@ internal readonly struct MapState(Map map, Guard? guard)
         HashSet<Position> touchedPositions = [Guard!.Position];
         HashSet<Guard> guardStates = [Guard];
         MapState? state = this;
-        Map track = MapWithGuard;
+        Grid<int> track = MapWithGuard.Map(x => x switch
+        {
+            '^' or '>' or 'v' or '<' => 1,
+            '.' => 0,
+            '#' => -1,
+            _ => throw new ArgumentOutOfRangeException(nameof(x))
+        });
         bool isCycle = false;
+        int index = 1;
         while(state?.Step(out state) ?? false)
         {
             if(state is MapState s && s.Guard is Guard g)
             {
-                track = track.CopyWith(g);
+                track = track.CopyWith((g.Position, ++index));
                 if (guardStates.Contains(g))
                 {
                     isCycle = true;
