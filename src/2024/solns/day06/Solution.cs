@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace d9.aoc._24.day06;
 [SolutionToProblem(6)]
@@ -31,15 +32,16 @@ internal class Solution : AocSolution
             if (!data[p].IsGuard() && !data[p].IsObstacle())
             {
                 (HashSet<Point<int>> positions, bool isCycle, Grid<int> track) = MapState.FromInitial(data.CopyWith((p, '#'))).Run();
-                WriteImage(track, positions.Count, Path.Join(isCycle ? cycleDir : noCycleDir, $"{positions.Count} {p}.png"));
+                WriteImage(track, Path.Join(isCycle ? cycleDir : noCycleDir, $"{positions.Count} {p}.png"), isCycle);
                 yield return isCycle;
             }
     }
-    public static void WriteImage(Grid<int> data, int positionCount, string path)
+    public static void WriteImage(Grid<int> data, string path, bool isCycle, int scale = 8)
     {
-        using Image<Rgb24> result = new(data.Width, data.Height);
+        int maxIndex = data.AllPoints.Select(x => data[x]).Max();
+        using Image<Rgba32> result = new(data.Width, data.Height);
         float HueFor(int index)
-            => index / (float)positionCount;
+            => (isCycle ? 360f : 320f) * index / maxIndex;
         foreach ((int x, int y) in data.AllPoints)
         {
             result[x, y] = data[x, y] switch
@@ -49,6 +51,11 @@ internal class Solution : AocSolution
                 _ => ColorSpaceConverter.ToRgb(new Hsv(HueFor(data[x, y]), 1, 1))
             };
         }
-        Task.Run(() => result.SaveAsPng(path));
+        result.Mutate(x => x.Resize(new ResizeOptions()
+        {
+            Sampler = KnownResamplers.NearestNeighbor,
+            Size = new(result.Width * scale, result.Height * scale)
+        }));
+        result.SaveAsPng(path);
     }
 }
