@@ -1,6 +1,7 @@
 ﻿namespace d9.aoc._24.day09;
 [SolutionToProblem(9)]
 [SampleResults(1928)]
+// todo: [FinalResults(> x, < y)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
@@ -77,26 +78,6 @@ internal readonly struct Filesystem(IEnumerable<int?> data)
 }
 internal static class Extensions
 {
-    public static bool CanBeCompressed<T>(this IEnumerable<T?> items)
-    {
-        bool foundNull = false;
-        foreach (T? item in items)
-        {
-            if(item is null)
-            {
-                foundNull = true;
-            }
-            else if(foundNull)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    public static void Swap<T>(this List<T> list, int indexA, int indexB)
-    {
-        (list[indexB], list[indexA]) = (list[indexA], list[indexB]);
-    }
     public static int IndexOfLastNonNullValue<T>(this IEnumerable<T?> enumerable)
     {
         int index = enumerable.Count() - 1;
