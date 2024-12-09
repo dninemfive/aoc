@@ -1,5 +1,4 @@
-﻿
-namespace d9.aoc._24.day09;
+﻿namespace d9.aoc._24.day09;
 [SolutionToProblem(9)]
 [SampleResults(1928)]
 internal class Solution : AocSolution
@@ -7,10 +6,12 @@ internal class Solution : AocSolution
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
         Filesystem filesystem = Filesystem.FromLine(lines.First());
-        // Console.WriteLine(filesystem);
-        // Console.WriteLine(filesystem.Compress());
+        Console.WriteLine(filesystem);
+        Console.WriteLine();
         yield return "preinit";
-        yield return filesystem.Compress().Checksum;
+        Filesystem compressed = filesystem.Compress();
+        Console.WriteLine(compressed);
+        yield return compressed.Checksum;
     }
 }
 internal readonly struct Filesystem(IEnumerable<int?> data)
@@ -69,7 +70,10 @@ internal readonly struct Filesystem(IEnumerable<int?> data)
         }
     }
     public override string ToString()
-        => _data.Select(x => x.PrintNull(".")).Join();
+        => _data.Chunk(47)
+                .Select(y => y.Select(x => x is int n ? $"{n,4}" : "____")
+                              .JoinWithDelimiter(" "))
+                .JoinWithDelimiter("\n");
 }
 internal static class Extensions
 {
