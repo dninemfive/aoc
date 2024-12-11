@@ -32,11 +32,17 @@ internal class Solution : AocSolution
             if (!data[p].IsGuard() && !data[p].IsObstacle())
             {
                 (HashSet<Point<int>> positions, bool isCycle, Grid<int> track) = MapState.FromInitial(data.CopyWith((p, '#'))).Run();
-                WriteImage(track, Path.Join(isCycle ? cycleDir : noCycleDir, $"{positions.Count} {p}.png"), isCycle);
+                WriteImage(track, 
+                           p,
+                           Path.Join(isCycle 
+                                        ? cycleDir 
+                                        : noCycleDir, 
+                                     $"{positions.Count} {p}.png"),
+                           isCycle);
                 yield return isCycle;
             }
     }
-    public static void WriteImage(Grid<int> data, string path, bool isCycle, int scale = 8)
+    public static void WriteImage(Grid<int> data, Point<int> newObstacle, string path, bool isCycle, int scale = 8)
     {
         int maxIndex = data.AllPoints.Select(x => data[x]).Max();
         using Image<Rgba32> result = new(data.Width, data.Height);
@@ -47,10 +53,11 @@ internal class Solution : AocSolution
             result[x, y] = data[x, y] switch
             {
                 -1 => Color.Black,
-                0 => Color.White,
+                0 => new Rgba32(69, 69, 69),
                 _ => ColorSpaceConverter.ToRgb(new Hsv(HueFor(data[x, y]), 1, 1))
             };
         }
+        result[newObstacle.X, newObstacle.Y] = Color.White;
         result.Mutate(x => x.Resize(new ResizeOptions()
         {
             Sampler = KnownResamplers.NearestNeighbor,
