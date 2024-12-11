@@ -44,14 +44,6 @@ public static class Extensions
             }
             options = getOptions();
         }
-        int result = visited.Count(x => map[x] == 9);
-        Console.WriteLine($"=======\n{position} {result}\n=======");
-        Console.WriteLine(map.MapPoints(x =>
-        {
-            if (visited.Contains(x))
-                return (char)('0' + map[x]);
-            return ' ';
-        }).LayOut());
-        return result;
+        return visited.Count(x => map[x] == 9);
     }
 }
