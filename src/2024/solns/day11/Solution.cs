@@ -8,7 +8,8 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 25);
+        IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 69);
+        yield break;
         yield return "calc p1";
         yield return part1.Count();
         Console.Out.Flush();
@@ -24,20 +25,24 @@ internal class Solution : AocSolution
     {
         IEnumerable<T> stones = initial;
         string fileName = $"_Day11_debug_progress_{times}.txt";
-        File.WriteAllText(fileName, "");
+        File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\tCount Time");
+        using FileStream fs = File.OpenWrite(fileName);
+        using StreamWriter sw = new(fs);
         Stopwatch stopwatch = new();
         for(int i = 0; i < times; i++)
         {
             stopwatch.Restart();
             stones = stones.SelectMany(ReplacementRules<T>.ApplyFirst);
             stopwatch.Stop();
-            File.AppendAllText(fileName, $"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\n");
-            // stopwatch.Restart();
-            // int ct = stones.Count();
-            // stopwatch.Stop();
-            // File.AppendAllText(fileName, $"{stones.Count(),16}\t({stopwatch.Elapsed})\n");
+            sw.Write($"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\t");
+            stopwatch.Restart();
+            int ct = stones.Count();
+            stopwatch.Stop();
+            sw.WriteLine($"{stones.Count(),16}\t{stopwatch.Elapsed}");
+            if (stopwatch.Elapsed > TimeSpan.FromSeconds(30))
+                break;
         }
-        File.AppendAllText(fileName, $"Done!");
+        sw.WriteLine(fileName, $"Done!");
         return stones;
     }
     public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
