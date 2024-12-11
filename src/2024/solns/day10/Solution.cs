@@ -15,13 +15,16 @@ internal class Solution : AocSolution
     {
         Grid<int> map = Grid<char>.From(lines).Map(x => x - '0');
         yield return "preinit";
-        yield return map.AllPoints.Select(x => map.TrailheadScoreFor(x)).Sum();
+        yield return map.AllPoints.OrderBy(p => p.Y)
+                                  .ThenBy(p => p.X)
+                                  .Select(x => map.TrailheadScoreFor(x))
+                                  .Sum();
     }
 }
 public static class Extensions
 {
     public static IEnumerable<Point> TrailNeighborsOf(this Grid<int> map, Point<int> position)
-        => map.PointsAdjacentTo(position).Where(x => map[x] - map[position] == 1);
+        => map.PointsCardinallyAdjacentTo(position).Where(x => map[x] - map[position] == 1);
     public static int TrailheadScoreFor(this Grid<int> map, Point<int> position)
     {
         if (!map.TryGet(position, out int? val) || val != 0)
@@ -42,7 +45,7 @@ public static class Extensions
             options = getOptions();
         }
         int result = visited.Count(x => map[x] == 9);
-        Console.WriteLine($"===\n {result} \n===");
+        Console.WriteLine($"=======\n{position} {result}\n=======");
         Console.WriteLine(map.MapPoints(x =>
         {
             if (visited.Contains(x))

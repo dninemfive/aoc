@@ -8,6 +8,16 @@ public static class Directions<T>
                                       Right  = ( T.One,   T.Zero),
                                       Down   = ( T.Zero, -T.One),
                                       Left   = (-T.One,   T.Zero);
+    public static IEnumerable<Point<T>> Cardinal
+    {
+        get
+        {
+            yield return Up;
+            yield return Right;
+            yield return Down;
+            yield return Left;
+        }
+    }
     public static IEnumerable<Point<T>> Clockwise
     {
         get

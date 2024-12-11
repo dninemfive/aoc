@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Point = d9.aoc.core.Point<int>;
+using Directions = d9.aoc.core.Directions<int>;
 
 namespace d9.aoc.core;
 public readonly partial struct Grid<T>
@@ -7,6 +8,17 @@ public readonly partial struct Grid<T>
 {
     public T this[int x, int y] => _grid[x, y];
     public T this[Point p] => _grid[p.X, p.Y];
+    public IEnumerable<Point> PointsCardinallyAdjacentTo(Point p, bool includeSelf = false)
+    {
+        foreach(Point offset in Directions.Cardinal)
+        {
+            Point result = p + offset;
+            if (Contains(result))
+                yield return result;
+        }
+        if (includeSelf)
+            yield return p;
+    }
     public IEnumerable<Point> PointsAdjacentTo(Point point, bool includeSelf = false)
     {
         for (int xo = -1; xo <= 1; xo++)
