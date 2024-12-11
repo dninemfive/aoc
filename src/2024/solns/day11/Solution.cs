@@ -8,51 +8,42 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        yield return EstimateBlink<long>(25);
-        yield return EstimateBlink<BigInteger>(75);
-        /* IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 69);
-        yield return "calc p1";
-        yield return part1.Count();
-        Console.Out.Flush();
-        IEnumerable<BigInteger> part2 = Blink(part1.Select(x => new BigInteger(x)), 50);
-        yield return "calc p2";
-        Console.Out.Flush();
-        File.WriteAllText("_Day11_asdf1.txt", $"{DateTime.Now:g}");
-        yield return BigCount(part2);
-        File.WriteAllText("_Day11_asdf2.txt", $"{DateTime.Now:g}");
-        */
+        (IEnumerable<long> part1, long count1) = Blink(lines.First().ToMany<long>(), 25);
+        yield return count1;
+        (IEnumerable<BigInteger> part2, BigInteger count2) = Blink(part1.Select(x => new BigInteger(x)), 50, 25);
+        yield return count2;
     }
-    public static T EstimateBlink<T>(int times)
-        where T : INumber<T>
-    {
-        // R^2 = 1 equation from Excel
-        // (upon expanding out the format, actually R^2 = 0.999996721965571 😭)
-        return T.CreateChecked(Math.Floor(6.62917347292185 * Math.Exp(0.41655853461241 * times)));
-    }
-    public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
+    public static (IEnumerable<T> stones, T count) Blink<T>(IEnumerable<T> initial, int times, int start = 0)
         where T : INumber<T>
     {
         IEnumerable<T> stones = initial;
         string fileName = $"_Day11_debug_progress_{times}.txt";
-        File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\tCount Time");
-        using FileStream fs = File.OpenWrite(fileName);
-        using StreamWriter sw = new(fs);
+        File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\tLargest Stone\n");
         Stopwatch stopwatch = new();
+        T count = T.Zero;
         for(int i = 0; i < times; i++)
         {
             stopwatch.Restart();
-            stones = stones.SelectMany(ReplacementRules<T>.ApplyFirst);
+            List<T> newStones = new();
+            T largestStone = T.Zero;
+            foreach(T stone in stones)
+            {
+                bool increment = false;
+                foreach(T newStone in ReplacementRules<T>.ApplyFirst(stone))
+                {
+                    largestStone = T.Max(newStone, largestStone);
+                    if (increment)
+                        count++;
+                    newStones.Add(newStone);
+                    increment = true;
+                }
+            }
+            stones = newStones;
             stopwatch.Stop();
-            sw.Write($"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\t");
-            stopwatch.Restart();
-            int ct = stones.Count();
-            stopwatch.Stop();
-            sw.WriteLine($"{stones.Count(),16}\t{stopwatch.Elapsed}");
-            if (stopwatch.Elapsed > TimeSpan.FromSeconds(30))
-                break;
+            File.AppendAllText(fileName, $"{i + 1 + start,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\t{count}\t{largestStone}\n");
         }
-        sw.WriteLine(fileName, $"Done!");
-        return stones;
+        File.AppendAllText(fileName, $"Done!");
+        return (stones, count);
     }
     public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
         => Count<T, BigInteger>(enumerable);
@@ -98,9 +89,9 @@ public static class ReplacementRules<T>
     }
     public static IEnumerable<T>? SplitEven(T n)
     {
-        string str = n.ToString()!;
-        if (str.Length % 2 != 0)
+        if (T.IsEvenInteger(n.Digits()))
             return null;
+        string str = n.ToString()!;
         (string left, string right) = str.SplitInHalf();
         return [T.Parse(left, null), T.Parse(right, null)];
     }
@@ -111,6 +102,9 @@ public static class ReplacementRules<T>
 }
 public static class Extensions
 {
+    public static T Digits<T>(this T n)
+        where T : INumber<T>, ILogarithmicFunctions<T>
+        => T.Log10(n + T.One);
     public static (string left, string right) SplitInHalf(this string s)
     {
         int halfLength = s.Length / 2;
