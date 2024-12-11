@@ -1,23 +1,29 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
+using SolutionInt = System.Numerics.BigInteger;
 
 namespace d9.aoc._24.day11;
 [SolutionToProblem(11)]
 [SampleResults(55312)]
+[FinalResults(220722)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        IEnumerable<long> stones = Blink(lines.First().ToMany<long>(), 25);
-        yield return stones.Count();
-        // Console.WriteLine(stones.ListNotation(brackets: null, delimiter: " "));
+        foreach((int i, int ct) in Blink(lines.First().ToMany<SolutionInt>(), 75))
+        {
+            if (i is 24 or 74)
+                yield return ct;
+        }
     }
-    public static IEnumerable<long> Blink(IEnumerable<long> initial, long times)
+    public static IEnumerable<(int index, int count)> Blink(IEnumerable<SolutionInt> initial, int times)
     {
-        IEnumerable<long> result = initial;
-        for(long i = 0; i < times; i++)
-            result = result.SelectMany(ReplacementRules<long>.ApplyFirst);
-        return result;
+        IEnumerable<SolutionInt> stones = initial;
+        for(int i = 0; i < times; i++)
+        {
+            stones = stones.SelectMany(ReplacementRules<SolutionInt>.ApplyFirst);
+            File.WriteAllText($"{i}.txt", stones.ListNotation());
+            yield return (i, stones.Count());
+        }
     }
 }
 public delegate IEnumerable<T>? ReplacementRule<T>(T n)
@@ -25,18 +31,12 @@ public delegate IEnumerable<T>? ReplacementRule<T>(T n)
 public static class ReplacementRules<T>
     where T : INumber<T>
 {
-    public static IEnumerable<ReplacementRule<T>> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
+    public static readonly IEnumerable<ReplacementRule<T>> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
     public static IEnumerable<T> ApplyFirst(T n)
     {
         foreach (ReplacementRule<T> rule in RulesInOrder)
-        {
             if (rule(n) is IEnumerable<T> result)
-            {
-                if(T.IsNegative(n) || result.Any(T.IsNegative))
-                    Console.WriteLine($"{n} -> {result.ListNotation()} ({rule.Method.Name})");
                 return result;
-            } 
-        }
         throw new ArgumentException($"No rule applied to {n}!");
     }
     public static IEnumerable<T>? ZeroToOne(T n)
