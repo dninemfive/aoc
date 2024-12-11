@@ -1,6 +1,5 @@
-﻿using System.Numerics;
-using SolutionInt = System.Numerics.BigInteger;
-
+﻿using System.Diagnostics;
+using System.Numerics;
 namespace d9.aoc._24.day11;
 [SolutionToProblem(11)]
 [SampleResults(55312)]
@@ -9,21 +8,29 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        foreach((int i, int ct) in Blink(lines.First().ToMany<SolutionInt>(), 75))
-        {
-            if (i is 24 or 74)
-                yield return ct;
-        }
+        IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 25);
+        yield return part1.Count();
+        yield return Blink(part1.Select(x => new BigInteger(x)), 25, 75).Count();
     }
-    public static IEnumerable<(int index, int count)> Blink(IEnumerable<SolutionInt> initial, int times)
+    public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
+        where T : INumber<T>
+        => Blink(initial, 0, times);
+    public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int start, int end)
+        where T : INumber<T>
     {
-        IEnumerable<SolutionInt> stones = initial;
-        for(int i = 0; i < times; i++)
+        IEnumerable<T> stones = initial;
+        string fileName = "_Day11_debug_progress.txt";
+        File.Create(fileName);
+        Stopwatch stopwatch = new();
+        for(int i = start; i < end; i++)
         {
-            stones = stones.SelectMany(ReplacementRules<SolutionInt>.ApplyFirst);
-            File.WriteAllText($"{i}.txt", stones.ListNotation());
-            yield return (i, stones.Count());
+            stopwatch.Start();
+            stones = stones.SelectMany(ReplacementRules<T>.ApplyFirst);
+            stopwatch.Stop();
+            File.AppendAllText(fileName, $"{DateTime.Now,16:g}\t{i,2}\t{stones.Count(),16}\t{stopwatch.Elapsed:g}");
+            stopwatch.Reset();
         }
+        return stones;
     }
 }
 public delegate IEnumerable<T>? ReplacementRule<T>(T n)
