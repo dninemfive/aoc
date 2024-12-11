@@ -8,15 +8,15 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        yield return Blink(lines.First().ToMany<long>(), 25).Count();
+        IEnumerable<long> stones = Blink(lines.First().ToMany<long>(), 25);
+        yield return stones.Count();
+        // Console.WriteLine(stones.ListNotation(brackets: null, delimiter: " "));
     }
-    public IEnumerable<long> Blink(IEnumerable<long> initial, long times)
+    public static IEnumerable<long> Blink(IEnumerable<long> initial, long times)
     {
         IEnumerable<long> result = initial;
         for(long i = 0; i < times; i++)
-        {
             result = result.SelectMany(ReplacementRules<long>.ApplyFirst);
-        }
         return result;
     }
 }
