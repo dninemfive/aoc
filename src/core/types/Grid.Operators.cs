@@ -53,4 +53,12 @@ public readonly partial struct Grid<T>
             result[p.X, p.Y] = map(this[p]);
         return result;
     }
+    public Grid<U> MapPoints<U>(Func<Point<int>, U> map)
+        where U : struct
+    {
+        U[,] result = new U[Width, Height];
+        foreach (Point p in AllPoints)
+            result[p.X, p.Y] = map(p);
+        return result;
+    } 
 }
