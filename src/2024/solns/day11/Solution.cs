@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
+using ReplacementInfo = (System.Collections.Generic.IEnumerable<System.Numerics.BigInteger> replacements, System.Numerics.BigInteger increase);
 namespace d9.aoc._24.day11;
 [SolutionToProblem(11)]
 [SampleResults(55312)]
@@ -8,39 +9,31 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        (IEnumerable<long> part1, long count1) = Blink(lines.First().ToMany<long>(), 25);
+        (IEnumerable<BigInteger> stones1, BigInteger count1) = Blink(lines.First().ToMany<BigInteger>(), 25);
         yield return count1;
-        (IEnumerable<BigInteger> part2, BigInteger count2) = Blink(part1.Select(x => new BigInteger(x)), 50, 25);
+        (IEnumerable<BigInteger> _, BigInteger count2) = Blink(stones1, 50, count1, 25);
         yield return count2;
     }
-    public static (IEnumerable<T> stones, T count) Blink<T>(IEnumerable<T> initial, int times, int start = 0)
-        where T : INumber<T>
+    public static (IEnumerable<BigInteger> stones, BigInteger count) Blink(IEnumerable<BigInteger> initial, int times, BigInteger? initialCount = null, int start = 0)
     {
-        IEnumerable<T> stones = initial;
-        string fileName = $"_Day11_debug_progress_{times}.txt";
-        File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\tLargest Stone\n");
+        IEnumerable<BigInteger> stones = initial;
         Stopwatch stopwatch = new();
-        T count = T.Zero;
-        for(int i = 0; i < times; i++)
+        BigInteger count = initialCount ?? 0;
+        string fileName = $"_Day11_debug_progress_{initialCount}.txt";
+        File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\n");
+        for (int i = 0; i < times; i++)
         {
             stopwatch.Restart();
-            List<T> newStones = new();
-            T largestStone = T.Zero;
-            foreach(T stone in stones)
+            List<BigInteger> newStones = new();
+            foreach(BigInteger stone in stones)
             {
-                bool increment = false;
-                foreach(T newStone in ReplacementRules<T>.ApplyFirst(stone))
-                {
-                    largestStone = T.Max(newStone, largestStone);
-                    if (increment)
-                        count++;
-                    newStones.Add(newStone);
-                    increment = true;
-                }
+                (IEnumerable<BigInteger> replacements, BigInteger increase) = ReplacementRules.ApplyFirst(stone);
+                newStones.AddRange(replacements);
+                count += increase;
             }
             stones = newStones;
             stopwatch.Stop();
-            File.AppendAllText(fileName, $"{i + 1 + start,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\t{count}\t{largestStone}\n");
+            File.AppendAllText(fileName, $"{i + 1 + start,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\t{count}\n");
         }
         File.AppendAllText(fileName, $"Done!");
         return (stones, count);
@@ -68,43 +61,40 @@ internal class Solution : AocSolution
         return result;
     }
 }
-public delegate IEnumerable<T>? ReplacementRule<T>(T n)
-    where T : INumber<T>;
-public static class ReplacementRules<T>
-    where T : INumber<T>
+public delegate ReplacementInfo? ReplacementRule(BigInteger n);
+public static class ReplacementRules
 {
-    public static readonly IEnumerable<ReplacementRule<T>> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
-    public static IEnumerable<T> ApplyFirst(T n)
+    public static readonly IEnumerable<ReplacementRule> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
+    public static ReplacementInfo ApplyFirst(BigInteger n)
     {
-        foreach (ReplacementRule<T> rule in RulesInOrder)
-            if (rule(n) is IEnumerable<T> result)
+        foreach (ReplacementRule rule in RulesInOrder)
+            if (rule(n) is ReplacementInfo result)
                 return result;
         throw new ArgumentException($"No rule applied to {n}!");
     }
-    public static IEnumerable<T>? ZeroToOne(T n)
+    public static ReplacementInfo? ZeroToOne(BigInteger n)
     {
-        if (n != T.Zero)
+        if (n != 0)
             return null;
-        return [T.One];
+        return ([1], 0);
     }
-    public static IEnumerable<T>? SplitEven(T n)
+    public static ReplacementInfo? SplitEven(BigInteger n)
     {
-        if (T.IsEvenInteger(n.Digits()))
+        if (n.Digits().IsOdd())
             return null;
         string str = n.ToString()!;
         (string left, string right) = str.SplitInHalf();
-        return [T.Parse(left, null), T.Parse(right, null)];
+        return ([BigInteger.Parse(left), BigInteger.Parse(right)], 1);
     }
-    public static IEnumerable<T>? MultiplyBy2024(T n)
+    public static ReplacementInfo? MultiplyBy2024(BigInteger n)
     {
-        return [n * T.CreateChecked(2024)];
+        return ([n * 2024], 0);
     }
 }
 public static class Extensions
 {
-    public static T Digits<T>(this T n)
-        where T : INumber<T>, ILogarithmicFunctions<T>
-        => T.Log10(n + T.One);
+    public static int Digits(this BigInteger n)
+        => (int)BigInteger.Log10(n + 1) + 1;
     public static (string left, string right) SplitInHalf(this string s)
     {
         int halfLength = s.Length / 2;
