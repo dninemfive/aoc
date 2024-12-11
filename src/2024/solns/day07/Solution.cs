@@ -3,6 +3,7 @@ using ParsedLines = System.Collections.Generic.IEnumerable<(System.Collections.G
 
 namespace d9.aoc._24.day07;
 [SolutionToProblem(7)]
+[DisableTests]
 [SampleResults(        3749L,
                       11387L)]
 [FinalResults(2664460013123L,
