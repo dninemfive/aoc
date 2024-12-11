@@ -9,17 +9,25 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        (IEnumerable<BigInteger> stones1, BigInteger count1) = Blink(lines.First().ToMany<BigInteger>(), 25);
-        yield return count1;
-        (IEnumerable<BigInteger> _, BigInteger count2) = Blink(stones1, 50, count1, 25);
-        yield return count2;
+        Dictionary<int, BigInteger> counts = new()
+        {
+            { 25, 0 },
+            { 75, 0 }
+        };
+        foreach(BigInteger stone in lines.First().ToMany<BigInteger>().Order())
+        {
+            foreach ((int i, BigInteger count) in BlinkRepeatedly(stone, [.. counts.Keys]))
+                counts[i] += count;
+        }
+        yield return counts[25];
+        yield return counts[75];
     }
     public static (IEnumerable<BigInteger> stones, BigInteger count) Blink(IEnumerable<BigInteger> initial, int times, BigInteger? initialCount = null, int start = 0)
     {
         IEnumerable<BigInteger> stones = initial;
         Stopwatch stopwatch = new();
-        BigInteger count = initialCount ?? 0;
-        string fileName = $"_Day11_debug_progress_{initialCount}.txt";
+        BigInteger count = initialCount ?? initial.Count();
+        string fileName = $"_Day11_debug_progress_{start}.txt";
         File.WriteAllText(fileName, "Index\tTime\tCalculation Time\tCount\n");
         for (int i = 0; i < times; i++)
         {
@@ -37,6 +45,37 @@ internal class Solution : AocSolution
         }
         File.AppendAllText(fileName, $"Done!");
         return (stones, count);
+    }
+    public static (LinkedList<BigInteger> stones, BigInteger count) BlinkOnce(IEnumerable<BigInteger> stones, BigInteger? initialCount = null)
+    {
+        BigInteger count = initialCount ?? 1;
+        LinkedList<BigInteger> result = new();
+        foreach (BigInteger stone in stones)
+        {
+            (IEnumerable<BigInteger> replacements, BigInteger i) = ReplacementRules.ApplyFirst(stone);
+            count += i;
+            foreach (BigInteger replacement in replacements)
+                result.AddLast(replacement);
+        }
+        return (result, count);
+    }
+    public static IEnumerable<(int index, BigInteger count)> BlinkRepeatedly(BigInteger initialStone, params int[] checkpoints)
+    {
+        HashSet<int> checkpointSet = checkpoints.ToHashSet();
+        int stop = checkpointSet.Max();
+        (LinkedList<BigInteger> stones, BigInteger count) = BlinkOnce([initialStone]);
+        string fileName = $"_Day11_debug_progress_{initialStone}_{checkpointSet.Order().ListNotation(brackets: null, delimiter: "-")}.txt";
+        File.WriteAllText(fileName, "Index\tCalculation Time\tCount\n");
+        Stopwatch stopwatch = new();
+        for (int i = 0; i < stop; i++)
+        {
+            stopwatch.Restart();
+            if (checkpointSet.Contains(i + 1))
+                yield return (i + 1, count);
+            (stones, count) = BlinkOnce(stones, count);
+            stopwatch.Stop();
+            File.AppendAllText(fileName, $"{i + 1,2}\t{stopwatch.Elapsed:g}\t{count,24}\n");
+        }
     }
     public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
         => Count<T, BigInteger>(enumerable);
@@ -80,11 +119,11 @@ public static class ReplacementRules
     }
     public static ReplacementInfo? SplitEven(BigInteger n)
     {
-        if (n.Digits().IsOdd())
+        int digits = n.Digits();
+        if (digits.IsOdd())
             return null;
-        string str = n.ToString()!;
-        (string left, string right) = str.SplitInHalf();
-        return ([BigInteger.Parse(left), BigInteger.Parse(right)], 1);
+        (BigInteger left, BigInteger right) = n.SplitInHalf(digits);
+        return ([left, right], 1);
     }
     public static ReplacementInfo? MultiplyBy2024(BigInteger n)
     {
@@ -95,6 +134,11 @@ public static class Extensions
 {
     public static int Digits(this BigInteger n)
         => (int)BigInteger.Log10(n) + 1;
+    public static (BigInteger left, BigInteger right) SplitInHalf(this BigInteger n, int? digits = null)
+    {
+        BigInteger divisor = BigInteger.Pow(10, (digits ?? n.Digits()) / 2);
+        return (n / divisor, n % divisor);
+    }
     public static (string left, string right) SplitInHalf(this string s)
     {
         int halfLength = s.Length / 2;
