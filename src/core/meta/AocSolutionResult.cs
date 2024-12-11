@@ -1,4 +1,5 @@
 ﻿using d9.utl;
+using System.Numerics;
 
 namespace d9.aoc.core;
 public record AocPartialResult(object? Value, string? Label = null)
@@ -10,6 +11,8 @@ public record AocPartialResult(object? Value, string? Label = null)
     public static implicit operator AocPartialResult(int result)
         => new(result, null);
     public static implicit operator AocPartialResult(long result)
+        => new(result, null);
+    public static implicit operator AocPartialResult(BigInteger result)
         => new(result, null);
     public override string ToString()
     {

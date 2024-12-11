@@ -9,10 +9,14 @@ internal class Solution : AocSolution
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
         IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 25);
+        yield return "calc p1";
         yield return part1.Count();
+        Console.Out.Flush();
         IEnumerable<BigInteger> part2 = Blink(part1.Select(x => new BigInteger(x)), 50);
+        yield return "calc p2";
+        Console.Out.Flush();
         File.WriteAllText("_Day11_asdf1.txt", $"{DateTime.Now:g}");
-        yield return part2.Count();
+        yield return BigCount(part2);
         File.WriteAllText("_Day11_asdf2.txt", $"{DateTime.Now:g}");
     }
     public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
@@ -35,6 +39,21 @@ internal class Solution : AocSolution
         }
         File.AppendAllText(fileName, $"Done!");
         return stones;
+    }
+    public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
+        => Count<T, BigInteger>(enumerable);
+    public static Z Count<T, Z>(IEnumerable<T> enumerable)
+        where Z : INumber<Z>, IModulusOperators<Z,Z,Z>
+    {
+        Z result = Z.Zero;
+        Z modulo = Z.CreateChecked(1000000);
+        foreach (T _ in enumerable)
+        {
+            result++;
+            if (result % modulo == Z.Zero)
+                File.WriteAllText("_Day11_debug_ct.txt", $"{result}");
+        }
+        return result;
     }
 }
 public delegate IEnumerable<T>? ReplacementRule<T>(T n)
