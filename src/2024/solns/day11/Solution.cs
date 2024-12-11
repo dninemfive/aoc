@@ -47,11 +47,14 @@ internal class Solution : AocSolution
     {
         Z result = Z.Zero;
         Z modulo = Z.CreateChecked(1000000);
+        string fileName = "_Day11_debug_ct.txt";
+        File.WriteAllText(fileName, "");
+        Stopwatch sw = Stopwatch.StartNew();
         foreach (T _ in enumerable)
         {
             result++;
             if (result % modulo == Z.Zero)
-                File.WriteAllText("_Day11_debug_ct.txt", $"{result}");
+                File.AppendAllText(fileName, $"{sw,16:g} {result,32}");
         }
         return result;
     }
