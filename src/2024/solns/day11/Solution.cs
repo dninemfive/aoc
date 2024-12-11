@@ -10,26 +10,30 @@ internal class Solution : AocSolution
     {
         IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 25);
         yield return part1.Count();
-        yield return Blink(part1.Select(x => new BigInteger(x)), 25, 75).Count();
+        IEnumerable<BigInteger> part2 = Blink(part1.Select(x => new BigInteger(x)), 50);
+        File.WriteAllText("_Day11_asdf1.txt", $"{DateTime.Now:g}");
+        yield return part2.Count();
+        File.WriteAllText("_Day11_asdf2.txt", $"{DateTime.Now:g}");
     }
     public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
         where T : INumber<T>
-        => Blink(initial, 0, times);
-    public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int start, int end)
-        where T : INumber<T>
     {
         IEnumerable<T> stones = initial;
-        string fileName = "_Day11_debug_progress.txt";
-        File.Create(fileName);
+        string fileName = $"_Day11_debug_progress_{times}.txt";
+        File.WriteAllText(fileName, "");
         Stopwatch stopwatch = new();
-        for(int i = start; i < end; i++)
+        for(int i = 0; i < times; i++)
         {
-            stopwatch.Start();
+            stopwatch.Restart();
             stones = stones.SelectMany(ReplacementRules<T>.ApplyFirst);
             stopwatch.Stop();
-            File.AppendAllText(fileName, $"{DateTime.Now,16:g}\t{i,2}\t{stones.Count(),16}\t{stopwatch.Elapsed:g}");
-            stopwatch.Reset();
+            File.AppendAllText(fileName, $"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\n");
+            // stopwatch.Restart();
+            // int ct = stones.Count();
+            // stopwatch.Stop();
+            // File.AppendAllText(fileName, $"{stones.Count(),16}\t({stopwatch.Elapsed})\n");
         }
+        File.AppendAllText(fileName, $"Done!");
         return stones;
     }
 }
