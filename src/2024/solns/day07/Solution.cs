@@ -2,7 +2,7 @@
 using ParsedLines = System.Collections.Generic.IEnumerable<(System.Collections.Generic.IEnumerable<long> numbers, long expected)>;
 
 namespace d9.aoc._24.day07;
-[SolutionToProblem(7)]
+[SolutionToProblem(7, complete: true)]
 [DisableTests]
 [SampleResults(        3749L,
                       11387L)]

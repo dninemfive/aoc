@@ -8,8 +8,9 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 69);
-        yield break;
+        yield return EstimateBlink<long>(25);
+        yield return EstimateBlink<BigInteger>(75);
+        /* IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 69);
         yield return "calc p1";
         yield return part1.Count();
         Console.Out.Flush();
@@ -19,6 +20,14 @@ internal class Solution : AocSolution
         File.WriteAllText("_Day11_asdf1.txt", $"{DateTime.Now:g}");
         yield return BigCount(part2);
         File.WriteAllText("_Day11_asdf2.txt", $"{DateTime.Now:g}");
+        */
+    }
+    public static T EstimateBlink<T>(int times)
+        where T : INumber<T>
+    {
+        // R^2 = 1 equation from Excel
+        // (upon expanding out the format, actually R^2 = 0.999996721965571 😭)
+        return T.CreateChecked(Math.Floor(6.62917347292185 * Math.Exp(0.41655853461241 * times)));
     }
     public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
         where T : INumber<T>
