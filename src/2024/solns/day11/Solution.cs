@@ -94,7 +94,7 @@ public static class ReplacementRules
 public static class Extensions
 {
     public static int Digits(this BigInteger n)
-        => (int)BigInteger.Log10(n + 1) + 1;
+        => (int)BigInteger.Log10(n) + 1;
     public static (string left, string right) SplitInHalf(this string s)
     {
         int halfLength = s.Length / 2;
