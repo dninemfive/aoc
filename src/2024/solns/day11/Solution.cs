@@ -46,7 +46,7 @@ internal class Solution : AocSolution
         where Z : INumber<Z>, IModulusOperators<Z,Z,Z>
     {
         Z result = Z.Zero;
-        Z modulo = Z.CreateChecked(1000000);
+        Z modulo = Z.CreateChecked(10000000);
         string fileName = "_Day11_debug_ct.txt";
         File.WriteAllText(fileName, "");
         Stopwatch sw = Stopwatch.StartNew();
@@ -54,7 +54,11 @@ internal class Solution : AocSolution
         {
             result++;
             if (result % modulo == Z.Zero)
-                File.AppendAllText(fileName, $"{sw,16:g} {result,32}");
+            {
+                sw.Stop();
+                File.AppendAllText(fileName, $"{sw,16:g}\t{result,32}\n");
+                sw.Restart();
+            }
         }
         return result;
     }
