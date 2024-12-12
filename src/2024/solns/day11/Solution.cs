@@ -7,25 +7,24 @@ namespace d9.aoc._24.day11;
 [FinalResults(220722)]
 internal class Solution : AocSolution
 {
+    public static readonly string DebugFolder = Path.Join("_debug", "day11");
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        // todo: store trees as ref structs in a cache to minimize repeated memory?
-        //       also store depth of tree so they can be lazily grown as needed
-        // alternatively, just write memory to disk and discard it lol
-        Dictionary<int, BigInteger> counts = new()
-        {
-            { 25, 0 },
-            { 75, 0 }
-        };
-        foreach(BigInteger stone in lines.First().ToMany<BigInteger>().Order())
-        {
-            foreach ((int i, BigInteger count) in BlinkRepeatedly(stone, [.. counts.Keys]))
-                counts[i] += count;
-        }
-        yield return counts[25];
-        yield return counts[75];
+        Directory.CreateDirectory(DebugFolder);
+        BigIntTree bit = new();
+        IEnumerable<BigInteger> stones = lines.First().ToMany<BigInteger>().Order();
+        BigInteger count1 = CountStones(bit, stones, 25) + 7;
+        yield return count1;
+        yield return CountStones(bit, stones, 75) + 7;
     }
-    public static (IEnumerable<BigInteger> stones, BigInteger count) Blink(IEnumerable<BigInteger> initial, int times, BigInteger? initialCount = null, int start = 0)
+    public static BigInteger CountStones(BigIntTree bit, IEnumerable<BigInteger> stones, int depth)
+    {
+        BigInteger result = 0;
+        foreach (BigInteger stone in stones)
+            result += bit.CountTree(stone, depth);
+        return result;
+    }
+    /*public static (IEnumerable<BigInteger> stones, BigInteger count) Blink(IEnumerable<BigInteger> initial, int times, BigInteger? initialCount = null, int start = 0)
     {
         IEnumerable<BigInteger> stones = initial;
         Stopwatch stopwatch = new();
@@ -79,7 +78,7 @@ internal class Solution : AocSolution
             stopwatch.Stop();
             File.AppendAllText(fileName, $"{i + 1,2}\t{stopwatch.Elapsed:g}\t{count,24}\n");
         }
-    }
+    }*/
     public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
         => Count<T, BigInteger>(enumerable);
     public static Z Count<T, Z>(IEnumerable<T> enumerable)
@@ -103,40 +102,35 @@ internal class Solution : AocSolution
         return result;
     }
 }
-public delegate ReplacementInfo? ReplacementRule(BigInteger n);
+public delegate IEnumerable<BigInteger>? ReplacementRule(BigInteger n);
 public static class ReplacementRules
 {
     public static readonly IEnumerable<ReplacementRule> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
     private static Dictionary<BigInteger, ReplacementInfo> _cache = new();
-    public static ReplacementInfo ApplyFirst(BigInteger n)
+    public static IEnumerable<BigInteger> ApplyFirst(this BigInteger n)
     {
-        if (_cache.TryGetValue(n, out ReplacementInfo val))
-            return val;
         foreach (ReplacementRule rule in RulesInOrder)
-            if (rule(n) is ReplacementInfo result)
-            {
-                _cache[n] = result;
+            if (rule(n) is IEnumerable<BigInteger> result)
                 return result;
-            }
         throw new ArgumentException($"No rule applied to {n}!");
     }
-    public static ReplacementInfo? ZeroToOne(BigInteger n)
+    public static IEnumerable<BigInteger>? ZeroToOne(BigInteger n)
     {
         if (n != 0)
             return null;
-        return ([1], 0);
+        return [1];
     }
-    public static ReplacementInfo? SplitEven(BigInteger n)
+    public static IEnumerable<BigInteger>? SplitEven(BigInteger n)
     {
         int digits = n.Digits();
         if (digits.IsOdd())
             return null;
         (BigInteger left, BigInteger right) = n.SplitInHalf(digits);
-        return ([left, right], 1);
+        return [left, right];
     }
-    public static ReplacementInfo? MultiplyBy2024(BigInteger n)
+    public static IEnumerable<BigInteger>? MultiplyBy2024(BigInteger n)
     {
-        return ([n * 2024], 0);
+        return [n * 2024];
     }
 }
 public static class Extensions
