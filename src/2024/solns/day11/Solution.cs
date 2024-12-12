@@ -25,15 +25,16 @@ internal class Solution : AocSolution
         {
             stopwatch.Restart();
             stones = stones.SelectMany(ReplacementRules.ApplyFirst);
+            WriteBlink(stones, i + 1);
             stopwatch.Stop();
             File.AppendAllText(fileName, $"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\n");
-            // stopwatch.Restart();
-            // int ct = stones.Count();
-            // stopwatch.Stop();
-            // File.AppendAllText(fileName, $"{stones.Count(),16}\t({stopwatch.Elapsed})\n");
         }
         File.AppendAllText(fileName, $"Done!");
         return stones;
+    }
+    public static void WriteBlink(IEnumerable<BigInteger> input, int index)
+    {
+        File.WriteAllLines($"_Day11_result_{index:00}.txt", input.Select(x => $"{x}\n"));
     }
     public static BigInteger BigCount<T>(IEnumerable<T> enumerable)
         => Count<T, BigInteger>(enumerable);
