@@ -8,28 +8,23 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        IEnumerable<long> part1 = Blink(lines.First().ToMany<long>(), 25);
+        IEnumerable<BigInteger> part1 = Blink(lines.First().ToMany<BigInteger>(), 25);
         yield return "calc p1";
         yield return part1.Count();
-        Console.Out.Flush();
-        IEnumerable<BigInteger> part2 = Blink(part1.Select(x => new BigInteger(x)), 50);
+        IEnumerable<BigInteger> part2 = Blink(part1, 50);
         yield return "calc p2";
-        Console.Out.Flush();
-        File.WriteAllText("_Day11_asdf1.txt", $"{DateTime.Now:g}");
         yield return BigCount(part2);
-        File.WriteAllText("_Day11_asdf2.txt", $"{DateTime.Now:g}");
     }
-    public static IEnumerable<T> Blink<T>(IEnumerable<T> initial, int times)
-        where T : INumber<T>
+    public static IEnumerable<BigInteger> Blink(IEnumerable<BigInteger> initial, int times)
     {
-        IEnumerable<T> stones = initial;
+        IEnumerable<BigInteger> stones = initial;
         string fileName = $"_Day11_debug_progress_{times}.txt";
         File.WriteAllText(fileName, "");
         Stopwatch stopwatch = new();
         for(int i = 0; i < times; i++)
         {
             stopwatch.Restart();
-            stones = stones.SelectMany(ReplacementRules<T>.ApplyFirst);
+            stones = stones.SelectMany(ReplacementRules.ApplyFirst);
             stopwatch.Stop();
             File.AppendAllText(fileName, $"{i + 1,2}\t{DateTime.Now,16:g}\t{stopwatch.Elapsed:g}\n");
             // stopwatch.Restart();
@@ -59,40 +54,43 @@ internal class Solution : AocSolution
         return result;
     }
 }
-public delegate IEnumerable<T>? ReplacementRule<T>(T n)
-    where T : INumber<T>;
-public static class ReplacementRules<T>
-    where T : INumber<T>
+public delegate IEnumerable<BigInteger>? ReplacementRule(BigInteger n);
+public static class ReplacementRules
 {
-    public static readonly IEnumerable<ReplacementRule<T>> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
-    public static IEnumerable<T> ApplyFirst(T n)
+    public static readonly IEnumerable<ReplacementRule> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
+    public static IEnumerable<BigInteger> ApplyFirst(BigInteger n)
     {
-        foreach (ReplacementRule<T> rule in RulesInOrder)
-            if (rule(n) is IEnumerable<T> result)
+        foreach (ReplacementRule rule in RulesInOrder)
+            if (rule(n) is IEnumerable<BigInteger> result)
                 return result;
         throw new ArgumentException($"No rule applied to {n}!");
     }
-    public static IEnumerable<T>? ZeroToOne(T n)
+    public static IEnumerable<BigInteger>? ZeroToOne(BigInteger n)
     {
-        if (n != T.Zero)
+        if (n != 0)
             return null;
-        return [T.One];
+        return [1];
     }
-    public static IEnumerable<T>? SplitEven(T n)
+    public static IEnumerable<BigInteger>? SplitEven(BigInteger n)
     {
-        string str = n.ToString()!;
-        if (str.Length % 2 != 0)
+        int digits = n.Digits();
+        if (digits.IsOdd())
             return null;
-        (string left, string right) = str.SplitInHalf();
-        return [T.Parse(left, null), T.Parse(right, null)];
+        (BigInteger left, BigInteger right) = n.SplitInHalf(digits);
+        return [left, right];
     }
-    public static IEnumerable<T>? MultiplyBy2024(T n)
-    {
-        return [n * T.CreateChecked(2024)];
-    }
+    public static IEnumerable<BigInteger>? MultiplyBy2024(BigInteger n)
+        => [n * 2024];
 }
 public static class Extensions
 {
+    public static int Digits(this BigInteger n)
+        => (int)BigInteger.Log10(n) + 1;
+    public static (BigInteger left, BigInteger right) SplitInHalf(this BigInteger n, int? digits = null)
+    {
+        BigInteger divisor = BigInteger.Pow(10, (digits ?? n.Digits()) / 2);
+        return (n / divisor, n % divisor);
+    }
     public static (string left, string right) SplitInHalf(this string s)
     {
         int halfLength = s.Length / 2;
