@@ -9,6 +9,9 @@ internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
+        // todo: store trees as ref structs in a cache to minimize repeated memory?
+        //       also store depth of tree so they can be lazily grown as needed
+        // alternatively, just write memory to disk and discard it lol
         Dictionary<int, BigInteger> counts = new()
         {
             { 25, 0 },
@@ -104,11 +107,17 @@ public delegate ReplacementInfo? ReplacementRule(BigInteger n);
 public static class ReplacementRules
 {
     public static readonly IEnumerable<ReplacementRule> RulesInOrder = [ZeroToOne, SplitEven, MultiplyBy2024];
+    private static Dictionary<BigInteger, ReplacementInfo> _cache = new();
     public static ReplacementInfo ApplyFirst(BigInteger n)
     {
+        if (_cache.TryGetValue(n, out ReplacementInfo val))
+            return val;
         foreach (ReplacementRule rule in RulesInOrder)
             if (rule(n) is ReplacementInfo result)
+            {
+                _cache[n] = result;
                 return result;
+            }
         throw new ArgumentException($"No rule applied to {n}!");
     }
     public static ReplacementInfo? ZeroToOne(BigInteger n)
