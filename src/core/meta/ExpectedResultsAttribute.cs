@@ -2,12 +2,12 @@
 
 namespace d9.aoc.core;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public abstract class ExpectedResultsAttribute<T>(params T[] expectedResults)
-    : Attribute, IEnumerable<(int index, T expectedResult)>
+public abstract class ExpectedResultsAttribute(params object[] expectedResults)
+    : Attribute, IEnumerable<(int index, object expectedResult)>
 {
     public abstract bool UseSampleData { get; }
-    public T[] ExpectedResults => expectedResults;
-    private IEnumerable<(int index, T expectedResult)> _enumerable
+    public object[] ExpectedResults => expectedResults;
+    private IEnumerable<(int index, object expectedResult)> _enumerable
     {
         get
         {
@@ -16,30 +16,20 @@ public abstract class ExpectedResultsAttribute<T>(params T[] expectedResults)
                 yield return (i + 1, expectedResults[i]);
         }
     }
-    public IEnumerator<(int index, T expectedResult)> GetEnumerator()
+    public IEnumerator<(int index, object expectedResult)> GetEnumerator()
         => _enumerable.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator()
         => _enumerable.GetEnumerator();
-    public static implicit operator T[](ExpectedResultsAttribute<T> attr)
+    public static implicit operator object[](ExpectedResultsAttribute attr)
         => attr.ExpectedResults;
 }
 public class FinalResultsAttribute(params object[] expectedResults)
-    : ExpectedResultsAttribute<object>(expectedResults)
-{
-    public override bool UseSampleData => false;
-}
-public class FinalResultsAttribute<T>(params T[] expectedResults)
-    : ExpectedResultsAttribute<T>(expectedResults)
+    : ExpectedResultsAttribute(expectedResults)
 {
     public override bool UseSampleData => false;
 }
 public class SampleResultsAttribute(params object[] expectedResults)
-    : ExpectedResultsAttribute<object>(expectedResults)
+    : ExpectedResultsAttribute(expectedResults)
 {
     public override bool UseSampleData => true;
-}
-public class SampleResultsAttribute<T>(params T[] expectedResults)
-    : ExpectedResultsAttribute<T>(expectedResults)
-{
-    public override bool UseSampleData => false;
 }

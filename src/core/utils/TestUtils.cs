@@ -1,5 +1,6 @@
 ﻿using d9.utl;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Numerics;
 using System.Reflection;
 using static d9.aoc.core.Constants;
 
@@ -70,7 +71,25 @@ public static class TestUtils
                     Exception? exception = null;
                     try
                     {
-                        Assert.AreEqual(expected, actual[i].Value);
+                        if (actual[i].Value is BigInteger bi)
+                        {
+                            if(expected is int z)
+                            {
+                                Assert.AreEqual(new BigInteger(z), bi);
+                            } 
+                            else if(expected is long l)
+                            {
+                                Assert.AreEqual(new BigInteger(l), bi);
+                            } 
+                            else
+                            {
+                                Assert.AreEqual(expected, actual[i].Value);
+                            }
+                        }
+                        else
+                        {
+                            Assert.AreEqual(expected, actual[i].Value);
+                        }
                     }
                     catch(Exception e)
                     {
