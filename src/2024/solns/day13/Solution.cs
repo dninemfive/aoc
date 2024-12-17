@@ -71,4 +71,15 @@ internal partial record ClawMachine(Button ButtonA, Button ButtonB, Point<int> P
                                               .First()!;
         return new(buttons["A"]!, buttons["B"]!, prize);
     }
+    public IEnumerable<(int a, int b)> PotentialButtonPressCombos()
+    {
+        // find solutions to aA + bB = P
+        throw new NotImplementedException();
+    }
+    public int ComboCost((int a, int b) combo)
+        => ButtonA.Value * combo.a + ButtonB.Value * combo.b;
+    public (int a, int b) MinCostCombo()
+        => PotentialButtonPressCombos().MinBy(ComboCost);
+    public int MinComboCost
+        => ComboCost(MinCostCombo());
 }
