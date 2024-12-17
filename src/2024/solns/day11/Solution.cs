@@ -3,7 +3,7 @@
 namespace d9.aoc._24.day11;
 [SolutionToProblem(11)]
 [SampleResults(55312)]
-[FinalResults(220722)]
+[FinalResults(220722)]//, 261952051690787)]
 internal class Solution : AocSolution
 {
     public static readonly string DebugFolder = Path.Join("_debug", "day11");
