@@ -3,12 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace d9.aoc._24.day13;
 [SolutionToProblem(13)]
+[SampleResults(480)]
 internal class Solution : AocSolution
 {
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
-        yield return 0;
-        Button.FromLine("Button A: X+94, Y+34");
+        IEnumerable<ClawMachine> clawMachines = lines.Chunk(4)
+                                                   //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
+                                                     .Select(ClawMachine.FromLines);
+        yield return clawMachines.Sum(x => x.MinComboCost);
     }
 }
 internal partial record Button(int XOffset, int YOffset, string Name)
@@ -20,6 +23,7 @@ internal partial record Button(int XOffset, int YOffset, string Name)
         "B" => 1,
         _ => throw new Exception($"{Name} is not a valid button name!")
     };
+    public Point<int> Offset => (XOffset, YOffset);
     public static implicit operator Button((int a, int b, string c) tuple)
         => new(tuple.a, tuple.b, tuple.c);
     public static Button? FromLine(string line)
@@ -74,7 +78,20 @@ internal partial record ClawMachine(Button ButtonA, Button ButtonB, Point<int> P
     public IEnumerable<(int a, int b)> PotentialButtonPressCombos()
     {
         // find solutions to aA + bB = P
-        throw new NotImplementedException();
+        (int prizeX, int prizeY) = Prize;
+        IEnumerable<int> factorsIdk = [
+            prizeX / ButtonA.XOffset,
+            prizeX / ButtonB.XOffset,
+            prizeY / ButtonA.YOffset,
+            prizeY / ButtonB.YOffset
+        ];
+        int max = factorsIdk.Max();
+        for(int i = 0; i <= max; i++)
+        {
+            int a = i, b = max - i;
+            if (ButtonA.Offset * a + ButtonB.Offset * b == Prize)
+                yield return (a, b);
+        }
     }
     public int ComboCost((int a, int b) combo)
         => ButtonA.Value * combo.a + ButtonB.Value * combo.b;
