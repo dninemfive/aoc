@@ -14,7 +14,6 @@ internal class Solution : AocSolution
                                                    //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
                                                      .Select(ClawMachine<long>.FromLines);
         yield return clawMachines1.Select(x => x.MinComboCost()).Sum();
-        yield break;
         Point<long> offset = (10000000000000L, 10000000000000L);
         IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>(x.ButtonA, x.ButtonB, x.Prize + offset));
         yield return clawMachines2.Select(x => x.MinComboCost()).Sum();
@@ -89,14 +88,15 @@ internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Poi
         // find solutions to aA + bB = P
         IEnumerable<T> coefficients = [
             Prize.X / ButtonA.XOffset,
-            Prize.Y / ButtonA.YOffset,
             Prize.X / ButtonB.XOffset,
+            Prize.Y / ButtonA.YOffset,
             Prize.Y / ButtonB.YOffset
         ];
         // Console.WriteLine($"{coefficients.ListNotation()} {coefficients.Max().PrintNull()}");
         T min = T.Zero,
-          aMax = coefficients.Take(2).Min()!,
+          aMax = coefficients.Take(2).Max()!,
           bMax = coefficients.Skip(2).Max()!;
+        // b min = a max - b max ? 
         for(T a = min; a <= aMax; a++)
             for(T b = min; b <= bMax; b++)
             {
