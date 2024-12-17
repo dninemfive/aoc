@@ -11,13 +11,13 @@ internal class Solution : AocSolution
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
         Directory.CreateDirectory(DebugFolder);
-        BigIntTree bit = new();
+        StoneSuccessorCache bit = new();
         IEnumerable<BigInteger> stones = lines.First().ToMany<BigInteger>().Order();
         BigInteger count1 = CountStones(bit, stones, 25) + 7;
         yield return count1;
         yield return CountStones(bit, stones, 75) + 7;
     }
-    public static BigInteger CountStones(BigIntTree bit, IEnumerable<BigInteger> stones, int depth)
+    public static BigInteger CountStones(StoneSuccessorCache bit, IEnumerable<BigInteger> stones, int depth)
     {
         BigInteger result = 0;
         foreach (BigInteger stone in stones)

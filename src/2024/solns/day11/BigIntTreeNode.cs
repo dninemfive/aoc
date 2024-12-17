@@ -13,7 +13,7 @@ public readonly struct BigIntTreeNode(IEnumerable<BigInteger> values)
     IEnumerator IEnumerable.GetEnumerator()
         => ((IEnumerable)Values).GetEnumerator();
 }
-public class BigIntTree
+public class StoneSuccessorCache
 {
     private readonly Dictionary<BigInteger, BigIntTreeNode> _cache = new();
     public bool TryGet(BigInteger key, [NotNullWhen(true)] out BigIntTreeNode value)
