@@ -6,7 +6,11 @@
 /// </summary>
 /// <param name="day">The day the class is a solution for.</param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class SolutionToProblemAttribute(int day) : Attribute
+public class SolutionToProblemAttribute(int day, bool complete = false) : Attribute
 {
     public int Day => day;
+    /// <summary>
+    /// If true, the solution is not executed when the project is run in order to save time.
+    /// </summary>
+    public bool Complete => complete;
 }

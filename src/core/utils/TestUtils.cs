@@ -22,6 +22,11 @@ public static class TestUtils
         {
             Assert.IsNotNull(solution);
             Console.WriteLine($"{TAB}Day {solution.Day,2}:");
+            if (solution.GetType().HasCustomAttribute<DisableTestsAttribute>())
+            {
+                Console.WriteLine($"{TAB}{TAB}Skipping tests...");
+                continue;
+            }
             foreach (string line in solution.TestResults(group.InputFolder))
             {
                 Console.WriteLine($"{TAB}{TAB}{line}");
