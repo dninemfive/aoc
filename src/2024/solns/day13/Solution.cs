@@ -11,7 +11,7 @@ internal class Solution : AocSolution
         IEnumerable<ClawMachine> clawMachines = lines.Chunk(4)
                                                    //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
                                                      .Select(ClawMachine.FromLines);
-        yield return clawMachines.Sum(x => x.MinComboCost);
+        yield return clawMachines.Select(x => x.MinComboCost()).Where(x => x is not null).Sum()!;
     }
 }
 internal partial record Button(int XOffset, int YOffset, string Name)
@@ -78,25 +78,22 @@ internal partial record ClawMachine(Button ButtonA, Button ButtonB, Point<int> P
     public IEnumerable<(int a, int b)> PotentialButtonPressCombos()
     {
         // find solutions to aA + bB = P
-        (int prizeX, int prizeY) = Prize;
-        IEnumerable<int> factorsIdk = [
-            prizeX / ButtonA.XOffset,
-            prizeX / ButtonB.XOffset,
-            prizeY / ButtonA.YOffset,
-            prizeY / ButtonB.YOffset
-        ];
-        int max = factorsIdk.Max();
-        for(int i = 0; i <= max; i++)
-        {
-            int a = i, b = max - i;
-            if (ButtonA.Offset * a + ButtonB.Offset * b == Prize)
-                yield return (a, b);
-        }
+        int max = 100;
+        for(int a = 0; a < max; a++)
+            for(int b = 0; b < max; b++)
+            {
+                //Console.WriteLine($"{a,3}\t{b,3}\t{ButtonA.Offset}\t{ButtonA.Offset * a}\t{ButtonB.Offset}\t{ButtonB.Offset * b}\t{ButtonA.Offset * a + ButtonB.Offset * b}\t{Prize}");
+                if (ButtonA.Offset * a + ButtonB.Offset * b == Prize)
+                    yield return (a, b);
+            }
     }
     public int ComboCost((int a, int b) combo)
         => ButtonA.Value * combo.a + ButtonB.Value * combo.b;
-    public (int a, int b) MinCostCombo()
-        => PotentialButtonPressCombos().MinBy(ComboCost);
-    public int MinComboCost
-        => ComboCost(MinCostCombo());
+    public (int a, int b)? MinCostCombo()
+    {
+        IEnumerable<(int a, int b)> potentialCombos = PotentialButtonPressCombos();
+        return potentialCombos.Any() ? potentialCombos.MinBy(ComboCost) : null;
+    }
+    public int? MinComboCost()
+        => MinCostCombo() is (int, int) t ? ComboCost(t) : null;
 }
