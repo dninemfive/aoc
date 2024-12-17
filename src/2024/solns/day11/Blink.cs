@@ -9,6 +9,7 @@ internal class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int ind
     public Blink(IEnumerable<BigInteger> values, int index = 0) 
         : this(new CountingDictionary<BigInteger, BigInteger>(values), index) { }
     public Blink(params BigInteger[] values) : this(values.AsEnumerable()) { }
+    // stolen from @OolongTimeNoTea
     public Blink GenerateSuccessor()
     {
         CountingDictionary<BigInteger, BigInteger> counts = new();
