@@ -15,6 +15,7 @@ internal class Solution : AocSolution
                                                    //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
                                                      .Select(ClawMachine<long>.FromLines);
         yield return clawMachines1.Select(x => x.MinComboCost()).Sum();
+        yield break;
         Point<long> offset = (10000000000000L, 10000000000000L);
         IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>(x.ButtonA, x.ButtonB, x.Prize + offset));
         yield return clawMachines2.Select(x => x.MinComboCost()).Sum();
@@ -24,7 +25,7 @@ internal partial record Button<T>(T XOffset, T YOffset, string Name)
     where T : INumber<T>
 {
     public static readonly Regex ButtonRegex = GenerateButtonRegex();
-    public T Value => Name switch
+    public T cost => Name switch
     {
         "A" => T.CreateChecked(3),
         "B" => T.One,
@@ -86,26 +87,24 @@ internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Poi
                                               .First()!;
         return new(buttons["A"]!, buttons["B"]!, prize);
     }
-    public IEnumerable<(T a, T b)> PotentialButtonPressCombos()
+    // Oolong claims (plausibly) that there's a unique solution
+    public (T a, T b)? Combo()
     {
         T aMax = ButtonA.Offset.StepsToReachOrPass(Prize);
         for(T a = T.Zero; a <= aMax; a++)
         {
             Point<T> start = a * ButtonA.Offset;
             if (ButtonB.Offset.CanReach(start, Prize, out T b))
-                yield return (a, b);
+            {
+                Console.WriteLine((a, b));
+                return (a, b);
+            }
         }
-    }
-    public T ComboCost((T a, T b) combo)
-        => ButtonA.Value * combo.a + ButtonB.Value * combo.b;
-    public (T a, T b)? MinCostCombo()
-    {
-        IEnumerable<(T a, T b)> potentialCombos = PotentialButtonPressCombos();
-        // Console.WriteLine(potentialCombos.ListNotation());
-        return potentialCombos.Any() ? potentialCombos.MinBy(ComboCost) : null;
+        return null;
     }
     public T MinComboCost()
-        => MinCostCombo() is (T, T) t ? ComboCost(t) : T.Zero;
+        => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 
+                                   : T.Zero;
 }
 internal static class Extensions
 {
