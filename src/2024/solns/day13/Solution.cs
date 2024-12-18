@@ -14,10 +14,10 @@ internal class Solution : AocSolution
         IEnumerable<ClawMachine<long>> clawMachines1 = lines.Chunk(4)
                                                    //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
                                                      .Select(ClawMachine<long>.FromLines);
-        yield return clawMachines1.Select(x => x.ComboCost()).Sum();
+        yield return clawMachines1.Select(x => x.CheapestComboCost()).Sum();
         yield break;
         Point<long> offset = (10000000000000L, 10000000000000L);
         IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>([x.CheapButton, x.ExpensiveButton], x.Prize + offset));
-        yield return clawMachines2.Select(x => x.ComboCost()).Sum();
+        yield return clawMachines2.Select(x => x.CheapestComboCost()).Sum();
     }
 }
