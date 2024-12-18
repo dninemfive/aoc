@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
@@ -45,6 +46,8 @@ internal partial record Button<T>(T XOffset, T YOffset, string Name)
                                      .ToList();
         return new(T.Parse(groups[1], null), T.Parse(groups[2], null), groups[0]);
     }
+    public static implicit operator Point<T>(Button<T> button)
+        => button.Offset;
     [GeneratedRegex(@"Button (.): X\+(\d+), Y\+(\d+)")]
     private static partial Regex GenerateButtonRegex();
 }
@@ -85,25 +88,13 @@ internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Poi
     }
     public IEnumerable<(T a, T b)> PotentialButtonPressCombos()
     {
-        // find solutions to aA + bB = P
-        IEnumerable<T> coefficients = [
-            Prize.X / ButtonA.XOffset,
-            Prize.X / ButtonB.XOffset,
-            Prize.Y / ButtonA.YOffset,
-            Prize.Y / ButtonB.YOffset
-        ];
-        // Console.WriteLine($"{coefficients.ListNotation()} {coefficients.Max().PrintNull()}");
-        T min = T.Zero,
-          aMax = coefficients.Take(2).Max()!,
-          bMax = coefficients.Skip(2).Max()!;
-        // b min = a max - b max ? 
-        for(T a = min; a <= aMax; a++)
-            for(T b = min; b <= bMax; b++)
-            {
-                //Console.WriteLine($"{a,3}\t{b,3}\t{ButtonA.Offset}\t{ButtonA.Offset * a}\t{ButtonB.Offset}\t{ButtonB.Offset * b}\t{ButtonA.Offset * a + ButtonB.Offset * b}\t{Prize}");
-                if (ButtonA.Offset * a + ButtonB.Offset * b == Prize)
-                    yield return (a, b);
-            }
+        T aMax = ButtonA.Offset.StepsToReachOrPass(Prize);
+        for(T a = T.Zero; a <= aMax; a++)
+        {
+            Point<T> start = a * ButtonA.Offset;
+            if (ButtonB.Offset.CanReach(start, Prize, out T b))
+                yield return (a, b);
+        }
     }
     public T ComboCost((T a, T b) combo)
         => ButtonA.Value * combo.a + ButtonB.Value * combo.b;
@@ -115,4 +106,50 @@ internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Poi
     }
     public T MinComboCost()
         => MinCostCombo() is (T, T) t ? ComboCost(t) : T.Zero;
+}
+internal static class Extensions
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="step">The length of a step.</param>
+    /// <param name="distance">How far you're trying to travel.</param>
+    /// <param name="result">The number of steps required to reach <em>or travel further than</em> the specified <paramref name="distance"/>.</param>
+    /// <returns><see langword="true"/> if you can reach exactly <paramref name="distance"/> units, or <see langword="false"/> otherwise.</returns>
+    public static bool CanReach<T>(this T step, T distance, out T result)
+        where T : INumber<T>
+    {
+        result = distance / step;
+        bool reached = result * step == distance;
+        if (!reached)
+            result += T.One;
+        return reached;
+    }
+    public static bool CanReach<T>(this T step, T start, T end, out T result)
+        where T : INumber<T>
+        => step.CanReach(T.Abs(end - start), out result);
+    public static bool CanReach<T>(this Point<T> step, Point<T> distance, out T result)
+        where T : INumber<T>
+    {
+        bool reached = step.X.CanReach(distance.X, out T xSteps)
+                     & step.Y.CanReach(distance.Y, out T ySteps); // & instead of && to make sure both are calculated
+        result = T.Max(xSteps, ySteps);
+        return reached;
+    }
+    public static bool CanReach<T>(this Point<T> step, Point<T> start, Point<T> end, out T result)
+        where T : INumber<T>
+        => step.CanReach((end - start).Abs, out result);
+    public static bool CanReach<T>(this Button<T> button, Point<T> start, Point<T> end, out T result)
+        where T : INumber<T>
+        => button.Offset.CanReach(start, end, out result);
+    public static T StepsToReachOrPass<T>(this Point<T> step, Point<T> distance)
+        where T : INumber<T>
+    {
+        _ = step.CanReach(distance, out T result);
+        return result;
+    }
+    public static T StepsToReachOrPass<T>(this Button<T> button, Point<T> distance)
+        where T : INumber<T>
+        => button.Offset.StepsToReachOrPass(distance);
 }

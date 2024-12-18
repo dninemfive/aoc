@@ -20,12 +20,16 @@ public readonly struct Point<T>(T x, T y)
         => (-p.X, -p.Y);
     public static Point<T> operator *(Point<T> p, T factor)
         => (p.X * factor, p.Y * factor);
+    public static Point<T> operator *(T factor, Point<T> p)
+        => p * factor;
     public T Dot(Point<T> b)
     {
         (T a1, T a2) = this;
         (T b1, T b2) = b;
         return a1 * b1 + a2 * b2;
     }
+    public Point<T> Abs
+        => (T.Abs(X), T.Abs(Y));
     public static bool operator ==(Point<T> a, Point<T> b)
         => a.X == b.X && a.Y == b.Y;
     public static bool operator !=(Point<T> a, Point<T> b)
