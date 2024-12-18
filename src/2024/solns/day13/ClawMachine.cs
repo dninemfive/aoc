@@ -32,7 +32,8 @@ internal record ClawMachine<T>
             if (ExpensiveButton.Offset.CanReach(start, Prize, out T e))
             {
                 Combo<T> combo = Combo<T>.From(this, c, e);
-                Console.WriteLine($"{this} -> {combo}");
+                Point<T> asdf = CheapButton.Offset * c + ExpensiveButton.Offset * e;
+                Console.WriteLine($"\t{combo,16} {asdf,16} {Prize,16} {asdf == Prize}");
                 yield return combo;
             }
         }
@@ -42,8 +43,11 @@ internal record ClawMachine<T>
         // the cheapest combo will use the cheapest button as many times as possible
         // foreach (Combo<T> combo in Combos())
         //    return combo;
-        IEnumerable<Combo<T>> combos = Combos().OrderBy(x => x.Cost);
-        return combos.Any() ? combos.First() : null;
+        Console.WriteLine($"{this}:");
+        List<Combo<T>> combos = Combos().OrderBy(x => x.Cost).ToList();
+        Combo<T>? result = combos.FirstOrDefault();
+        Console.WriteLine($"\t-> {result.PrintNull()}");
+        return result;
     }
     public T CheapestComboCost()
     //    => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 

@@ -26,7 +26,7 @@ internal partial record Button<T>(Point<T> Offset, string Name)
         return new((T.Parse(groups[1], null), T.Parse(groups[2], null)), groups[0]);
     }
     public override string ToString()
-        => $"Button {Name} {Offset}";
+        => $"Button {Name} (${Cost}, {Offset})";
     public static implicit operator Point<T>(Button<T> button)
         => button.Offset;
     [GeneratedRegex(@"Button (.): X\+(\d+), Y\+(\d+)")]
