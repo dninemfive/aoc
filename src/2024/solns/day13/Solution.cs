@@ -17,7 +17,7 @@ internal class Solution : AocSolution
         yield return clawMachines1.Select(x => x.ComboCost()).Sum();
         yield break;
         Point<long> offset = (10000000000000L, 10000000000000L);
-        IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>(x.ButtonA, x.ButtonB, x.Prize + offset));
+        IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>([x.CheapButton, x.ExpensiveButton], x.Prize + offset));
         yield return clawMachines2.Select(x => x.ComboCost()).Sum();
     }
 }
@@ -95,21 +95,15 @@ internal partial record ClawMachine<T>
                  .First()!
                   );
     }
-    public IEnumerable<T>? Combo()
+    public (T c, T e)? Combo()
     {
-        IEnumerable<Button<T>> buttons = Buttons.Take(2);
-        Button<T> cheap = buttons.First(), expensive = buttons.Second();
-
-        // constraint: can check (a * ButtonA.Cost) + (b * ButtonB.Cost) and if > than the current cost, skip
-        // (this constraint will be monotonic :thinking:)
-        for(T a = T.Zero; a <= aMax; a++)
+        // the cheapest combo will use the cheapest button as many times as possible
+        T cheapMax = CheapButton.StepsToReachOrPass(Prize);
+        for(T c = cheapMax; c > T.Zero;  c++)
         {
-            Point<T> start = a * ButtonA.Offset;
-            if (ButtonB.Offset.CanReach(start, Prize, out T b))
-            {
-                Console.WriteLine((a, b));
-                return (a, b);
-            }
+            Point<T> start = c * CheapButton.Offset;
+            if (ExpensiveButton.Offset.CanReach(start, Prize, out T e))
+                return (c, e);
         }
         return null;
     }
@@ -117,17 +111,17 @@ internal partial record ClawMachine<T>
     //    => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 
     //                               : T.Zero;
     {
-        if(Combo() is (T a, T b))
+        if(Combo() is (T c, T e))
         {
-            T cost = a * ButtonA.Cost + b * ButtonB.Cost;
-            Console.WriteLine($"Combo for {this}: {(a, b)} ({cost})");
+            T cost = c * CheapButton.Cost + e * ExpensiveButton.Cost;
+            Console.WriteLine($"Combo for {this}: {(c, e)} ({cost})");
             return cost;
         }
         Console.WriteLine($"No combo for {this}.");
         return T.Zero;
     }
     public override string ToString()
-        => $"[{ButtonA}, {ButtonB}] -> {Prize}";
+        => $"Claw Machine {Buttons.ListNotation()} -> {Prize}";
 }
 internal static class Extensions
 {
@@ -156,12 +150,16 @@ internal static class Extensions
     {
         bool reached = step.X.CanReach(distance.X, out T xSteps)
                      & step.Y.CanReach(distance.Y, out T ySteps); // & instead of && to make sure both are calculated
-        result = T.Max(xSteps, ySteps);
+        result = T.Min(xSteps, ySteps);
         return reached;
     }
     public static bool CanReach<T>(this Point<T> step, Point<T> start, Point<T> end, out T result)
         where T : INumber<T>
-        => step.CanReach((end - start).Abs, out result);
+    {
+        bool reached = step.CanReach((end - start).Abs, out result);
+        Console.WriteLine($"{step}.CanReach({start}, {end}) -> ({result}, {reached})");
+        return reached;
+    }
     public static bool CanReach<T>(this Button<T> button, Point<T> start, Point<T> end, out T result)
         where T : INumber<T>
         => button.Offset.CanReach(start, end, out result);
