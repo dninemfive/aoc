@@ -21,7 +21,7 @@ internal class Solution : AocSolution
         yield return clawMachines2.Select(x => x.ComboCost()).Sum();
     }
 }
-internal partial record Button<T>(T XOffset, T YOffset, string Name)
+internal partial record Button<T>(Point<T> Offset, string Name)
     where T : INumber<T>
 {
     public static readonly Regex ButtonRegex = GenerateButtonRegex();
@@ -31,9 +31,6 @@ internal partial record Button<T>(T XOffset, T YOffset, string Name)
         "B" => T.One,
         _ => throw new Exception($"{Name} is not a valid button name!")
     };
-    public Point<T> Offset => (XOffset, YOffset);
-    public static implicit operator Button<T>((T a, T b, string c) tuple)
-        => new(tuple.a, tuple.b, tuple.c);
     public static Button<T>? FromLine(string line)
     {
         MatchCollection matches = ButtonRegex.Matches(line);
@@ -45,8 +42,10 @@ internal partial record Button<T>(T XOffset, T YOffset, string Name)
                                      .Skip(1)
                                      .Select(x => x.Value)
                                      .ToList();
-        return new(T.Parse(groups[1], null), T.Parse(groups[2], null), groups[0]);
+        return new((T.Parse(groups[1], null), T.Parse(groups[2], null)), groups[0]);
     }
+    public override string ToString()
+        => $"Button {Name} {Offset}";
     public static implicit operator Point<T>(Button<T> button)
         => button.Offset;
     [GeneratedRegex(@"Button (.): X\+(\d+), Y\+(\d+)")]
@@ -74,23 +73,35 @@ internal partial record Prize<T>(T X, T Y)
     [GeneratedRegex(@"Prize: X=(\d+), Y=(\d+)")]
     private static partial Regex GeneratePrizeRegex();
 }
-internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Point<T> Prize)
+internal partial record ClawMachine<T>
     where T : INumber<T>
 {
+    public IReadOnlyList<Button<T>> Buttons;
+    public Button<T> CheapButton => Buttons[0];
+    public Button<T> ExpensiveButton => Buttons[1];
+    public Point<T> Prize;
+    public ClawMachine(IEnumerable<Button<T>> buttons, Point<T> prize)
+    {
+        Buttons = buttons.OrderBy(x => x.Cost).ToList();
+        Prize = prize;
+    }
     public static ClawMachine<T> FromLines(IEnumerable<string> lines)
     {
-        Dictionary<string, Button<T>?> buttons = lines.Select(Button<T>.FromLine)
-                                                   .Where(x => x is not null)
-                                                   .ToDictionary(x => x!.Name);
-        Prize<T> prize = lines.Select(Prize<T>.FromLine)
-                                              .Where(x => x is not null)
-                                              .First()!;
-        return new(buttons["A"]!, buttons["B"]!, prize);
+        return new(
+            lines.Select(Button<T>.FromLine)
+                 .Where(x => x is not null)!,
+            lines.Select(Prize<T>.FromLine)
+                 .Where(x => x is not null)
+                 .First()!
+                  );
     }
-    // Oolong claims (plausibly) that there's a unique solution
-    public (T a, T b)? Combo()
+    public IEnumerable<T>? Combo()
     {
-        T aMax = ButtonA.Offset.StepsToReachOrPass(Prize);
+        IEnumerable<Button<T>> buttons = Buttons.Take(2);
+        Button<T> cheap = buttons.First(), expensive = buttons.Second();
+
+        // constraint: can check (a * ButtonA.Cost) + (b * ButtonB.Cost) and if > than the current cost, skip
+        // (this constraint will be monotonic :thinking:)
         for(T a = T.Zero; a <= aMax; a++)
         {
             Point<T> start = a * ButtonA.Offset;
