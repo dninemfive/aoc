@@ -30,34 +30,20 @@ internal record ClawMachine<T>
         {
             Point<T> start = c * CheapButton.Offset;
             if (ExpensiveButton.Offset.CanReach(start, Prize, out T e))
-            {
-                Combo<T> combo = Combo<T>.From(this, c, e);
-                Point<T> asdf = CheapButton.Offset * c + ExpensiveButton.Offset * e;
-                Console.WriteLine($"\t\t{combo,16} {asdf,16} {asdf == Prize,5}");
-                yield return combo;
-            }
+                yield return Combo<T>.From(this, c, e);
         }
     }
     public Combo<T>? CheapestCombo()
     {
         // the cheapest combo will use the cheapest button as many times as possible
-        // foreach (Combo<T> combo in Combos())
-        //    return combo;
-        Console.WriteLine($"{this}:");
-        List<Combo<T>> combos = Combos().OrderBy(x => x.Cost).ToList();
-        Combo<T>? result = combos.FirstOrDefault();
-        return result;
+        foreach (Combo<T> combo in Combos())
+            return combo;
+        return null;
     }
     public T CheapestComboCost()
-    //    => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 
-    //                               : T.Zero;
     {
         if (CheapestCombo() is Combo<T> combo)
-        {
-            // Console.WriteLine($"Combo for {this}: {(c, e)} ({cost})");
             return combo.Cost;
-        }
-        // Console.WriteLine($"No combo for {this}.");
         return T.Zero;
     }
     public override string ToString()
