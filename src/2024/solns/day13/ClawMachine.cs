@@ -33,7 +33,7 @@ internal record ClawMachine<T>
             {
                 Combo<T> combo = Combo<T>.From(this, c, e);
                 Point<T> asdf = CheapButton.Offset * c + ExpensiveButton.Offset * e;
-                Console.WriteLine($"\t{combo,16} {asdf,16} {Prize,16} {asdf == Prize}");
+                Console.WriteLine($"\t\t{combo,16} {asdf,16} {asdf == Prize,5}");
                 yield return combo;
             }
         }
@@ -46,7 +46,6 @@ internal record ClawMachine<T>
         Console.WriteLine($"{this}:");
         List<Combo<T>> combos = Combos().OrderBy(x => x.Cost).ToList();
         Combo<T>? result = combos.FirstOrDefault();
-        Console.WriteLine($"\t-> {result.PrintNull()}");
         return result;
     }
     public T CheapestComboCost()
