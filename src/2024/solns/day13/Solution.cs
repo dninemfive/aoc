@@ -14,18 +14,18 @@ internal class Solution : AocSolution
         IEnumerable<ClawMachine<long>> clawMachines1 = lines.Chunk(4)
                                                    //.Select(x => x.Where(y => !y.IsNullOrEmpty()))
                                                      .Select(ClawMachine<long>.FromLines);
-        yield return clawMachines1.Select(x => x.MinComboCost()).Sum();
+        yield return clawMachines1.Select(x => x.ComboCost()).Sum();
         yield break;
         Point<long> offset = (10000000000000L, 10000000000000L);
         IEnumerable<ClawMachine<long>> clawMachines2 = clawMachines1.Select(x => new ClawMachine<long>(x.ButtonA, x.ButtonB, x.Prize + offset));
-        yield return clawMachines2.Select(x => x.MinComboCost()).Sum();
+        yield return clawMachines2.Select(x => x.ComboCost()).Sum();
     }
 }
 internal partial record Button<T>(T XOffset, T YOffset, string Name)
     where T : INumber<T>
 {
     public static readonly Regex ButtonRegex = GenerateButtonRegex();
-    public T cost => Name switch
+    public T Cost => Name switch
     {
         "A" => T.CreateChecked(3),
         "B" => T.One,
@@ -102,9 +102,21 @@ internal partial record ClawMachine<T>(Button<T> ButtonA, Button<T> ButtonB, Poi
         }
         return null;
     }
-    public T MinComboCost()
-        => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 
-                                   : T.Zero;
+    public T ComboCost()
+    //    => Combo() is (T a, T b) ? a * ButtonA.cost + b * ButtonB.cost 
+    //                               : T.Zero;
+    {
+        if(Combo() is (T a, T b))
+        {
+            T cost = a * ButtonA.Cost + b * ButtonB.Cost;
+            Console.WriteLine($"Combo for {this}: {(a, b)} ({cost})");
+            return cost;
+        }
+        Console.WriteLine($"No combo for {this}.");
+        return T.Zero;
+    }
+    public override string ToString()
+        => $"[{ButtonA}, {ButtonB}] -> {Prize}";
 }
 internal static class Extensions
 {
