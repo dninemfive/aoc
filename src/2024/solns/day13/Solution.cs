@@ -99,7 +99,7 @@ internal partial record ClawMachine<T>
     {
         // the cheapest combo will use the cheapest button as many times as possible
         T cheapMax = CheapButton.StepsToReachOrPass(Prize);
-        for(T c = cheapMax; c > T.Zero;  c++)
+        for(T c = cheapMax; c > T.Zero;  c--)
         {
             Point<T> start = c * CheapButton.Offset;
             if (ExpensiveButton.Offset.CanReach(start, Prize, out T e))
