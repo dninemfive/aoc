@@ -25,6 +25,8 @@ internal record ClawMachine<T>
     }
     public IEnumerable<Combo<T>> Combos()
     {
+        // todo: rank buttons by distance per cost?
+        //       maybe also how well-aligned their vector is with the prize vector?
         T cheapMax = CheapButton.StepsToReachOrPass(Prize);
         for (T c = cheapMax; c > T.Zero; c--)
         {
@@ -34,12 +36,7 @@ internal record ClawMachine<T>
         }
     }
     public Combo<T>? CheapestCombo()
-    {
-        // the cheapest combo will use the cheapest button as many times as possible
-        foreach (Combo<T> combo in Combos())
-            return combo;
-        return null;
-    }
+        => Combos().FirstOrDefault();
     public T CheapestComboCost()
     {
         if (CheapestCombo() is Combo<T> combo)

@@ -25,7 +25,8 @@ namespace d9.aoc._24.day13; internal static class Extensions
     public static bool CanReach<T>(this Point<T> step, Point<T> distance, out T result)
         where T : INumber<T>
     {
-        bool reachedX = step.X.CanReach(distance.X, out T xSteps), reachedY = step.Y.CanReach(distance.Y, out T ySteps);
+        bool reachedX = step.X.CanReach(distance.X, out T xSteps),
+             reachedY = step.Y.CanReach(distance.Y, out T ySteps);
         result = T.Min(xSteps, ySteps);
         return reachedX && reachedY && xSteps == ySteps;
     }
@@ -39,6 +40,7 @@ namespace d9.aoc._24.day13; internal static class Extensions
         where T : INumber<T>
     {
         _ = step.CanReach(distance, out T result);
+        Console.WriteLine($"{step,32} {result,16} {distance - (step * result),32}");
         return result;
     }
     public static T StepsToReachOrPass<T>(this Button<T> button, Point<T> distance)
