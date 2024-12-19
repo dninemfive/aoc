@@ -10,7 +10,7 @@ internal record ClawMachine<T>
     public Point<T> Prize;
     public ClawMachine(IEnumerable<Button<T>> buttons, Point<T> prize)
     {
-        Buttons = buttons.OrderBy(x => x.Cost).ToList();
+        Buttons = buttons.OrderBy(x => x.DistancePerCost).ToList();
         Prize = prize;
     }
     public static ClawMachine<T> FromLines(IEnumerable<string> lines)

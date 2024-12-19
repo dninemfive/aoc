@@ -6,12 +6,13 @@ internal partial record Button<T>(Point<T> Offset, string Name)
     where T : INumber<T>
 {
     public static readonly Regex ButtonRegex = GenerateButtonRegex();
-    public T Cost => Name switch
+    public readonly T Cost = Name switch
     {
         "A" => T.CreateChecked(3),
         "B" => T.One,
         _ => throw new Exception($"{Name} is not a valid button name!")
     };
+    public double DistancePerCost => double.Sqrt(double.CreateChecked(Offset.SquareMagnitude)) / double.CreateChecked(Cost); 
     public static Button<T>? FromLine(string line)
     {
         MatchCollection matches = ButtonRegex.Matches(line);

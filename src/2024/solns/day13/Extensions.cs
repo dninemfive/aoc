@@ -40,7 +40,7 @@ namespace d9.aoc._24.day13; internal static class Extensions
         where T : INumber<T>
     {
         _ = step.CanReach(distance, out T result);
-        Console.WriteLine($"{step,32} {result,16} {distance - (step * result),32}");
+        Console.WriteLine($"{step,9} {result,16} {distance - (step * result),32}");
         return result;
     }
     public static T StepsToReachOrPass<T>(this Button<T> button, Point<T> distance)

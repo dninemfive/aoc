@@ -30,6 +30,8 @@ public readonly struct Point<T>(T x, T y)
     }
     public Point<T> Abs
         => (T.Abs(X), T.Abs(Y));
+    public T SquareMagnitude
+        => (X * X) + (Y * Y);
     public static bool operator ==(Point<T> a, Point<T> b)
         => a.X == b.X && a.Y == b.Y;
     public static bool operator !=(Point<T> a, Point<T> b)
