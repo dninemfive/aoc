@@ -37,4 +37,12 @@ internal class Program<T>(ProgramState<T> initialState, IEnumerable<T> instructi
     }
     public string OutputString => State.Output.Select(x => x.ToString()!)
                                               .JoinWithDelimiter(",");
+    public static Program<T> FromLines(string[] lines)
+    {
+        T a = T.Parse(lines[0].Split(": ")[1], null);
+        T b = T.Parse(lines[1].Split(": ")[1], null);
+        T c = T.Parse(lines[2].Split(": ")[1], null);
+        IEnumerable<T> instructions = lines[4].Split(": ")[1].Split(",").Select(x => T.Parse(x, null));
+        return new(new(new(a, b, c), 0), instructions);
+    }
 }
