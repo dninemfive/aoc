@@ -15,5 +15,6 @@ namespace d9.aoc._24.day17;
 /// by <see cref="Instructions{T}.Call(ProgramState{T}, int, T)"/> in conjunction with the operation's
 /// <see cref="InstructionAttribute"/> and should not be implemented manually unless necessary.
 /// </remarks>
+/// <instructionRemarkMsg><em>See <see cref="Operation{T}"/> for additional remarks.</em></instructionRemarkMsg>
 internal delegate ProgramState<T> Operation<T>(ProgramState<T> state, T operand)
     where T : struct, INumber<T>;
