@@ -49,4 +49,12 @@ internal static class Extensions
             OperandType.Ignored => default,
             _ => throw new ArgumentOutOfRangeException(nameof(type), $"{type} is not a recognized operand type!")
         };
+    internal static T Pow<T>(this T @base, T exponent)
+        where T : INumber<T>
+    {
+        T result = T.One;
+        for (T i = T.Zero; i < exponent; i++)
+            result *= @base;
+        return result;
+    }
 }

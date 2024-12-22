@@ -3,7 +3,6 @@
 namespace d9.aoc._24.day17;
 internal class Program<T>(ProgramState<T> initialState, IEnumerable<T> instructions)
     where T : struct, INumber<T>,
-                      IPowerFunctions<T>,
                       IBitwiseOperators<T, T, T>,
                       IModulusOperators<T, T, T>
 {

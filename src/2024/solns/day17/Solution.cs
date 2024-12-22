@@ -8,5 +8,7 @@ internal class Solution
     public override IEnumerable<AocPartialResult> Solve(params string[] lines)
     {
         Program<int> program = Program<int>.FromLines(lines);
+        program.RunToCompletion();
+        yield return new(program.OutputString);
     }
 }

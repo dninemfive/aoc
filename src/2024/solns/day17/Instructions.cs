@@ -3,7 +3,6 @@
 namespace d9.aoc._24.day17;
 internal static partial class Instructions<T>
     where T : struct, INumber<T>,
-                      IPowerFunctions<T>,
                       IBitwiseOperators<T, T, T>,
                       IModulusOperators<T, T, T>
 {

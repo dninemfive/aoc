@@ -5,7 +5,7 @@ internal static partial class Instructions<T>
     private static T _dv(ProgramState<T> state, T operand)
     {
         T numerator = state.Registers.A;
-        T denominator = T.Pow(_two, operand);
+        T denominator = _two.Pow(operand);
         return numerator / denominator;
     }
     /// <summary>
