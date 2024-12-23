@@ -70,7 +70,25 @@ public static class TestUtils
                     Exception? exception = null;
                     try
                     {
-                        Assert.AreEqual(expected, actual[i].Value);
+                        if (actual[i].Value is BigInteger bi)
+                        {
+                            if (expected is int z)
+                            {
+                                Assert.AreEqual(new BigInteger(z), bi);
+                            }
+                            else if (expected is long l)
+                            {
+                                Assert.AreEqual(new BigInteger(l), bi);
+                            }
+                            else
+                            {
+                                Assert.AreEqual(expected, actual[i].Value);
+                            }
+                        }
+                        else
+                        {
+                            Assert.AreEqual(expected, actual[i].Value);
+                        }
                     }
                     catch(Exception e)
                     {
