@@ -72,4 +72,6 @@ internal static class Extensions
             result *= @base;
         return result;
     }
+    internal static string OutputString<T>(this IEnumerable<T> enumerable)
+        => enumerable.Select(x => $"{x}").JoinWithDelimiter(",");
 }

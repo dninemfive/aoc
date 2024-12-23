@@ -35,8 +35,6 @@ internal class Program<T>(ProgramState<T> initialState, IEnumerable<T> instructi
             ;
         return State.Output;
     }
-    public string OutputString => State.Output.Select(x => x.ToString()!)
-                                              .JoinWithDelimiter(",");
     public static Program<T> FromLines(string[] lines)
     {
         T a = T.Parse(lines[0].Split(": ")[1], null);
