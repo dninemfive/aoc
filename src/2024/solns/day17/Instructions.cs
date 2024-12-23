@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Reflection;
 
 namespace d9.aoc._24.day17;
 internal static partial class Instructions<T>
@@ -7,6 +8,12 @@ internal static partial class Instructions<T>
                       IModulusOperators<T, T, T>
 {
     private static readonly Dictionary<int, (InstructionAttribute attr, Operation<T> op)> _dict = new();
+    static Instructions()
+    {
+        foreach(MethodInfo method in typeof(Instructions<T>).GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
+            if (method.GetCustomAttribute<InstructionAttribute>() is InstructionAttribute attr)
+                _dict[attr.Opcode] = (attr, method.CreateDelegate<Operation<T>>());
+    }
     /// <summary>
     /// Wrapper for calling an instruction, taking into account its 
     /// <see cref="InstructionAttribute">metadata</see>, for example converting the raw 
@@ -23,5 +30,4 @@ internal static partial class Instructions<T>
         (InstructionAttribute attr, Operation<T> op) = _dict[opcode];
         return op(state, operand.Value(state.Registers, attr.OperandType)).AdvancePointer(attr.PointerIncrement);
     }
-
 }
