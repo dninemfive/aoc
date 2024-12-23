@@ -34,21 +34,36 @@ internal static class Extensions
     /// </exception>
     internal static T Value<T>(this T operand, MemoryState<T> memory, OperandType type = OperandType.Literal)
         where T : struct, INumber<T>
-        => type switch
+    {
+        if (type is OperandType.Combo)
         {
-            OperandType.Literal => operand,
-            OperandType.Combo => operand switch
+            if(operand < T.Zero || operand > T.CreateChecked(7))
             {
-                <= 3 => operand,
-                4 => memory.A,
-                5 => memory.B,
-                6 => memory.C,
-                7 => throw new ArgumentException("A combo operand can never have the value 7!", nameof(operand)),
-                _ => throw new ArgumentOutOfRangeException(nameof(operand), $"Unrecognized combo operand: {operand}")
-            },
-            OperandType.Ignored => default,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), $"{type} is not a recognized operand type!")
-        };
+                throw new ArgumentOutOfRangeException(nameof(operand), $"Unrecognized combo operand: `{operand}`!");
+            }
+            if(operand >= T.Zero && operand <= T.CreateChecked(3))
+            {
+                return operand;
+            } 
+            else if(operand <= T.CreateChecked(6))
+            {
+                return memory.GetComboRegister(operand);
+            }
+            else
+            {
+                throw new ArgumentException("A combo operand can never have the value 7!", nameof(operand));
+            }
+        }
+        else
+        {
+            return type switch
+            {
+                OperandType.Literal => operand,
+                OperandType.Ignored => default,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), $"{type} is not a recognized operand type!")
+            };
+        }
+    }
     internal static T Pow<T>(this T @base, T exponent)
         where T : INumber<T>
     {

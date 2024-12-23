@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.ObjectModel;
+using System.Numerics;
 
 namespace d9.aoc._24.day17;
 /// <summary>
@@ -31,4 +32,16 @@ internal readonly struct MemoryState<T>(T a, T b, T c)
             c ?? C);
     public static implicit operator MemoryState<T>((T a, T b, T c) tuple)
         => new(tuple.a, tuple.b, tuple.c);
+    public static readonly ReadOnlyDictionary<T, Func<MemoryState<T>, T>> ComboRegisterGetters = new(new Dictionary<T, Func<MemoryState<T>, T>>()
+    {
+        { T.CreateChecked(4), x => x.A },
+        { T.CreateChecked(5), x => x.B },
+        { T.CreateChecked(6), x => x.C }
+    });
+    public T GetComboRegister(T operand)
+    {
+        if(ComboRegisterGetters.TryGetValue(operand, out Func<MemoryState<T>, T>? f))
+            return f(this);
+        throw new ArgumentOutOfRangeException(nameof(operand), $"Operand must be between 4 and 6, inclusive, not {operand}!");
+    }
 }

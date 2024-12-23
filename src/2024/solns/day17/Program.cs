@@ -29,10 +29,11 @@ internal class Program<T>(ProgramState<T> initialState, IEnumerable<T> instructi
         }
         else return false;
     }
-    public void RunToCompletion()
+    public IEnumerable<T> RunToCompletion()
     {
         while (RunNextInstruction())
             ;
+        return State.Output;
     }
     public string OutputString => State.Output.Select(x => x.ToString()!)
                                               .JoinWithDelimiter(",");
