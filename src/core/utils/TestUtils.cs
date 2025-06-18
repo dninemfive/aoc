@@ -1,5 +1,4 @@
-﻿using d9.utl;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Numerics;
 using System.Reflection;
 using static d9.aoc.core.Constants;
 
