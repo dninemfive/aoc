@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34219.65
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2023", "2023\solns\aoc-solns-2023.csproj", "{59B30FE0-775B-4C05-9190-C7A8CD92E697}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-tests-2023", "2023\tests\aoc-tests-2023.csproj", "{CF129B24-1DC7-4D52-ADF3-3BE09BD3AB26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-tests-2023-old", "2023\tests-old\aoc-tests-2023-old.csproj", "{CF129B24-1DC7-4D52-ADF3-3BE09BD3AB26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core", "core\core.csproj", "{56017A23-08D6-4329-A9E1-58C796C723ED}"
 EndProject
