@@ -1,9 +1,9 @@
 ﻿using d9.aoc.core;
 using d9.utl;
+using d9.utl.utils.reflection;
 using System.Reflection;
 
 namespace aoc.tests;
-
 public class Tests
 {
     [SetUp]
@@ -21,24 +21,26 @@ public class Tests
     {
         get
         {
-            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach((Assembly assembly, SolutionsForYearAttribute sfy) in AppDomain.CurrentDomain.AssembliesWithAttribute<SolutionsForYearAttribute>())
             {
-                if(assembly.GetCustomAttribute<SolutionsForYearAttribute>() is SolutionsForYearAttribute sfy)
+                foreach((Type type, SolutionToProblemAttribute stp) in assembly.TypesWithAttribute<SolutionToProblemAttribute>())
                 {
-                    foreach(Type type in assembly.GetTypes())
+                    if(type.GetCustomAttribute<SampleResultsAttribute>() is SampleResultsAttribute sr)
                     {
-                        if(type.GetCustomAttribute<SolutionToProblemAttribute>() is SolutionToProblemAttribute stp)
-                        {
-                            if(type.GetCustomAttribute<SampleResultsAttribute>() is SampleResultsAttribute sr)
-                            {
-
-                            }
-                        }
+                        yield return MakeTestCaseFor(sfy.Year, stp.Day, sr)
                     }
                 }
             }
         }
     }
+    /*
+        => new TestCaseData(fileName).Returns(expected)
+                                     .SetCategory($"Year {year}")
+                                     .SetName($"Day {problem,2} Problem {}");
+    */
+    public IEnumerable<(AocSolution soln, IEnumerable<(TestCaseData data)>)>
+    public TestCaseData MakeTestCaseFor(AocSolution solution)
+        => new TestCaseData(solution.FileName)
 
     [TestCaseSource(nameof(_data))]
     public void Test1()
