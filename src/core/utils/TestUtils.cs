@@ -9,7 +9,7 @@ public static class TestUtils
     {
         AocSolution solution = group[index];
         Assert.IsNotNull(solution);
-        foreach ((int i, AocSolutionResult part) in solution.Execute(group.InputFolder).Parts)
+        foreach ((int i, AocPartResult part) in solution.Execute(group.InputFolder).Parts)
             if (part.Result.Label is null)
                 Assert.AreEqual(expectedValues[i - 1], part.Value);
     }

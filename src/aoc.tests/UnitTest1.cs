@@ -6,6 +6,7 @@ using System.Reflection;
 namespace aoc.tests;
 public class Tests
 {
+    public record TestElement(int Year, int Day, AocSolution Solution, ExpectedResultsAttribute Expected);
     [SetUp]
     public void Setup()
     {
@@ -17,34 +18,17 @@ public class Tests
             }
         }
     }
-    public IEnumerable<TestCaseData> AllTests
+    public static IEnumerable<TestCaseData> TestCasesFor(int year, AocSolution solution, ExpectedResultsAttribute expectedResults)
     {
-        get
-        {
-            foreach((Assembly assembly, SolutionsForYearAttribute sfy) in AppDomain.CurrentDomain.AssembliesWithAttribute<SolutionsForYearAttribute>())
-            {
-                foreach((Type type, SolutionToProblemAttribute stp) in assembly.TypesWithAttribute<SolutionToProblemAttribute>())
-                {
-                    if(type.GetCustomAttribute<SampleResultsAttribute>() is SampleResultsAttribute sr)
-                    {
-                        yield return MakeTestCaseFor(sfy.Year, stp.Day, sr)
-                    }
-                }
-            }
-        }
+        TestCaseData result = new TestCaseData(solution).Returns(expectedResults)
+                                                        .SetCategory(year.ToString())
+                                                        .SetName($"Day {solution.Day} {(expectedResults.UseSampleData ? "(sample)" : "")}");
+        result.SetProperty("fileName", "fileName");
     }
-    /*
-        => new TestCaseData(fileName).Returns(expected)
-                                     .SetCategory($"Year {year}")
-                                     .SetName($"Day {problem,2} Problem {}");
-    */
-    public IEnumerable<(AocSolution soln, IEnumerable<(TestCaseData data)>)>
-    public TestCaseData MakeTestCaseFor(AocSolution solution)
-        => new TestCaseData(solution.FileName)
-
+    public static IEnumerable<TestCaseData> _data;
     [TestCaseSource(nameof(_data))]
-    public void Test1()
+    public void TestDay(AocSolution solution)
     {
-        Assert.Pass();
+        AocSolutionResults result = solution.Execute()
     }
 }

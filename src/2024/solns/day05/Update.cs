@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace d9.aoc._24.day05;
+﻿namespace d9.aoc._24.day05;
 internal class Update(IEnumerable<int> items)
 {
     private readonly IReadOnlyList<int> _items = items.ToList();

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace d9.aoc._24.day01;
+﻿namespace d9.aoc._24.day01;
 internal class Count
 {
     private Dictionary<int, int> _count = new();

@@ -20,7 +20,7 @@ public record AocPartialResult(object? Value, string? Label = null)
         return $"{label}{Value.PrintNull()}";
     }
 }
-public record AocSolutionResult(AocPartialResult Result, string Label, TimeSpan Elapsed)
+public record AocPartResult(AocPartialResult Result, string Label, TimeSpan Elapsed)
 {
     public object? Value => Result.Value;
     public override string ToString()

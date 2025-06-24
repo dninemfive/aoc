@@ -1,11 +1,17 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using static d9.aoc.core.Constants;
 
 namespace d9.aoc.core;
-public abstract class AocSolution
+#pragma warning disable CS9113 // unread parameter: used by derived classes
+public abstract class AocSolution(params string[] lines)
+#pragma warning restore CS9113
 {
-    public AocSolution() { }
+    public delegate AocPartialResult? Implementation();
+    public SolutionToProblemAttribute Attribute
+        => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
+        ?? throw new Exception($"{GetType().Name} must have a SolutionToProblemAttribute to run properly!");
+    public int Day => Attribute.Day;
     public string BaseFileName => $"day{Day:00}";
     public string FileName(bool sample = false, int? index = null)
     {
@@ -16,33 +22,29 @@ public abstract class AocSolution
             result += $".{i:00}";
         return $"{result}.txt";
     }
-    public int Day => Attribute.Day;
-    public static AocSolution? Instantiate(Type implementingType)
-        => Activator.CreateInstance(implementingType) as AocSolution;
-    public SolutionToProblemAttribute Attribute 
-        => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
-            ?? throw new Exception($"{GetType().Name} must have a SolutionToProblem attribute to run properly!");
-    public AocSolutionResults Execute(string[] lines)
+    public virtual AocPartialResult? Part1()
+        => null;
+    public virtual AocPartialResult? Part2()
+        => null;
+    public bool Execute(string name, Implementation implementation, [NotNullWhen(true)] out AocPartResult? result)
     {
-        int partIndex = 1;
-        Stopwatch stopwatch = new();
-        AocSolutionResults results = new();
-        stopwatch.Start();
-        foreach (AocPartialResult result in Solve(lines))
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        if(implementation() is AocPartialResult partResult)
         {
-            stopwatch.Stop();
-            results.Add(result, stopwatch.Elapsed, result.Label is null ? partIndex++ : null);
-            stopwatch.Restart();
+            result = new(partResult, name, stopwatch.Elapsed);
+            return true;
         }
-        return results;
+        result = null;
+        return false;
     }
-    public AocSolutionResults Execute(string inputFolder)
-        => Execute(File.ReadAllLines(Path.Join(inputFolder, FileName())));
-    public IEnumerable<string> ResultLines(string inputFolder)
+    public IEnumerable<(int index, Implementation implementation)> ImplementedParts
     {
-        yield return $"Day {Day,2}:";
-        foreach (AocSolutionResult part in Execute(inputFolder))
-            yield return $"{TAB}{part}";
+        get
+        {
+            if (GetType().GetMethod("Part1") is MethodInfo mi && mi.IsOverride())
+                yield return (1, () => mi.Invoke(this, null) as AocPartialResult);
+            if (GetType().GetMethod("Part2") is MethodInfo mi2 && mi2.IsOverride())
+                yield return (2, () => mi2.Invoke(this, null) as AocPartialResult);
+        }
     }
-    public abstract IEnumerable<AocPartialResult> Solve(params string[] lines);
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2023", "2023\soln
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-tests-2023-old", "2023\tests-old\aoc-tests-2023-old.csproj", "{CF129B24-1DC7-4D52-ADF3-3BE09BD3AB26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core", "core\core.csproj", "{56017A23-08D6-4329-A9E1-58C796C723ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc.core", "core\aoc.core.csproj", "{56017A23-08D6-4329-A9E1-58C796C723ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2024", "2024\solns\aoc-solns-2024.csproj", "{7E070611-37D4-4771-9A16-2A3B65C2D4FD}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-tests-2024", "2024\tests\aoc-tests-2024.csproj", "{DAA62A3E-D76A-454C-915B-129E6B7833D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc-tests-2023", "2023\tests\aoc-tests-2023.csproj", "{C20106FF-152D-43B8-8AFA-E51C46E83862}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc.tests", "aoc.tests\aoc.tests.csproj", "{45D62215-4022-480A-BEF5-17909CF0F403}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{C20106FF-152D-43B8-8AFA-E51C46E83862}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C20106FF-152D-43B8-8AFA-E51C46E83862}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C20106FF-152D-43B8-8AFA-E51C46E83862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D62215-4022-480A-BEF5-17909CF0F403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D62215-4022-480A-BEF5-17909CF0F403}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D62215-4022-480A-BEF5-17909CF0F403}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D62215-4022-480A-BEF5-17909CF0F403}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\core.csproj" />
+    <ProjectReference Include="..\..\core\aoc.core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="utl">

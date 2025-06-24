@@ -28,4 +28,11 @@ public static class ReflectionExtensions
     }
     public static IEnumerable<object> UsingFile(this MethodInfo method, string filePath)
         => (IEnumerable<object>)method.Invoke(null, [File.ReadAllLines(filePath)])!;
+    /// <summary>
+    /// https://stackoverflow.com/a/16530993
+    /// </summary>
+    /// <param name="mi"></param>
+    /// <returns></returns>
+    public static bool IsOverride(this MethodInfo mi)
+        => mi.GetBaseDefinition().DeclaringType != mi.DeclaringType;
 }

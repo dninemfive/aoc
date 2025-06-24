@@ -1,16 +1,21 @@
-﻿namespace d9.aoc._24.day01;
+﻿using d9.utl;
+
+namespace d9.aoc._24.day01;
 [SolutionToProblem(1)]
-[FinalResults(1660292, 22776016)]
 internal class Solution : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
-    {
-        (IEnumerable<int> left, IEnumerable<int> right) = ParseData(lines);
-        yield return "preinit";
-        yield return PairUp(left, right).Select(x => Math.Abs(x.l - x.r)).Sum();
-        yield return SimilarityScores(left, right).Sum();
-        
-    }
+    public readonly IEnumerable<int> Left, Right;
+    public Solution(params string[] lines)
+        => (Left, Right) = ParseData(lines);
+
+    [ExpectedResults(final: 1660292)]
+    public override AocPartialResult Part1()
+        => PairUp(Left, Right).Select(x => Math.Abs(x.l - x.r)).Sum();
+
+    [ExpectedResults(final: 22776016)]
+    public override AocPartialResult Part2()
+        => SimilarityScores(Left, Right).Sum();
+
     public static (IEnumerable<int>, IEnumerable<int>) ParseData(string[] lines)
     {
         List<int> left = new(), right = new();
@@ -22,8 +27,10 @@ internal class Solution : AocSolution
         }
         return (left, right);
     }
+
     public static IEnumerable<(int l, int r)> PairUp(IEnumerable<int> left, IEnumerable<int> right)
         => left.Order().Zip(right.Order());
+
     public static IEnumerable<int> SimilarityScores(IEnumerable<int> left, IEnumerable<int> right)
     {
         Count count = new(right);

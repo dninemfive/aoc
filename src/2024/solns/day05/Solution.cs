@@ -2,17 +2,13 @@
 
 namespace d9.aoc._24.day05;
 [SolutionToProblem(5)]
-[SampleResults(143)]
-[FinalResults(7074)]
 internal class Solution : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(params string[] lines)
+    public IReadOnlyList<Rule> Rules;
+    public IReadOnlyList<Update> Updates;
+    public Solution(params string[] lines)
     {
-        (List<Rule> allRules, List<Update> allUpdates) = ParseInput(lines);
-        yield return "preinit";
-        yield return allUpdates.Where(x => !x.ViolatesAny(allRules))
-                               .Select(x => x.MiddleValue)
-                               .Sum();
+        (Rules, Updates) = ParseInput(lines);
     }
     public static (List<Rule> rules, List<Update> updates) ParseInput(string[] lines)
     {
@@ -37,4 +33,9 @@ internal class Solution : AocSolution
         }
         return (rules, updates);
     }
+    [ExpectedResults(sample: 143, final: 7074)]
+    public override AocPartialResult Part1()
+        => Updates.Where(x => !x.ViolatesAny(Rules))
+                  .Select(x => x.MiddleValue)
+                  .Sum();
 }
