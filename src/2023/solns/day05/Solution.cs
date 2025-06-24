@@ -6,25 +6,25 @@ namespace d9.aoc._23.day05;
 #pragma warning disable CS0162 // unreachable code
 #pragma warning disable CS8321 // unused function
 [SolutionToProblem(5)]
-public class Solution : AocSolution
+public class Solution(string[] lines)
+    : AocSolution
 {
-    private static Dictionary<string, XToYMap<long>> _mapMap = new();
-    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
+    public IEnumerable<long> Seeds = lines.First().Split(": ")[1].ToMany<long>();
+    public readonly Dictionary<string, XToYMap<long>> MapMap = ParseLines(lines[2..]);
+
+    [ExpectedResults(84470622L)]
+    public override AocPartResultValue? Part1()
+        => Seeds.Select(LocationFor).Min();
+
+    public override AocPartResultValue? Part2()
     {
-        IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
-        _mapMap = ParseLines(lines[2..]);
-        foreach (XToYMap<long> map in _mapMap.Values)
-        {
-            // Console.WriteLine(map.FullString);
-        }
-        yield return seeds.Select(LocationFor).Min();
-        yield break;
-        Range<long>[] pairs = new Range<long>[seeds.Count() / 2];
+        Range<long>[] pairs = new Range<long>[Seeds.Count() / 2];
         for (int i = 0; i < pairs.Length; i++)
-            pairs[i] = new(seeds.ElementAt(i * 2), seeds.ElementAt(i * 2 + 1));
-        Console.WriteLine($"Seeds:       {seeds.Order().Select(x => $"{x,10}").ListNotation()}");
-        yield return LowestLocationFor(pairs);
+            pairs[i] = new(Seeds.ElementAt(i * 2), Seeds.ElementAt(i * 2 + 1));
+        Console.WriteLine($"Seeds:       {Seeds.Order().Select(x => $"{x,10}").ListNotation()}");
+        return LowestLocationFor(pairs);
     }
+
     public static Dictionary<string, XToYMap<long>> ParseLines(string[] lines)
     {
         string title = "";
@@ -49,19 +49,21 @@ public class Solution : AocSolution
         }
         return result;
     }
-    public static long LocationFor(long seed)
+
+    public long LocationFor(long seed)
     {
         // Console.Write($"LocationFor({seed})");
         (string type, long val) cur = ("seed", seed);
         while (cur.type != "location")
         {
-            cur = _mapMap[cur.type][cur];
+            cur = MapMap[cur.type][cur];
             // Console.Write($" -> {cur.val,11}");
         }
         // Console.WriteLine();
         return cur.val;
     }
-    public static long LowestLocationFor(params Range<long>[] seedRanges)
+
+    public long LowestLocationFor(params Range<long>[] seedRanges)
     {
         // for each location range in order of smallest to largest,
         //      for each humidity range which maps to that location range,
@@ -77,7 +79,7 @@ public class Solution : AocSolution
         // but i think this doesn't actually eliminate nearly as aggressively as necessary
         string[] keys = ["seed", "soil", "fertilizer", "water", "light", "temperature", "humidity"];
         IEnumerable<MapRange<long>> overlapping(string destKey, string sourceKey)
-            => _mapMap[sourceKey].Ranges.Where(x => _mapMap[destKey].Ranges.Any(y => x.Destination.OverlapsWith(y.Source)));
+            => MapMap[sourceKey].Ranges.Where(x => MapMap[destKey].Ranges.Any(y => x.Destination.OverlapsWith(y.Source)));
         List<Tree<MapRange<long>>> trees = new();
         throw new NotImplementedException();
     }

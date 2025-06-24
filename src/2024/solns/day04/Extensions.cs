@@ -1,5 +1,4 @@
-﻿using d9.aoc.core.utils;
-using Coordinate    = d9.aoc.core.Point<int>;
+﻿using Coordinate    = d9.aoc.core.Point<int>;
 using Direction     = d9.aoc.core.Point<int>;
 using Directions    = d9.aoc.core.Directions<int>;
 

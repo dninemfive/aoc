@@ -1,15 +1,18 @@
 ﻿using d9.aoc.core;
-using System.Numerics;
+using d9.utl;
 
 namespace d9.aoc._23.day09;
 [SolutionToProblem(9)]
-public class Solution : AocSolution
+public class Solution(string[] lines)
+    : AocSolution
 {
-    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
-    {
-        IEnumerable<Sequence<int>> sequences = lines.Select(x => new Sequence<int>(x.ToMany<int>()));
-        yield return "preinit";
-        yield return sequences.Select(x => x.Next()).Sum();
-        yield return sequences.Select(x => x.Prev()).Sum();
-    }
+    public readonly IEnumerable<Sequence<int>> Sequences = lines.Select(x => new Sequence<int>(x.ToMany<int>()));
+
+    [ExpectedResults(1993300041)]
+    public override AocPartResultValue? Part1()
+        => Sequences.Select(x => x.Next()).Sum();
+
+    [ExpectedResults(1038)]
+    public override AocPartResultValue? Part2()
+        => Sequences.Select(x => x.Prev()).Sum();
 }

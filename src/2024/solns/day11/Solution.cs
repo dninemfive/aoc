@@ -2,7 +2,7 @@
 
 namespace d9.aoc._24.day11;
 [SolutionToProblem(11)]
-internal class Solution(params string[] lines)
+public class Solution(params string[] lines)
     : AocSolution
 {
     public static readonly string DebugFolder = Path.Join("_debug", "day11");

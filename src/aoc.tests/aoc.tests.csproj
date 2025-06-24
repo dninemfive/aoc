@@ -17,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\2023\solns\aoc-solns-2023.csproj" />
+    <ProjectReference Include="..\2024\solns\aoc-solns-2024.csproj" />
     <ProjectReference Include="..\core\aoc.core.csproj" />
   </ItemGroup>
 

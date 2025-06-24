@@ -24,4 +24,6 @@ public class AocPartImplementation(int part, MethodInfo mi)
         part = Part;
         execute = Execute;
     }
+    public override string ToString()
+        => $"Impl({Part}, {mi.Name})";
 }

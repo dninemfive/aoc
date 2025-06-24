@@ -1,6 +1,7 @@
-﻿namespace d9.aoc._23.day07;
-using d9.aoc.core;
+﻿using d9.aoc.core;
+using d9.utl;
 
+namespace d9.aoc._23.day07;
 public readonly struct Hand
     : IComparable<Hand>
 {

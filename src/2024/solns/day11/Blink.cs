@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
 namespace d9.aoc._24.day11;
-internal class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int index = 0)
+public class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int index = 0)
 {
     public readonly int Index = index;
     private readonly CountingDictionary<BigInteger, BigInteger> _counts = new(counts);

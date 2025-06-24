@@ -2,7 +2,7 @@
 
 namespace d9.aoc._24.day01;
 [SolutionToProblem(1)]
-internal class Solution : AocSolution
+public class Solution : AocSolution
 {
     public readonly IEnumerable<int> Left, Right;
     public Solution(params string[] lines)

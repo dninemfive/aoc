@@ -2,13 +2,14 @@
 
 namespace d9.aoc._23.day04;
 [SolutionToProblem(4)]
-public class Solution : AocSolution
+public class Solution(string[] lines)
+    : AocSolution
 {
-    public override IEnumerable<AocPartResultValue> Solve(string[] inputLines)
-    {
-        ScratchCardCollection scratchCards = new(inputLines.Select(x => new ScratchCard(x)));
-        yield return "preinit";
-        yield return scratchCards.Select(x => x.Value).Sum();
-        yield return scratchCards.TotalWonCards;
-    }
+    public readonly ScratchCardCollection ScratchCards = new(lines.Select(x => new ScratchCard(x)));
+    [ExpectedResults(25004)]
+    public override AocPartResultValue? Part1()
+        => ScratchCards.Select(x => x.Value).Sum();
+    [ExpectedResults(14427616)]
+    public override AocPartResultValue? Part2()
+        => ScratchCards.TotalWonCards;
 }
