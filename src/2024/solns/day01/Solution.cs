@@ -9,11 +9,11 @@ internal class Solution : AocSolution
         => (Left, Right) = ParseData(lines);
 
     [ExpectedResults(final: 1660292)]
-    public override AocPartialResult Part1()
+    public override AocPartResultValue Part1()
         => PairUp(Left, Right).Select(x => Math.Abs(x.l - x.r)).Sum();
 
     [ExpectedResults(final: 22776016)]
-    public override AocPartialResult Part2()
+    public override AocPartResultValue Part2()
         => SimilarityScores(Left, Right).Sum();
 
     public static (IEnumerable<int>, IEnumerable<int>) ParseData(string[] lines)

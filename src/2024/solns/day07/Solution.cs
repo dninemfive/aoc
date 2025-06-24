@@ -8,8 +8,8 @@ internal class Solution(params string[] lines) : AocSolution
     public readonly ParsedLines ParsedLines = lines.Parse<long>();
 
     [ExpectedResults(sample: 3749L, final: 2664460013123L)]
-    public override AocPartialResult? Part1()
+    public override AocPartResultValue? Part1()
         => ParsedLines.ValidSolutions(Operators.Add, Operators.Multiply).Sum();
-    public override AocPartialResult Part2()
+    public override AocPartResultValue Part2()
         => ParsedLines.ValidSolutions(Operators.Add, Operators.Multiply, Operators.Concatenate).Sum();
 }

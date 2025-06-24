@@ -8,10 +8,10 @@ internal class Solution(params string[] lines)
     public static readonly string DebugFolder = Path.Join("_debug", "day11");
     public readonly Blink Blink = new(lines.First().ToMany<BigInteger>());
     [ExpectedResults(sample: 55312, final: 220722)]
-    public override AocPartialResult? Part1()
+    public override AocPartResultValue? Part1()
         => Blink.GenerateSuccessor(25).Count;
     [ExpectedResults(final: "261952051690787")]
-    public override AocPartialResult? Part2()
+    public override AocPartResultValue? Part2()
         => Blink.GenerateSuccessor(75).Count;
 }
 

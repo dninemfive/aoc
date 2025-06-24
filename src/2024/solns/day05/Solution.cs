@@ -34,7 +34,7 @@ internal class Solution : AocSolution
         return (rules, updates);
     }
     [ExpectedResults(sample: 143, final: 7074)]
-    public override AocPartialResult Part1()
+    public override AocPartResultValue Part1()
         => Updates.Where(x => !x.ViolatesAny(Rules))
                   .Select(x => x.MiddleValue)
                   .Sum();

@@ -4,7 +4,7 @@ namespace d9.aoc._23.day02;
 [SolutionToProblem(2)]
 public class Solution : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
     {
         IEnumerable<Game> games = lines.Select(x => new Game(x));
         yield return "preinit";

@@ -9,7 +9,7 @@ namespace d9.aoc._23.day05;
 public class Solution : AocSolution
 {
     private static Dictionary<string, XToYMap<long>> _mapMap = new();
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
     {
         IEnumerable<long> seeds = lines.First().Split(": ")[1].ToMany<long>();
         _mapMap = ParseLines(lines[2..]);

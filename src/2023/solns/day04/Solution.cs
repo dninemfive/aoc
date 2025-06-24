@@ -4,7 +4,7 @@ namespace d9.aoc._23.day04;
 [SolutionToProblem(4)]
 public class Solution : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(string[] inputLines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] inputLines)
     {
         ScratchCardCollection scratchCards = new(inputLines.Select(x => new ScratchCard(x)));
         yield return "preinit";

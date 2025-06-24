@@ -5,9 +5,9 @@ public class Solution(params string[] lines)
 {
     public readonly IEnumerable<Report> Reports = lines.Select(x => new Report(x));
     [ExpectedResults(final: 257)]
-    public override AocPartialResult Part1()
+    public override AocPartResultValue Part1()
         => Reports.Count(x => x.IsStrictlySafe);
     [ExpectedResults(final: 328)]
-    public override AocPartialResult Part2()
+    public override AocPartResultValue Part2()
         => Reports.Count(x => x.IsLooselySafe);
 }

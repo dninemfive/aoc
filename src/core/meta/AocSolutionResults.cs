@@ -6,7 +6,7 @@ public class AocSolutionResults
 {
     private readonly List<AocPartResult> _allResults = new();
     private readonly Dictionary<int, AocPartResult> _partsByIndex = new();
-    public void Add(AocPartialResult result, TimeSpan elapsed, int? index = null)
+    public void Add(AocPartResultValue result, TimeSpan elapsed, int? index = null)
     {
         if (index is int i)
         {

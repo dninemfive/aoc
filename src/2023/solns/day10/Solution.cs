@@ -16,7 +16,7 @@ public class Solution : AocSolution
                        START        = '█', 
                        EMPTY        = ' ';
 #pragma warning restore IDE1006 // Naming Styles
-    public override IEnumerable<AocPartialResult> Solve(string[] input)
+    public override IEnumerable<AocPartResultValue> Solve(string[] input)
     {
         _grid = Grid<char>.From(input.Select(x => x.ReplaceWith(BoxDrawingEquivalent)).ToArray());
         yield return (0b0, "preinit");

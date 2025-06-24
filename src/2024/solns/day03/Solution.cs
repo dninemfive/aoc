@@ -10,11 +10,11 @@ internal partial class Solution(params string[] lines)
                .Select(x => x.Value.Evaluate());
 
     [ExpectedResults(sample: 161, final: 179834255)]
-    public override AocPartialResult? Part1()
+    public override AocPartResultValue? Part1()
         => Instructions.Select(x => x.As<int>()).Sum()!;
 
     [ExpectedResults(sample: 48, final: 80570939)]
-    public override AocPartialResult? Part2()
+    public override AocPartResultValue? Part2()
     {
         bool active = true;
         int sum = 0;

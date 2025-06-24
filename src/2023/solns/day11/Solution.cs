@@ -8,7 +8,7 @@ public class Solution : AocSolution
 #pragma warning disable CS8618 // Initialized in .Solve() and other things are not public
     private static HashSet<int> _emptyRows, _emptyColumns;
 #pragma warning restore CS8618
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
     {
         _grid = Grid<char>.From(lines);
         (_emptyRows, _emptyColumns) = (EmptyRowIndices.ToHashSet(), EmptyColumnIndices.ToHashSet());

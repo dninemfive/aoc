@@ -7,7 +7,7 @@ namespace d9.aoc._23.day6;
 [SolutionToProblem(6)]
 public class Solution : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
     {
         IEnumerable<(int time, int distance)> races = lines.First()
                                                            .ToMany<int>(skip: 1)

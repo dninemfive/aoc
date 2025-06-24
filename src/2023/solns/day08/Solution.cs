@@ -5,7 +5,7 @@ namespace d9.aoc._23.day08;
 public class Solution : AocSolution
 {
     private static Dictionary<string, (string left, string right)> _nodes = new();
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
+    public override IEnumerable<AocPartResultValue> Solve(string[] lines)
     {
         string tape = lines.First();
         _nodes = lines.Skip(2)

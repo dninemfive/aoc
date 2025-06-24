@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using d9.aoc.core.meta;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -7,7 +8,7 @@ namespace d9.aoc.core;
 public abstract class AocSolution(params string[] lines)
 #pragma warning restore CS9113
 {
-    public delegate AocPartialResult? Implementation();
+    public delegate AocPartResultValue? Implementation();
     public SolutionToProblemAttribute Attribute
         => GetType().GetCustomAttribute<SolutionToProblemAttribute>()
         ?? throw new Exception($"{GetType().Name} must have a SolutionToProblemAttribute to run properly!");
@@ -22,14 +23,14 @@ public abstract class AocSolution(params string[] lines)
             result += $".{i:00}";
         return $"{result}.txt";
     }
-    public virtual AocPartialResult? Part1()
+    public virtual AocPartResultValue? Part1()
         => null;
-    public virtual AocPartialResult? Part2()
+    public virtual AocPartResultValue? Part2()
         => null;
     public bool Execute(string name, Implementation implementation, [NotNullWhen(true)] out AocPartResult? result)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
-        if(implementation() is AocPartialResult partResult)
+        if(implementation() is AocPartResultValue partResult)
         {
             result = new(partResult, name, stopwatch.Elapsed);
             return true;
@@ -37,14 +38,16 @@ public abstract class AocSolution(params string[] lines)
         result = null;
         return false;
     }
-    public IEnumerable<(int index, Implementation implementation)> ImplementedParts
+    public IReadOnlyDictionary<int, AocPartImplementation> ImplementedParts
     {
         get
         {
-            if (GetType().GetMethod("Part1") is MethodInfo mi && mi.IsOverride())
-                yield return (1, () => mi.Invoke(this, null) as AocPartialResult);
+            Dictionary<int, AocPartImplementation> result = new();
+            if (GetType().GetMethod("Part1") is MethodInfo mi1 && mi1.IsOverride())
+                result[1] = new(this, mi1);
             if (GetType().GetMethod("Part2") is MethodInfo mi2 && mi2.IsOverride())
-                yield return (2, () => mi2.Invoke(this, null) as AocPartialResult);
+                result[2] = new(this, mi2);
+            return result;
         }
     }
 }
