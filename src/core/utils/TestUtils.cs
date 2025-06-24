@@ -5,37 +5,6 @@ using static d9.aoc.core.Constants;
 namespace d9.aoc.core.test;
 public static class TestUtils
 {
-    public static void Test(this AocSolutionGroup group, int index, params object[] expectedValues)
-    {
-        AocSolution solution = group[index];
-        Assert.IsNotNull(solution);
-        foreach ((int i, AocPartResult part) in solution.Execute(group.InputFolder).Parts)
-            if (part.Result.Label is null)
-                Assert.AreEqual(expectedValues[i - 1], part.Value);
-    }
-    public static void TestAll(this AocSolutionGroup group)
-    {
-        Console.WriteLine($"Testing solutions for {group.Year}...");
-        bool anyFailed = false;
-        foreach(AocSolution solution in group)
-        {
-            Assert.IsNotNull(solution);
-            Console.WriteLine($"{TAB}Day {solution.Day,2}:");
-            if (solution.GetType().HasCustomAttribute<DisableTestsAttribute>())
-            {
-                Console.WriteLine($"{TAB}{TAB}Skipping tests...");
-                continue;
-            }
-            foreach (string line in solution.TestResults(group.InputFolder))
-            {
-                Console.WriteLine($"{TAB}{TAB}{line}");
-                if(line.Contains("Failed"))
-                    anyFailed = true;
-            }
-        }
-        if (anyFailed)
-            Assert.Fail();
-    }
     private static string[]? TryReadAllLines(params string[] path)
     {
         try

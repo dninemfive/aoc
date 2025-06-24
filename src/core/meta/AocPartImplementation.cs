@@ -5,6 +5,7 @@ using System.Reflection;
 namespace d9.aoc.core;
 public class AocPartImplementation(int part, MethodInfo mi)
 {
+    public delegate AocPartResult? Delegate(AocSolution soln);
     public int Part => part;
     public ExpectedResultsAttribute? ExpectedResults = mi.GetCustomAttribute<ExpectedResultsAttribute>();
     public Func<AocSolution, AocPartResultValue?> Function 
@@ -18,7 +19,7 @@ public class AocPartImplementation(int part, MethodInfo mi)
              ? new($"Part {Part}", result, stopwatch.Elapsed) 
              : null;
     }
-    public void Deconstruct(out int part, out Func<AocSolution, AocPartResult?> execute)
+    public void Deconstruct(out int part, out Delegate execute)
     {
         part = Part;
         execute = Execute;
