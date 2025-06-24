@@ -1,9 +1,26 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace d9.aoc.core;
-public class AocPartImplementation(MethodInfo info)
+public class AocPartImplementation(int part, MethodInfo mi)
 {
-    public ExpectedResultsAttribute? ExpectedResults = info.GetCustomAttribute<ExpectedResultsAttribute>();
+    public int Part => part;
+    public ExpectedResultsAttribute? ExpectedResults = mi.GetCustomAttribute<ExpectedResultsAttribute>();
     public Func<AocSolution, AocPartResultValue?> Function 
-        => (parent) => info.Invoke(parent, null) as AocPartResultValue;
+        => (parent) => mi.Invoke(parent, null) as AocPartResultValue;
+    public AocPartResult? Execute(AocSolution parent)
+    {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        AocPartResultValue? result = Function(parent);
+        stopwatch.Stop();
+        return result is not null
+             ? new($"Part {Part}", result, stopwatch.Elapsed) 
+             : null;
+    }
+    public void Deconstruct(out int part, out Func<AocSolution, AocPartResult?> execute)
+    {
+        part = Part;
+        execute = Execute;
+    }
 }

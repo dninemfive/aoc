@@ -1,10 +1,12 @@
-﻿using d9.aoc.core.meta;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace d9.aoc.core;
 #pragma warning disable CS9113 // unread parameter: used by derived classes
+// todo: split into:
+// - AocSolution: base class for solution implementations
+// - AocSolutionInfo: metadata holder & instantiator for AocSolution
 public abstract class AocSolution(params string[] lines)
 #pragma warning restore CS9113
 {
@@ -27,27 +29,4 @@ public abstract class AocSolution(params string[] lines)
         => null;
     public virtual AocPartResultValue? Part2()
         => null;
-    public bool Execute(string name, Implementation implementation, [NotNullWhen(true)] out AocPartResult? result)
-    {
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        if(implementation() is AocPartResultValue partResult)
-        {
-            result = new(partResult, name, stopwatch.Elapsed);
-            return true;
-        }
-        result = null;
-        return false;
-    }
-    public IReadOnlyDictionary<int, AocPartImplementation> ImplementedParts
-    {
-        get
-        {
-            Dictionary<int, AocPartImplementation> result = new();
-            if (GetType().GetMethod("Part1") is MethodInfo mi1 && mi1.IsOverride())
-                result[1] = new(this, mi1);
-            if (GetType().GetMethod("Part2") is MethodInfo mi2 && mi2.IsOverride())
-                result[2] = new(this, mi2);
-            return result;
-        }
-    }
 }

@@ -1,8 +1,5 @@
-﻿using d9.utl;
-using System.Numerics;
-
-namespace d9.aoc.core;
-public record AocPartResult(AocPartResultValue Result, string Label, TimeSpan Elapsed)
+﻿namespace d9.aoc.core;
+public record AocPartResult(string Label, AocPartResultValue Result, TimeSpan Elapsed)
 {
     public object? Value => Result.Value;
     public override string ToString()
