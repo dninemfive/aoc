@@ -47,11 +47,15 @@ public class Tests
     {
         get
         {
-            yield return new TestCaseData(new AocSolutionInfo(typeof(_23.day01.Solution)), new AocPartImplementation(1, typeof(_23.day01.Solution).GetMethod("Part1")!), false).Returns(55090);
+            foreach (TestCaseData datum in _data)
+                yield return datum;
+            yield return new TestCaseData(new AocSolutionInfo(typeof(_23.day01.Solution)), 
+                                          new AocPartImplementation(1, typeof(_23.day01.Solution).GetMethod("Part1")!), false).Returns(55090);
+            yield return TestCases(new AocSolutionInfo(typeof(_23.day01.Solution))).First().SetName(_data.ListNotation());
         }
     }
 
-    [TestCaseSource(nameof(Data))]
+    [Test, TestCaseSource(nameof(Data))]
     public object? TestPart(AocSolutionInfo info, AocPartImplementation impl, bool sample)
     {
         AocSolution parent = info.Instantiate(out TimeSpan initTime, sample, impl.Part);
