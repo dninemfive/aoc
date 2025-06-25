@@ -5,53 +5,58 @@ using System.Reflection;
 
 namespace d9.aoc.tests;
 
-public class Tests
+public class TestHelper
 {
-    private static readonly List<AocSolutionInfo> _solutionInfos = new();
-    [OneTimeSetUp]
-    public static void Init()
+    private readonly List<AocSolutionInfo> _infos;
+    public IEnumerable<AocSolutionInfo> Infos => _infos;
+    private readonly List<TestCaseData> _cases;
+    public IEnumerable<TestCaseData> Cases => _cases;
+    public TestHelper()
     {
-        List<object> _stuffToForceAssembliesToLoad = [new _23.Program(), new _24.Program()];
+        object[] __ = [new _23.Program(), new _24.Program()];
+        _infos = [];
         foreach ((Assembly assembly, SolutionsForYearAttribute _) in AppDomain.CurrentDomain.AssembliesWithAttribute<SolutionsForYearAttribute>())
             foreach ((Type type, SolutionToProblemAttribute _) in assembly.TypesWithAttribute<SolutionToProblemAttribute>())
-                _solutionInfos.Add(new(type));
-        foreach (AocSolutionInfo info in _solutionInfos)
-        {
-            foreach (TestCaseData datum in TestCases(info))
-                _data.Add(datum);
-        }
+                _infos.Add(new(type));
+        _infos = [.. _infos.OrderBy(x => x.Year).ThenBy(x => x.Day)];
+        _cases = [];
+        foreach (AocSolutionInfo info in _infos)
+            foreach (TestCaseData datum in TestCasesFor(info))
+                _cases.Add(datum);
     }
     private static string ImplementationName(int part, bool sample)
         => $"Part {part:00}{(sample ? " (sample)" : "")}";
     private static IEnumerable<TestCaseData> TestCasesFor(AocSolutionInfo info, AocPartImplementation impl)
     {
         Console.WriteLine($"\t\t\tTestCasesFor({info}, {impl})");
-        if(impl.ExpectedResults is ExpectedResultsAttribute era)
+        if (impl.ExpectedResults is ExpectedResultsAttribute era)
         {
             Console.WriteLine($"\t\t\t\t{era}");
             if (era.Sample is not null)
-                yield return new TestCaseData(info, impl, true).Returns(era.Sample).SetName(ImplementationName(impl.Part, true));
+                yield return new TestCaseData(info, impl, true).Returns(era.Sample).SetCategory(ImplementationName(impl.Part, true));
             if (era.Final is not null)
-                yield return new TestCaseData(info, impl, false).Returns(era.Final).SetName(ImplementationName(impl.Part, false));
+                yield return new TestCaseData(info, impl, false).Returns(era.Final).SetCategory(ImplementationName(impl.Part, false));
         }
     }
-    private static IEnumerable<TestCaseData> TestCases(AocSolutionInfo soln)
+    private static IEnumerable<TestCaseData> TestCasesFor(AocSolutionInfo soln)
     {
         Console.WriteLine($"\t\t{soln}");
         foreach (AocPartImplementation impl in soln.ImplementedParts)
             foreach (TestCaseData datum in TestCasesFor(soln, impl))
-                yield return datum.SetCategory($"Year {soln.Year} Day {soln.Day}");
+                yield return datum.SetName($"Year {soln.Year} Day {soln.Day:00}");
     }
-    private static readonly ICollection<TestCaseData> _data = [];
+}
+
+public class Tests
+{
+    public static readonly TestHelper Helper = new();
     public static IEnumerable<TestCaseData> Data
     {
         get
         {
-            foreach (TestCaseData datum in _data)
-                yield return datum;
-            yield return new TestCaseData(new AocSolutionInfo(typeof(_23.day01.Solution)), 
-                                          new AocPartImplementation(1, typeof(_23.day01.Solution).GetMethod("Part1")!), false).Returns(55090);
-            yield return TestCases(new AocSolutionInfo(typeof(_23.day01.Solution))).First().SetName(_data.ListNotation());
+            foreach (TestCaseData testCase in Helper.Cases)
+                yield return testCase;
+            // yield return TestCasesFor(new AocSolutionInfo(typeof(_23.day01.Solution))).First().SetName(_data.ListNotation());
         }
     }
 
@@ -63,7 +68,7 @@ public class Tests
         AocPartResult? result = impl.Execute(parent);
         if (result is null)
             return null;
-        Console.WriteLine($"Executed implementation in {result.Elapsed:g}");
+        Console.WriteLine($"Executed implementation in {result.Elapsed:g}, yielding {result.Value.PrintNull()}");
         return result.Value;
     }
     [Test]
