@@ -2,23 +2,14 @@
 using ParsedLines = System.Collections.Generic.IEnumerable<(System.Collections.Generic.IEnumerable<long> numbers, long expected)>;
 
 namespace d9.aoc._24.day07;
-[SolutionToProblem(7, complete: true)]
-[DisableTests]
-[SampleResults(        3749L,
-                      11387L)]
-[FinalResults(2664460013123L,
-            426214131924213L)]
-internal class Solution : AocSolution
+[SolutionToProblem(7)]
+internal class Solution(params string[] lines) : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(params string[] lines)
-    {
-        ParsedLines parsedLines = lines.Parse<long>();
-        yield return "preinit";
-        yield return parsedLines.ValidSolutions(Operators.Add,
-                                                Operators.Multiply).Sum();
-        yield return parsedLines.ValidSolutions(Operators.Add,
-                                                Operators.Multiply,
-                                                Operators.Concatenate).Sum();
+    public readonly ParsedLines ParsedLines = lines.Parse<long>();
 
-    }
+    [ExpectedResults(sample: 3749L, final: 2664460013123L)]
+    public override AocPartResultValue? Part1()
+        => ParsedLines.ValidSolutions(Operators.Add, Operators.Multiply).Sum();
+    public override AocPartResultValue Part2()
+        => ParsedLines.ValidSolutions(Operators.Add, Operators.Multiply, Operators.Concatenate).Sum();
 }

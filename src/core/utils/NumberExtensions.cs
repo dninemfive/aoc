@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using d9.utl;
 
 namespace d9.aoc.core;
 public static class NumberExtensions

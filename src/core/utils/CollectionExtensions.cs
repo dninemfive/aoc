@@ -1,7 +1,6 @@
 ﻿namespace d9.aoc.core;
 public static class CollectionExtensions
 {
-    public static T Second<T>(this IEnumerable<T> enumerable) => enumerable.ElementAt(1);
     public static T Second<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
         => enumerable.Where(predicate)
                      .ElementAt(1);

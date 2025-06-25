@@ -9,4 +9,6 @@
 public class SolutionsForYearAttribute(int year) : Attribute
 {
     public int Year => year;
+    public static implicit operator int(SolutionsForYearAttribute attr)
+        => attr.Year;
 }

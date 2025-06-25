@@ -2,13 +2,17 @@
 
 namespace d9.aoc._23.day07;
 [SolutionToProblem(7)]
-public class Solution : AocSolution
+public class Solution(string[] lines) 
+    : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(string[] lines)
-    {
-        yield return Winnings(lines, jokerMode: false);
-        yield return Winnings(lines, jokerMode: true);
-    }
+    [ExpectedResults(248453531)]
+    public override AocPartResultValue? Part1()
+        => Winnings(lines, jokerMode: false);
+
+    [ExpectedResults(248781813)]
+    public override AocPartResultValue? Part2()
+        => Winnings(lines, jokerMode: true);
+
     public static int Winnings(IEnumerable<string> lines, bool jokerMode)
     {
         IEnumerable<Hand> hands = lines.Select(x => new Hand(x, jokerMode)).OrderDescending();

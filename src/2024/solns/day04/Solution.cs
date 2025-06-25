@@ -1,17 +1,16 @@
 ﻿namespace d9.aoc._24.day04;
 [SolutionToProblem(4)]
-[SampleResults(18, 9)]
-[FinalResults(2569, 1998)]
-internal class Solution : AocSolution
+internal class Solution(params string[] lines)
+    : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(params string[] lines)
-    {
-        Grid<char> crossword = Grid<char>.From(lines);
-        yield return "preinit";
-        yield return crossword.AllPossibleWordStarts()
-                              .Count(x => crossword.WordStartsAtLocation("XMAS", x.start, x.direction));
-        yield return crossword.AllPoints
-                              .Where(x => !crossword.IsOnEdge(x))
-                              .Count(x => crossword.HasXMASAt(x));
-    }
+    public readonly Grid<char> Crossword = Grid<char>.From(lines);
+    [ExpectedResults(sample: 18, final: 2569)]
+    public override AocPartResultValue? Part1()
+        => Crossword.AllPossibleWordStarts()
+                    .Count(x => Crossword.WordStartsAtLocation("XMAS", x.start, x.direction));
+    [ExpectedResults(sample: 9, final: 1998)]
+    public override AocPartResultValue? Part2()
+        => Crossword.AllPoints
+                    .Where(x => !Crossword.IsOnEdge(x))
+                    .Count(x => Crossword.HasXMASAt(x));
 }

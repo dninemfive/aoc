@@ -1,9 +1,4 @@
 ﻿using d9.aoc.core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace d9.aoc._23.day03;
 internal static class Extensions

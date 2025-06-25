@@ -76,7 +76,7 @@ public static class StringExtensions
     }
     public static string Ancestor(this string path, int index)
     {
-        DirectoryInfo result = new DirectoryInfo(path);
+        DirectoryInfo result = new(path);
         for (int i = 0; i < index; i++)
             result = result.Parent!;
         return result.ToString();

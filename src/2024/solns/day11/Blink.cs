@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
 namespace d9.aoc._24.day11;
-internal class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int index = 0)
+public class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int index = 0)
 {
     public readonly int Index = index;
     private readonly CountingDictionary<BigInteger, BigInteger> _counts = new(counts);
@@ -14,7 +14,7 @@ internal class Blink(IReadOnlyDictionary<BigInteger, BigInteger> counts, int ind
     {
         CountingDictionary<BigInteger, BigInteger> counts = new();
         // .Ascending() doesn't actually matter, just don't want to have to cast _counts because i probably fucked up somewhere
-        foreach((BigInteger stone, BigInteger count) in _counts.Ascending())
+        foreach((BigInteger stone, BigInteger count) in _counts.Order())
             foreach (BigInteger successor in stone.Successors())
                 counts[successor] += count;
         return new(counts, Index + 1);

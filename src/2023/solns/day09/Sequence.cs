@@ -6,7 +6,7 @@ public class Sequence<T>
     private readonly List<List<T>> _rows;
     public Sequence(IEnumerable<T> input)
     {
-        _rows = [input.ToList()];
+        _rows = [[.. input]];
         while(_rows.Last().Any(x => x != T.Zero))
             _rows.Add(_rows.Last().Diffs().ToList());
     }

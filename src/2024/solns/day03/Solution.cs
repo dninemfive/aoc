@@ -2,24 +2,23 @@
 
 namespace d9.aoc._24.day03;
 [SolutionToProblem(3)]
-[SampleResults(161, 48)]
-[FinalResults(179834255, 80570939)]
-internal partial class Solution : AocSolution
+internal partial class Solution(params string[] lines)
+    : AocSolution
 {
-    public override IEnumerable<AocPartialResult> Solve(params string[] lines)
-    {
-        IEnumerable<Union<bool, int>> instructions = lines.SelectMany(x => _anyInstruction.Matches(x))
-                                                          .Select(x => x.Value.Evaluate());
-        yield return "preinit";
-        yield return instructions.Select(x => x.As<int>())
-                                 .Sum()!;
-        yield return SumOnlyWhileActive(instructions);
-    }
-    public int SumOnlyWhileActive(IEnumerable<Union<bool, int>> instructions)
+    public readonly IEnumerable<Union<bool, int>> Instructions
+        = lines.SelectMany(x => _anyInstruction.Matches(x))
+               .Select(x => x.Value.Evaluate());
+
+    [ExpectedResults(sample: 161, final: 179834255)]
+    public override AocPartResultValue? Part1()
+        => Instructions.Select(x => x.As<int>()).Sum()!;
+
+    [ExpectedResults(sample: 48, final: 80570939)]
+    public override AocPartResultValue? Part2()
     {
         bool active = true;
         int sum = 0;
-        foreach (Union<bool, int> instruction in instructions)
+        foreach (Union<bool, int> instruction in Instructions)
         {
             if (instruction.IsT1(out bool b))
             {
@@ -33,7 +32,8 @@ internal partial class Solution : AocSolution
         }
         return sum;
     }
-    private static Regex _anyInstruction = AnyInstruction();
+
+    private static readonly Regex _anyInstruction = AnyInstruction();
     // til about the non-capturing modifier: https://stackoverflow.com/a/632248
     [GeneratedRegex(@"(?:mul\(\d+,\d+\)|do\(\)|don't\(\))")]
     private static partial Regex AnyInstruction();
