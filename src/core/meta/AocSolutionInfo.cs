@@ -33,7 +33,6 @@ public record AocSolutionInfo(Type ImplementingType)
     {
         string[] lines = File.ReadAllLines(filePath);
         Stopwatch sw = Stopwatch.StartNew();
-        Console.WriteLine(ImplementingType.GetConstructors().ListNotation());
         AocSolution instance = (AocSolution)Activator.CreateInstance(ImplementingType, args: [lines])!;
         sw.Stop();
         initTime = sw.Elapsed;

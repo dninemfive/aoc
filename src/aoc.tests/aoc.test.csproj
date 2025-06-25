@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <RootNamespace>d9.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2023\solns\aoc-solns-2023.csproj" />
-    <ProjectReference Include="..\2024\solns\aoc-solns-2024.csproj" />
+    <ProjectReference Include="..\2023\solns\aoc.2023.csproj" />
+    <ProjectReference Include="..\2024\solns\aoc.2024.csproj" />
     <ProjectReference Include="..\core\aoc.core.csproj" />
   </ItemGroup>
 

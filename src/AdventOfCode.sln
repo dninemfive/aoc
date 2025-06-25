@@ -3,17 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34219.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2023", "2023\solns\aoc-solns-2023.csproj", "{59B30FE0-775B-4C05-9190-C7A8CD92E697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc.2023", "2023\solns\aoc.2023.csproj", "{59B30FE0-775B-4C05-9190-C7A8CD92E697}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc.core", "core\aoc.core.csproj", "{56017A23-08D6-4329-A9E1-58C796C723ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc-solns-2024", "2024\solns\aoc-solns-2024.csproj", "{7E070611-37D4-4771-9A16-2A3B65C2D4FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoc.2024", "2024\solns\aoc.2024.csproj", "{7E070611-37D4-4771-9A16-2A3B65C2D4FD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2023", "2023", "{96551022-65F3-4020-BDFF-BB2E43F0D7E2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2024", "2024", "{8BB5B3E0-AF5B-4CA3-A43B-8E5A536560FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc.tests", "aoc.tests\aoc.tests.csproj", "{45D62215-4022-480A-BEF5-17909CF0F403}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc.test", "aoc.tests\aoc.test.csproj", "{45D62215-4022-480A-BEF5-17909CF0F403}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{59B30FE0-775B-4C05-9190-C7A8CD92E697} = {96551022-65F3-4020-BDFF-BB2E43F0D7E2}
-		{7E070611-37D4-4771-9A16-2A3B65C2D4FD} = {8BB5B3E0-AF5B-4CA3-A43B-8E5A536560FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90727EEC-6BD9-41AD-88DD-F53787501CA8}
