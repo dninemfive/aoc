@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\2023\solns\aoc.2023.csproj" />
     <ProjectReference Include="..\2024\solns\aoc.2024.csproj" />
+    <ProjectReference Include="..\2025\solns\aoc.2025.csproj" />
     <ProjectReference Include="..\core\aoc.core.csproj" />
   </ItemGroup>
 

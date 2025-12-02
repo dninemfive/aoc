@@ -11,7 +11,7 @@ public class TestHelper
     public IEnumerable<TestCaseData> Cases => _cases;
     public TestHelper()
     {
-        object[] __ = [new _23.Program(), new _24.Program()];
+        object[] __ = [new _23.Program(), new _24.Program(), new _25.Program()];
         _infos = [];
         foreach ((Assembly assembly, SolutionsForYearAttribute _) in AppDomain.CurrentDomain.AssembliesWithAttribute<SolutionsForYearAttribute>())
             foreach ((Type type, SolutionToProblemAttribute _) in assembly.TypesWithAttribute<SolutionToProblemAttribute>())

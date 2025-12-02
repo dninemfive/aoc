@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
 namespace d9.aoc._24.day11;
-[SolutionToProblem(11)]
+// [SolutionToProblem(11)]
 public class Solution(params string[] lines)
     : AocSolution
 {
