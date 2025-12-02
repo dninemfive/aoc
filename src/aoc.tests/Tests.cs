@@ -13,7 +13,7 @@ public class Tests
     [Test, TestCaseSource(nameof(TestCases))]
     public object? TestPart(AocSolutionInfo info, AocPartImplementation impl, bool sample)
     {
-        AocSolution parent = info.Instantiate(out TimeSpan initTime, sample, impl.Part);
+        AocSolution parent = info.Instantiate(out TimeSpan initTime, sample, impl.Part, test: true);
         Console.WriteLine($"Part {impl.Part}{(sample ? " (sample)" : "")}:");
         Console.WriteLine($"  {parent.GetType().FullName,25}.ctor()   {initTime,16:g}");
         AocPartResult? result = impl.Execute(parent);

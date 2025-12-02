@@ -14,9 +14,9 @@ public record AocSolutionInfo(Type ImplementingType)
         ?? throw new Exception($"Type {ImplementingType.Name} needs a SolutionToProblemAttribute to function!");
     public int Year => AssemblyAttr.Year;
     public int Day => DayAttr.Day;
-    public string FileName(bool sample = false, int? part = null)
+    public string FileName(bool sample = false, int? part = null, bool test = false)
     {
-        string resultBase = $"{Path.GetDirectoryName(Assembly.Location)!.Ancestor(4)}/input/day{Day:00}";
+        string resultBase = $"{Path.GetDirectoryName(Assembly.Location)!.Ancestor(test ? 4: 5)}/{Year}/input/day{Day:00}";
         if (sample)
             resultBase += ".sample";
         if (part is int i)
@@ -27,8 +27,8 @@ public record AocSolutionInfo(Type ImplementingType)
         }
         return $"{resultBase}.txt";
     }
-    public AocSolution Instantiate(out TimeSpan initTime, bool sample = false, int? part = null)
-        => Instantiate(FileName(sample, part), out initTime);
+    public AocSolution Instantiate(out TimeSpan initTime, bool sample = false, int? part = null, bool test = false)
+        => Instantiate(FileName(sample, part, test), out initTime);
     public AocSolution Instantiate(string filePath, out TimeSpan initTime)
     {
         string[] lines = File.ReadAllLines(filePath);
