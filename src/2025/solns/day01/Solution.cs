@@ -7,6 +7,7 @@ internal class Solution(params string[] lines)
     : AocSolution
 {
     IEnumerable<Rotation> Rotations => lines.Select(x => (Rotation<int>)x);
+    [ExpectedResults(sample: 3, final: 1064)]
     public override AocPartResultValue? Part1()
     {
         N cur = 50, result = 0;

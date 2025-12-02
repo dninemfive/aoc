@@ -16,6 +16,6 @@ internal record Rotation<T>(Direction Direction, T Distance)
         => rotation.Direction.Sign<T>() * rotation.Distance;
     public static Rotation<T> operator +(T initial, Rotation<T> rotation)
     {
-        return (initial + rotation) % MAX;
+        return (initial + (T)rotation) % MAX;
     }
 }
