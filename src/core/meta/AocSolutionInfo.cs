@@ -16,7 +16,7 @@ public record AocSolutionInfo(Type ImplementingType)
     public int Day => DayAttr.Day;
     public string FileName(bool sample = false, int? part = null)
     {
-        string resultBase = $"{Path.GetDirectoryName(Assembly.Location)!.Ancestor(4)}/{Year}/input/day{Day:00}";
+        string resultBase = $"{Path.GetDirectoryName(Assembly.Location)!.Ancestor(4)}/input/day{Day:00}";
         if (sample)
             resultBase += ".sample";
         if (part is int i)
